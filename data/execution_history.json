@@ -1,0 +1,716 @@
+[
+  {
+    "timestamp": "2025-11-18 19:08:15",
+    "module_id": 1,
+    "module_name": "Generar DDL Inicial",
+    "status": "success",
+    "duration": 0.092021,
+    "params": {
+      "ruta_plantilla_excel": "C:/Users/Antony/Desktop/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "C:/Users/Antony/Desktop/PRACTICAS/ddlinicial.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-18 19:22:53",
+    "module_id": 1,
+    "module_name": "Generar DDL Inicial",
+    "status": "success",
+    "duration": 0.090021,
+    "params": {
+      "ruta_plantilla_excel": "C:/Users/Antony/Desktop/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "C:/Users/Antony/Desktop/PRACTICAS/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-18 19:29:19",
+    "module_id": 2,
+    "module_name": "Validar Nomenclatura",
+    "status": "success",
+    "duration": 65.656058,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "ruta_salida_ddl_completo": "C:/Users/Antony/Desktop/PRACTICAS/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-18 19:38:09",
+    "module_id": 2,
+    "module_name": "Validar Nomenclatura",
+    "status": "success",
+    "duration": 0.32975,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "ruta_salida_ddl_completo": "C:/Users/Antony/Desktop/PRACTICAS/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 09:39:57",
+    "module_id": 1,
+    "module_name": "Generar DDL Inicial",
+    "status": "error",
+    "duration": 0.833784,
+    "params": {
+      "ruta_plantilla_excel": "E:/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "E:/PRACTICAS/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 09:43:27",
+    "module_id": 1,
+    "module_name": "Generar DDL Inicial",
+    "status": "success",
+    "duration": 0.141804,
+    "params": {
+      "ruta_plantilla_excel": "E:/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "E:/PRACTICAS/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 09:44:05",
+    "module_id": 1,
+    "module_name": "Generar DDL Inicial",
+    "status": "success",
+    "duration": 0.140247,
+    "params": {
+      "ruta_plantilla_excel": "C:/Users/avalencia/Downloads/datacargada.xlsx",
+      "ruta_salida_ddl_base": "E:/PRACTICAS/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 10:14:39",
+    "module_id": 1,
+    "module_name": "GENERAR DDL INICIAL",
+    "status": "success",
+    "duration": 0.152584,
+    "params": {
+      "ruta_plantilla_excel": "E:/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "E:/PRACTICAS/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 10:36:14",
+    "module_id": 1,
+    "module_name": "GENERAR DDL INICIAL",
+    "status": "success",
+    "duration": 0.226432,
+    "params": {
+      "ruta_plantilla_excel": "E:/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "E:/PRACTICAS/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 10:36:28",
+    "module_id": 1,
+    "module_name": "GENERAR DDL INICIAL",
+    "status": "success",
+    "duration": 0.176487,
+    "params": {
+      "ruta_plantilla_excel": "E:/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "C:/Users/avalencia/Documents/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 10:41:01",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "error",
+    "duration": 0.277702,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "ruta_salida_ddl_completo": "E:/PRACTICAS/ddl.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 10:46:51",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "error",
+    "duration": 0.105514,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "ruta_salida_ddl_completo": "E:/PRACTICAS/ddl.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 10:56:16",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "success",
+    "duration": 2.068155,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "ruta_salida_ddl_completo": "E:/PRACTICAS/ddl.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 11:02:53",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "success",
+    "duration": 0.838437,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "ruta_salida_ddl_completo": "E:/PRACTICAS/ddl.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 12:40:03",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 3.553592,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 13:36:21",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 3.542154,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 13:41:13",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 4.147777,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 13:44:52",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 3.4799,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 13:48:37",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 3.814496,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 13:51:45",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 4.713235,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 13:59:10",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 4.863053,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 13:59:46",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 5.033218,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 14:01:54",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 5.915785,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 14:02:07",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 5.465808,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 14:05:49",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 4.878351,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 14:22:00",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 5.150997,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 14:22:45",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 5.139899,
+    "params": {
+      "host": "192.168.44.48",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 14:23:54",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 5.203444,
+    "params": {
+      "host": "192.168.44.48",
+      "puerto": "5433",
+      "bd": "sigap",
+      "usuario": "sigap",
+      "password": "sigap_ab01$",
+      "esquema": "sigap",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 14:24:43",
+    "module_id": 1,
+    "module_name": "GENERAR DDL INICIAL",
+    "status": "success",
+    "duration": 0.211818,
+    "params": {
+      "ruta_plantilla_excel": "E:/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "E:/PRACTICAS/prueba.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 14:26:41",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "success",
+    "duration": 0.877142,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "ruta_salida_ddl_completo": "E:/PRACTICAS/caeDDL.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:17:20",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 2.706124,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:33:57",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.701149,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:39:30",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.71696,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:42:47",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.734299,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:45:40",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.43112,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:48:17",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.381505,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:48:40",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.173869,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:49:56",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.206161,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-19 19:52:11",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.41241,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "gemma",
+      "usuario": "postgres",
+      "password": "admin",
+      "esquema": "gemma",
+      "ruta_salida_rtf": "E:/PRACTICAS/diccionario.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-20 11:44:13",
+    "module_id": 1,
+    "module_name": "GENERAR DDL INICIAL",
+    "status": "success",
+    "duration": 0.446385,
+    "params": {
+      "ruta_plantilla_excel": "E:/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "C:/Users/avalencia/Desktop/a.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-20 12:18:32",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 0.259333,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DICCIONARIO/diccionario-sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-20 12:20:55",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 1.151929,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DICCIONARIO/diccionario-sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-20 15:05:01",
+    "module_id": 1,
+    "module_name": "GENERAR DDL INICIAL",
+    "status": "success",
+    "duration": 0.296581,
+    "params": {
+      "ruta_plantilla_excel": "E:/PRACTICAS/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "C:/Users/avalencia/Desktop/prueba/ddlini.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-21 12:19:32",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.680892,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/prueba/cae.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-25 11:01:43",
+    "module_id": 1,
+    "module_name": "GENERAR DDL INICIAL",
+    "status": "success",
+    "duration": 0.384919,
+    "params": {
+      "ruta_plantilla_excel": "E:/PROYECTO DBMANAGER/resources/Plantilla_Modelo.xlsx",
+      "ruta_salida_ddl_base": "E:/PROYECTO DBMANAGER/ddl.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-25 11:04:10",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "success",
+    "duration": 1.457149,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "ruta_salida_ddl_completo": "E:/PROYECTO DBMANAGER/ddlfinal.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-25 11:06:57",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "error",
+    "duration": 0.158079,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae_eg2026",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "ruta_salida_ddl_completo": "E:/PROYECTO DBMANAGER/ddlfinal.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-25 11:07:26",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "success",
+    "duration": 0.738851,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "ruta_salida_ddl_completo": "E:/PROYECTO DBMANAGER/ddlfinal.sql"
+    }
+  },
+  {
+    "timestamp": "2025-11-25 11:09:21",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 1.327751,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "E:/PROYECTO DBMANAGER/diccionario.rtf"
+    }
+  }
+]

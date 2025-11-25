@@ -1,0 +1,89 @@
+{
+  "config_generacion": {
+    "descripcion": "Configuración para generación de data de prueba",
+    
+    "cantidad_base": 100,
+    
+    "cantidad_por_tabla": {
+      "_comentario": "Cantidad específica por tabla. Si no se especifica, usa cantidad_base",
+      "_ejemplo_tabla": 500
+    },
+    
+    "multiplicadores_fk": {
+      "_comentario": "Multiplica cantidad base según número de FKs (simular 1:N)",
+      "habilitado": true,
+      "factor": 1.0
+    },
+    
+    "generacion_nulls": {
+      "_comentario": "Configuración para generar valores NULL",
+      "habilitado": true,
+      "probabilidad": 0.2,
+      "excluir_pks": true,
+      "excluir_fks": false
+    },
+    
+    "limpieza_previa": {
+      "_comentario": "Limpiar tablas antes de insertar",
+      "preguntar": true,
+      "automatico": false
+    },
+    
+    "rangos_personalizados": {
+      "_comentario": "Rangos personalizados para tipos numéricos",
+      "integer": {
+        "min": 1,
+        "max": 2147483647
+      },
+      "bigint": {
+        "min": 1,
+        "max": 9223372036854775807
+      },
+      "smallint": {
+        "min": 1,
+        "max": 32767
+      },
+      "numeric": {
+        "max_valor": 999999
+      }
+    },
+    
+    "rangos_fechas": {
+      "_comentario": "Rangos para generación de fechas",
+      "date": {
+        "dias_atras": 1825,
+        "dias_adelante": 0
+      },
+      "timestamp": {
+        "dias_atras": 730,
+        "dias_adelante": 0
+      }
+    },
+    
+    "texto": {
+      "_comentario": "Configuración para generación de texto",
+      "max_length_text": 500,
+      "palabras_personalizadas": []
+    },
+    
+    "patron_columnas": {
+      "_comentario": "Patrones para generar valores específicos según nombre de columna",
+      "_ejemplo": {
+        "patron_regex": ".*_email.*",
+        "generador": "email",
+        "opciones": {}
+      }
+    },
+    
+    "seeds": {
+      "_comentario": "Semilla para reproducibilidad (null = aleatorio)",
+      "random_seed": null
+    },
+    
+    "logging": {
+      "nivel": "INFO",
+      "mostrar_queries": false,
+      "mostrar_valores_generados": false
+    }
+  }
+}
