@@ -12,7 +12,7 @@ class DBManager:
     def __init__(self, root):
         self.root = root
         self.root.title("DB MANAGER")
-        self.root.geometry("1000x800")
+        self.root.geometry("1300x900")
         self.root.minsize(1200, 800)
         
         self.base_dir = Path(__file__).resolve().parent
@@ -225,7 +225,7 @@ class DBManager:
         right_panel = ttk.Frame(content_frame)
         content_frame.add(right_panel, weight=3)
         
-        config_frame = ttk.LabelFrame(right_panel, text="  ⚙ Configuración del Módulo", padding=15)
+        config_frame = ttk.LabelFrame(right_panel, text="  Configuracion del Modulo", padding=15)
         config_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
 
         # Header del módulo seleccionado
@@ -257,6 +257,39 @@ class DBManager:
         
         self.params_frame.bind("<Configure>", configure_scroll)
         canvas.bind("<Configure>", configure_scroll)
+
+        # Habilitar scrolling con la rueda del ratón dentro del canvas (Windows/macOS/Linux)
+        def _on_mousewheel(event):
+            try:
+                delta = event.delta
+            except AttributeError:
+                delta = 0
+            if delta:
+                # Windows y macOS: event.delta suele ser múltiplo de 120 por 'notch'
+                move = int(-1 * (delta / 120))
+                if move == 0:
+                    move = -1 if delta > 0 else 1
+                canvas.yview_scroll(move, "units")
+            else:
+                # Linux: eventos Button-4 (arriba) / Button-5 (abajo)
+                if hasattr(event, 'num'):
+                    if event.num == 4:
+                        canvas.yview_scroll(-1, "units")
+                    elif event.num == 5:
+                        canvas.yview_scroll(1, "units")
+
+        def _bind_mousewheel(event):
+            canvas.bind_all("<MouseWheel>", _on_mousewheel)
+            canvas.bind_all("<Button-4>", _on_mousewheel)
+            canvas.bind_all("<Button-5>", _on_mousewheel)
+
+        def _unbind_mousewheel(event):
+            canvas.unbind_all("<MouseWheel>")
+            canvas.unbind_all("<Button-4>")
+            canvas.unbind_all("<Button-5>")
+
+        canvas.bind("<Enter>", _bind_mousewheel)
+        canvas.bind("<Leave>", _unbind_mousewheel)
         
         self.param_widgets = {}
         
@@ -303,8 +336,10 @@ class DBManager:
         for i in range(3):
             btn_frame.columnconfigure(i, weight=1)
         
-        console_frame = ttk.LabelFrame(right_panel, text="  📟 Consola de Ejecución", padding=10)
-        console_frame.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
+        console_frame = ttk.LabelFrame(right_panel, text="  Consola de Ejecucion", padding=10)
+        console_frame.configure(height=220)
+        console_frame.pack(fill=tk.BOTH, expand=False, pady=(10, 0))
+        console_frame.pack_propagate(False)
 
         console_btn_frame = tk.Frame(console_frame, bg=self.colors['bg_card'])
         console_btn_frame.pack(fill=tk.X, pady=(0, 8))
