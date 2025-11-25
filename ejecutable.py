@@ -624,7 +624,21 @@ class DBManager:
             messagebox.showerror("Error", f"No se pudo guardar la configuracion: {e}")
             
     def load_module_configs(self):
-        pass
+        """Load and log previously saved module configurations"""
+        if self.config:
+            loaded_modules = [key for key in self.config.keys() if key.startswith('module_')]
+            if loaded_modules:
+                self.log_message(f"\n{'='*70}", "info")
+                self.log_message(f"Configuraciones cargadas para {len(loaded_modules)} modulo(s)", "success")
+                for module_key in loaded_modules:
+                    module_id = module_key.split('_')[1]
+                    module_name = next((m['name'] for m in self.modules if str(m['id']) == module_id), 'Desconocido')
+                    self.log_message(f"  - Modulo {module_id}: {module_name}", "info")
+                self.log_message(f"{'='*70}\n", "info")
+            else:
+                self.log_message("No hay configuraciones guardadas\n", "info")
+        else:
+            self.log_message("No hay configuraciones guardadas\n", "info")
 
 def main():
     root = tk.Tk()
