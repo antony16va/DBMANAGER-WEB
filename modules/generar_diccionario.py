@@ -42,7 +42,8 @@ DBLINKS_WIDTHS = [450, 3000, 5500]
 T_FORANEA_HEADERS = ["N", "Campo", "Tipo de Dato", "Nulos", "PK", "FK", "Descripcion", "Valores permitidos"]
 T_FORANEA_WIDTHS = [450, 2100, 1300, 750, 470, 470, 2100, 2300]
 
-
+SINONIMOS_HEADERS = ["N", "Sinónimo", "Descripcion"]
+SINONIMOS_WIDTHS = [450, 3000, 5500]
 
 def escape_rtf(text):
     """Escapa caracteres especiales para formato RTF"""
@@ -610,6 +611,20 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
             else:
                 writer.write("\\i No se encontraron columnas\\i0\\par\n")
             writer.write("\\par\n")
+
+            # 14) Sinónimos
+            writer.write("\\page\n")
+            writer.write("\\ql\\b\\fs28 Descripcion de Sinónimos\\b0\\fs18\\par\n")
+            writer.write("\\par\n")
+            if vistas:
+                writer.write(create_table_row(VISTAS_HEADERS, VISTAS_WIDTHS, True))
+                t = 1
+                for v_name, desc in vistas.items():
+                    writer.write(create_table_row([str(j), v_name, desc or ""], SINONIMOS_WIDTHS, False))
+                    t += 1
+            else:
+                writer.write("\\i No aplica.\\i0\\par\n")
+            writer.write("\\par\\page\n")
            
 
 
