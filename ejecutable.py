@@ -106,9 +106,8 @@ class DBManager:
         main_container.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
 
         # Header mejorado con gradiente simulado
-        title_frame = tk.Frame(main_container, bg=self.colors['primary'], height=80)
+        title_frame = tk.Frame(main_container, bg=self.colors['primary'])
         title_frame.pack(fill=tk.X, pady=(0, 15))
-        title_frame.pack_propagate(False)
 
         # Contenedor interno del header
         header_content = tk.Frame(title_frame, bg=self.colors['primary'])
