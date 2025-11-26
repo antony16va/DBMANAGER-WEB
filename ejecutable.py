@@ -53,14 +53,15 @@ class DBManager:
         style.theme_use('clam')
 
         # Estilos para botones de módulos con efectos modernos
+        # Estilo compacto para botones de módulos (reduce tamaño y padding)
         style.configure('Module.TButton',
-                       font=('Segoe UI', 10, 'bold'),
-                       padding=12,
-                       background=self.colors['secondary'],
-                       foreground='white',
-                       borderwidth=0,
-                       focuscolor='none',
-                       relief='flat')
+                   font=('Segoe UI', 9, 'bold'),
+                   padding=6,
+                   background=self.colors['secondary'],
+                   foreground='white',
+                   borderwidth=0,
+                   focuscolor='none',
+                   relief='flat')
         style.map('Module.TButton',
                  background=[('active', self.colors['hover']), ('pressed', self.colors['primary'])],
                  foreground=[('active', 'white')])
@@ -144,7 +145,7 @@ class DBManager:
                             bg=self.colors['accent'],
                             fg='white',
                             relief='flat',
-                            padx=15, pady=8,
+                    padx=10, pady=6,
                             cursor='hand2',
                             borderwidth=0)
         hist_btn.pack(side=tk.RIGHT, padx=5)
@@ -156,7 +157,7 @@ class DBManager:
                            bg=self.colors['secondary'],
                            fg='white',
                            relief='flat',
-                           padx=15, pady=8,
+                   padx=10, pady=6,
                            cursor='hand2',
                            borderwidth=0)
         req_btn.pack(side=tk.RIGHT, padx=5)
@@ -168,7 +169,8 @@ class DBManager:
         left_panel = ttk.Frame(content_frame)
         content_frame.add(left_panel, weight=2)
         
-        modules_frame = ttk.LabelFrame(left_panel, text="   Modulos", padding=10)
+        # Hacer el panel de módulos más compacto
+        modules_frame = ttk.LabelFrame(left_panel, text="   Modulos", padding=6)
         modules_frame.pack(fill=tk.BOTH, expand=True)
         
         self.modules = [
@@ -305,7 +307,7 @@ class DBManager:
                             relief='flat',
                             cursor='hand2',
                             borderwidth=0,
-                            padx=15, pady=10)
+                    padx=10, pady=6)
         save_btn.grid(row=0, column=0, sticky='ew', padx=5)
         self._add_hover_effect(save_btn, self.colors['secondary'], '#2980b9')
 
@@ -317,7 +319,7 @@ class DBManager:
                             relief='flat',
                             cursor='hand2',
                             borderwidth=0,
-                            padx=15, pady=10)
+                    padx=10, pady=6)
         exec_btn.grid(row=0, column=1, sticky='ew', padx=5)
         self._add_hover_effect(exec_btn, self.colors['success'], '#229954')
 
@@ -329,7 +331,7 @@ class DBManager:
                             relief='flat',
                             cursor='hand2',
                             borderwidth=0,
-                            padx=15, pady=10)
+                    padx=10, pady=6)
         stop_btn.grid(row=0, column=2, sticky='ew', padx=5)
         self._add_hover_effect(stop_btn, self.colors['danger'], '#c0392b')
 
@@ -399,26 +401,29 @@ class DBManager:
                                  relief=tk.SOLID, borderwidth=1,
                                  highlightbackground=self.colors['border'],
                                  highlightthickness=1)
-        card_container.pack(fill=tk.X, pady=8, padx=8)
+        # Reduce margenes y espaciado para tarjetas compactas
+        card_container.pack(fill=tk.X, pady=4, padx=6)
 
         # Barra de color superior
-        color_bar = tk.Frame(card_container, bg=module['color'], height=4)
+        # Barra de color superior más delgada
+        color_bar = tk.Frame(card_container, bg=module['color'], height=2)
         color_bar.pack(fill=tk.X)
 
         # Contenido de la tarjeta
         card_content = tk.Frame(card_container, bg=self.colors['bg_card'])
-        card_content.pack(fill=tk.BOTH, expand=True, padx=15, pady=12)
+        card_content.pack(fill=tk.BOTH, expand=True, padx=10, pady=8)
 
         # Header con icono y número
         header = tk.Frame(card_content, bg=self.colors['bg_card'])
-        header.pack(fill=tk.X, pady=(0, 8))
+        header.pack(fill=tk.X, pady=(0, 4))
 
         # Icono grande del módulo
-        icon_frame = tk.Frame(header, bg=module['color'], width=45, height=45)
+        # Icono ligeramente más pequeño
+        icon_frame = tk.Frame(header, bg=module['color'], width=36, height=36)
         icon_frame.pack(side=tk.LEFT, padx=(0, 12))
         icon_frame.pack_propagate(False)
 
-        tk.Label(icon_frame, text=module['icon'], font=('Segoe UI', 20),
+        tk.Label(icon_frame, text=module['icon'], font=('Segoe UI', 14),
                 bg=module['color'], fg='white').pack(expand=True)
 
         # Información del módulo
@@ -426,37 +431,38 @@ class DBManager:
         info_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         tk.Label(info_frame, text=f"Módulo {module['id']}",
-                font=('Segoe UI', 8),
+            font=('Segoe UI', 7),
                 bg=self.colors['bg_card'],
                 fg=self.colors['text_light']).pack(anchor=tk.W)
 
         tk.Label(info_frame, text=module['name'],
-                font=('Segoe UI', 11, 'bold'),
+            font=('Segoe UI', 9, 'bold'),
                 bg=self.colors['bg_card'],
                 fg=self.colors['text_dark']).pack(anchor=tk.W)
 
         # Badge del tipo
         type_badge = tk.Label(header, text=module['type'].upper(),
-                             font=('Segoe UI', 7, 'bold'),
-                             bg=self.colors['bg_light'],
-                             fg=self.colors['text_light'],
-                             padx=8, pady=3)
+                     font=('Segoe UI', 7, 'bold'),
+                     bg=self.colors['bg_light'],
+                     fg=self.colors['text_light'],
+                     padx=6, pady=2)
         type_badge.pack(side=tk.RIGHT)
 
         # Separador sutil
         separator = tk.Frame(card_content, bg=self.colors['border'], height=1)
-        separator.pack(fill=tk.X, pady=(8, 10))
+        separator.pack(fill=tk.X, pady=(6, 8))
 
         # Botón de acción mejorado
+        # Botón más compacto
         btn = tk.Button(card_content, text="⚙ Configurar y Ejecutar",
                        command=lambda m=module: self.select_module(m),
-                       font=('Segoe UI', 10, 'bold'),
+                   font=('Segoe UI', 9, 'bold'),
                        bg=module['color'],
                        fg='white',
                        relief='flat',
                        cursor='hand2',
                        borderwidth=0,
-                       padx=15, pady=10)
+                   padx=10, pady=6)
         btn.pack(fill=tk.X)
 
         # Agregar efecto hover al botón
@@ -552,7 +558,7 @@ class DBManager:
                                relief=tk.SOLID,
                                borderwidth=1,
                                highlightthickness=0)
-                entry.pack(side=tk.LEFT, fill=tk.X, expand=True, ipady=4)
+                entry.pack(side=tk.LEFT, fill=tk.X, expand=True, ipady=3)
 
                 is_input = 'plantilla' in param.lower() or ('ddl' in param.lower() and 'salida' not in param.lower())
                 btn = tk.Button(frame, text="📁",
@@ -563,7 +569,7 @@ class DBManager:
                               relief='flat',
                               cursor='hand2',
                               borderwidth=0,
-                              padx=10, pady=4)
+                              padx=6, pady=3)
                 btn.pack(side=tk.LEFT, padx=(5, 0))
                 self._add_hover_effect(btn, self.colors['secondary'], '#2980b9')
 
@@ -577,7 +583,7 @@ class DBManager:
                                relief=tk.SOLID,
                                borderwidth=1,
                                highlightthickness=0)
-                entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=8, ipady=4)
+                entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=8, ipady=3)
                 self.param_widgets[param] = var
             else:
                 var = tk.StringVar()
@@ -588,7 +594,7 @@ class DBManager:
                                relief=tk.SOLID,
                                borderwidth=1,
                                highlightthickness=0)
-                entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=8, ipady=4)
+                entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=8, ipady=3)
                 self.param_widgets[param] = var
 
             row += 1

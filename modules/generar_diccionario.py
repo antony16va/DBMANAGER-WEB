@@ -27,6 +27,23 @@ FUNC_WIDTHS = [450, 2400, 6500]
 VISTAS_HEADERS = ["N", "Vista", "Descripcion"]
 VISTAS_WIDTHS = [450, 3000, 5500]
 
+TRIGGERS_HEADERS = ["N", "Triggers", "Descripcion"]
+TRIGGERS_WIDTHS = [450, 3000, 5500]
+
+F_TRIGGERS_HEADERS = ["N", "Funciones Triggers", "Descripcion"]
+F_TRIGGERS_WIDTHS = [450, 3000, 5500]
+
+TYPES_HEADERS = ["N", "Types", "Descripcion"]
+TYPES_WIDTHS = [450, 3000, 5500]
+
+DBLINKS_HEADERS = ["N", "Dblink / Foreign Server", "Descripcion"]
+DBLINKS_WIDTHS = [450, 3000, 5500]
+
+T_FORANEA_HEADERS = ["N", "Campo", "Tipo de Dato", "Nulos", "PK", "FK", "Descripcion", "Valores permitidos"]
+T_FORANEA_WIDTHS = [450, 2100, 1300, 750, 470, 470, 2100, 2300]
+
+
+
 def escape_rtf(text):
     """Escapa caracteres especiales para formato RTF"""
     if text is None:
@@ -513,6 +530,93 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
         
+        # 9) Triggers
+        writer.write("\\ql\\b\\fs28 Descripcion de Triggers\\b0\\fs18\\par\n")
+        writer.write("\\par\n")
+        if vistas:
+            writer.write(create_table_row(VISTAS_HEADERS, VISTAS_WIDTHS, True))
+            l = 1
+            for v_name, desc in vistas.items():
+                writer.write(create_table_row([str(j), v_name, desc or ""], TRIGGERS_WIDTHS, False))
+                l += 1
+        else:
+            writer.write("\\i No aplica.\\i0\\par\n")
+        writer.write("\\par\\page\n")
+
+        # 10) Funciones Triggers
+        writer.write("\\ql\\b\\fs28 Descripcion de Funciones Triggers\\b0\\fs18\\par\n")
+        writer.write("\\par\n")
+        if vistas:
+            writer.write(create_table_row(VISTAS_HEADERS, VISTAS_WIDTHS, True))
+            p = 1
+            for v_name, desc in vistas.items():
+                writer.write(create_table_row([str(j), v_name, desc or ""], TRIGGERS_WIDTHS, False))
+                p += 1
+        else:
+            writer.write("\\i No aplica.\\i0\\par\n")
+        writer.write("\\par\\page\n")
+       
+        # 11) Types
+        writer.write("\\ql\\b\\fs28 Descripcion de Types\\b0\\fs18\\par\n")
+        writer.write("\\par\n")
+        if vistas:
+            writer.write(create_table_row(VISTAS_HEADERS, VISTAS_WIDTHS, True))
+            q = 1
+            for v_name, desc in vistas.items():
+                writer.write(create_table_row([str(j), v_name, desc or ""], TYPES_WIDTHS, False))
+                q += 1
+        else:
+            writer.write("\\i No aplica.\\i0\\par\n")
+        writer.write("\\par\\page\n")
+
+        # 12) Dblinks / Foreign Servers
+        writer.write("\\ql\\b\\fs28 Descripcion de Dblinks / Foreign Servers\\b0\\fs18\\par\n")
+        writer.write("\\par\n")
+        if vistas:
+            writer.write(create_table_row(VISTAS_HEADERS, VISTAS_WIDTHS, True))
+            r = 1
+            for v_name, desc in vistas.items():
+                writer.write(create_table_row([str(j), v_name, desc or ""], DBLINKS_WIDTHS, False))
+                r += 1
+        else:
+            writer.write("\\i No aplica.\\i0\\par\n")
+        writer.write("\\par\\page\n")
+
+        # 13) Tablas Foráneas
+        writer.write("\\ql\\b\\fs28 Descripcion de Tablas Foráneas\\b0\\fs18\\par\n")
+        writer.write("\\par\n")
+        
+        for t_name in table_names:
+            writer.write(f"\\b\\fs24 Tabla: {escape_rtf(t_name)}\\b0\\fs18\\par\n")
+            writer.write("\\par\n")
+
+            campos = obtener_campos_tabla(cursor, schema, t_name)
+            if campos:
+                writer.write(create_table_row(ATRIBUTOS_HEADERS, ATRIBUTOS_WIDTHS, True))
+                s = 1
+                for campo in campos:
+                    cells = [
+                        str(j),
+                        campo.get('nombre_columna', ''),
+                        campo.get('tipo', ''),
+                        campo.get('permite_nulos', ''),
+                        campo.get('pk', ''),
+                        campo.get('fk', ''),
+                        campo.get('descripcion_columna', ''),
+                        campo.get('valores_permitidos', '')
+                    ]
+                    writer.write(create_table_row(cells, ATRIBUTOS_WIDTHS, False))
+                    s += 1
+            else:
+                writer.write("\\i No se encontraron columnas\\i0\\par\n")
+            writer.write("\\par\n")
+           
+
+
+
+
+
+
         # Cierre del documento
         writer.write("}\n")
     
