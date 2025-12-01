@@ -62,5 +62,101 @@
       "esquema": "sigloc",
       "ruta_salida_rtf": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf"
     }
+  },
+  {
+    "timestamp": "2025-11-30 20:43:55",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 0.118151,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc:ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/diccionario_sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-30 20:44:18",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.913816,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/diccionario_sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-30 20:44:38",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.809185,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/diccionario_sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-30 20:44:59",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.812098,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-30 20:49:18",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.819971,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-11-30 20:52:33",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.832518,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf"
+    }
   }
 ]

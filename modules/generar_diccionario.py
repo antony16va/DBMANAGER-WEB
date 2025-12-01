@@ -45,6 +45,12 @@ T_FORANEA_WIDTHS = [450, 3000, 5500]
 SINONIMOS_HEADERS = ["N", "Sinónimo", "Descripcion"]
 SINONIMOS_WIDTHS = [450, 3000, 5500]
 
+INDICES_HEADERS = ["N", "Índice", "Descripcion"]
+INDICES_WIDTHS = [450, 3000, 5500]
+
+CONSTRAINTS_HEADERS = ["N", "Restricción", "Tipo", "Descripcion"]
+CONSTRAINTS_WIDTHS = [450, 2500, 1500, 4500]
+
 def escape_rtf(text):
     """Escapa caracteres especiales para formato RTF"""
     if text is None:
@@ -468,6 +474,56 @@ def obtener_sinonimos_con_comentarios(cursor, schema):
     # Se podría implementar con vistas si el usuario las usa como sinónimos
     return {}
 
+def obtener_indices_con_comentarios(cursor, schema):
+    """Obtiene índices (excluyendo los generados por constraints) con sus comentarios"""
+    sql = """
+    SELECT
+        i.indexname AS indice,
+        obj_description(
+            (n.nspname || '.' || i.indexname)::regclass::oid,
+            'pg_class'
+        ) AS comentario
+    FROM pg_indexes i
+    JOIN pg_namespace n ON n.nspname = i.schemaname
+    LEFT JOIN pg_constraint c ON c.conname = i.indexname AND c.connamespace = n.oid
+    WHERE i.schemaname = %s
+      AND c.conname IS NULL  -- Excluir índices creados por constraints (PK, UNIQUE, etc)
+    ORDER BY indice;
+    """
+    try:
+        cursor.execute(sql, (schema,))
+        return {row[0]: row[1] or '' for row in cursor.fetchall()}
+    except Exception as e:
+        print(f"Error al obtener índices: {e}")
+        return {}
+
+def obtener_constraints_con_comentarios(cursor, schema):
+    """Obtiene restricciones (constraints) con sus comentarios"""
+    sql = """
+    SELECT
+        c.conname AS constraint_name,
+        CASE c.contype
+            WHEN 'p' THEN 'PRIMARY KEY'
+            WHEN 'f' THEN 'FOREIGN KEY'
+            WHEN 'u' THEN 'UNIQUE'
+            WHEN 'c' THEN 'CHECK'
+            WHEN 'x' THEN 'EXCLUSION'
+            ELSE 'OTROS'
+        END AS constraint_type,
+        obj_description(c.oid, 'pg_constraint') AS comentario
+    FROM pg_constraint c
+    JOIN pg_namespace n ON n.oid = c.connamespace
+    WHERE n.nspname = %s
+    ORDER BY constraint_type, constraint_name;
+    """
+    try:
+        cursor.execute(sql, (schema,))
+        # Retornar tuplas (nombre, tipo, comentario) en lugar de solo dict
+        return [(row[0], row[1], row[2] or '') for row in cursor.fetchall()]
+    except Exception as e:
+        print(f"Error al obtener constraints: {e}")
+        return []
+
 def generar_diccionario_rtf(host, port, database, user, password, schema, output_file):
     """Genera el diccionario de datos en formato RTF"""
     
@@ -511,6 +567,8 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
     dblinks = obtener_dblinks_con_comentarios(cursor, schema)
     tablas_foraneas = obtener_tablas_foraneas_con_comentarios(cursor, schema)
     sinonimos = obtener_sinonimos_con_comentarios(cursor, schema)
+    indices = obtener_indices_con_comentarios(cursor, schema)
+    constraints = obtener_constraints_con_comentarios(cursor, schema)
     
     # Generar archivo RTF
     with open(output_file, 'w', encoding='utf-8') as writer:
@@ -523,7 +581,36 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         # Título
         writer.write("\\qc\\b\\fs36 DICCIONARIO DE DATOS\\b0\\fs22\\par\n")
         writer.write("\\par\\par\n")
-        
+
+        # Tabla de contenido
+        writer.write("\\ql\\b\\fs28 TABLA DE CONTENIDO\\b0\\fs20\\par\n")
+        writer.write("\\par\n")
+
+        # Lista de secciones con numeración
+        contenido = [
+            "1. Descripcion de Esquemas",
+            "2. Descripcion de Tablespaces",
+            "3. Descripcion de Extensiones",
+            "4. Descripcion de Tablas",
+            "5. Descripcion de Atributos",
+            "6. Descripcion de Procedimientos",
+            "7. Descripcion de Funciones",
+            "8. Descripcion de Vistas",
+            "9. Descripcion de Triggers",
+            "10. Descripcion de Funciones Triggers",
+            "11. Descripcion de Types",
+            "12. Descripcion de Dblinks / Foreign Servers",
+            "13. Descripcion de Tablas Foraneas",
+            "14. Descripcion de Sinonimos",
+            "15. Descripcion de Indices",
+            "16. Descripcion de Restricciones (Constraints)"
+        ]
+
+        for item in contenido:
+            writer.write(f"\\fs22 {escape_rtf(item)}\\par\n")
+
+        writer.write("\\par\\page\n")
+
         # 1) Esquemas
         writer.write("\\ql\\b\\fs28 Descripcion de Esquemas\\b0\\fs18\\par\n")
         writer.write("\\par\n")
@@ -719,9 +806,33 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
                 t += 1
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
+        writer.write("\\par\\page\n")
+
+        # 15) Índices
+        writer.write("\\ql\\b\\fs28 Descripcion de Indices\\b0\\fs18\\par\n")
         writer.write("\\par\n")
+        if indices:
+            writer.write(create_table_row(INDICES_HEADERS, INDICES_WIDTHS, True))
+            u = 1
+            for idx_name, desc in indices.items():
+                writer.write(create_table_row([str(u), idx_name, desc or ""], INDICES_WIDTHS, False))
+                u += 1
+        else:
+            writer.write("\\i No aplica.\\i0\\par\n")
+        writer.write("\\par\\page\n")
 
-
+        # 16) Restricciones (Constraints)
+        writer.write("\\ql\\b\\fs28 Descripcion de Constraints\\b0\\fs18\\par\n")
+        writer.write("\\par\n")
+        if constraints:
+            writer.write(create_table_row(CONSTRAINTS_HEADERS, CONSTRAINTS_WIDTHS, True))
+            v = 1
+            for constraint_name, constraint_type, desc in constraints:
+                writer.write(create_table_row([str(v), constraint_name, constraint_type, desc or ""], CONSTRAINTS_WIDTHS, False))
+                v += 1
+        else:
+            writer.write("\\i No aplica.\\i0\\par\n")
+        writer.write("\\par\n")
 
         # Cierre del documento
         writer.write("}\n")
