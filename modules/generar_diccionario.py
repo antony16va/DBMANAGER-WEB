@@ -48,8 +48,12 @@ SINONIMOS_WIDTHS = [450, 3000, 5500]
 INDICES_HEADERS = ["N", "Índice", "Descripcion"]
 INDICES_WIDTHS = [450, 3000, 5500]
 
-CONSTRAINTS_HEADERS = ["N", "Restricción", "Tipo", "Descripcion"]
-CONSTRAINTS_WIDTHS = [450, 2500, 1500, 4500]
+CONSTRAINTS_HEADERS = ["N", "Restricción", "Descripcion"]
+CONSTRAINTS_WIDTHS = [500, 2500, 4500]
+
+JOBS_HEADERS = ["N", "Job", "Descripcion"]
+JOBS_WIDTHS = [450, 3000, 5500]
+
 
 def escape_rtf(text):
     """Escapa caracteres especiales para formato RTF"""
@@ -503,27 +507,35 @@ def obtener_constraints_con_comentarios(cursor, schema):
     sql = """
     SELECT
         c.conname AS constraint_name,
-        CASE c.contype
-            WHEN 'p' THEN 'PRIMARY KEY'
-            WHEN 'f' THEN 'FOREIGN KEY'
-            WHEN 'u' THEN 'UNIQUE'
-            WHEN 'c' THEN 'CHECK'
-            WHEN 'x' THEN 'EXCLUSION'
-            ELSE 'OTROS'
-        END AS constraint_type,
         obj_description(c.oid, 'pg_constraint') AS comentario
     FROM pg_constraint c
     JOIN pg_namespace n ON n.oid = c.connamespace
     WHERE n.nspname = %s
-    ORDER BY constraint_type, constraint_name;
+    ORDER BY c.conname;
     """
     try:
         cursor.execute(sql, (schema,))
-        # Retornar tuplas (nombre, tipo, comentario) en lugar de solo dict
-        return [(row[0], row[1], row[2] or '') for row in cursor.fetchall()]
+        return {row[0]: row[1] or '' for row in cursor.fetchall()}
     except Exception as e:
         print(f"Error al obtener constraints: {e}")
-        return []
+        return {}
+
+def obtener_jobs_con_comentarios(cursor):
+    """Obtiene jobs programados con sus comentarios (pg_cron si está disponible)"""
+    sql = """
+    SELECT
+        jobname AS job,
+        obj_description(jobid::oid, 'pg_cron') AS comentario
+    FROM cron.job
+    WHERE database = current_database()
+    ORDER BY jobname;
+    """
+    try:
+        cursor.execute(sql)
+        return {row[0]: row[1] or '' for row in cursor.fetchall()}
+    except:
+        # pg_cron puede no estar instalado, retornar diccionario vacío
+        return {}
 
 def generar_diccionario_rtf(host, port, database, user, password, schema, output_file):
     """Genera el diccionario de datos en formato RTF"""
@@ -570,7 +582,8 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
     sinonimos = obtener_sinonimos_con_comentarios(cursor, schema)
     indices = obtener_indices_con_comentarios(cursor, schema)
     constraints = obtener_constraints_con_comentarios(cursor, schema)
-    
+    jobs = obtener_jobs_con_comentarios(cursor)
+
     # Generar archivo RTF
     with open(output_file, 'w', encoding='utf-8') as writer:
         # Cabecera RTF
@@ -604,7 +617,8 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
             "13. Descripcion de Tablas Foraneas",
             "14. Descripcion de Sinonimos",
             "15. Descripcion de Indices",
-            "16. Descripcion de Restricciones (Constraints)"
+            "16. Descripcion de Restricciones (Constraints)",
+            "17. Descripcion de Jobs"
         ]
 
         for item in contenido:
@@ -828,9 +842,22 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         if constraints:
             writer.write(create_table_row(CONSTRAINTS_HEADERS, CONSTRAINTS_WIDTHS, True))
             v = 1
-            for constraint_name, constraint_type, desc in constraints:
-                writer.write(create_table_row([str(v), constraint_name, constraint_type, desc or ""], CONSTRAINTS_WIDTHS, False))
+            for constraint_name, desc in constraints.items():
+                writer.write(create_table_row([str(v), constraint_name, desc or ""], CONSTRAINTS_WIDTHS, False))
                 v += 1
+        else:
+            writer.write("\\i No aplica.\\i0\\par\n")
+        writer.write("\\par\\page\n")
+
+        # 17) Jobs
+        writer.write("\\ql\\b\\fs28 Descripcion de Jobs\\b0\\fs18\\par\n")
+        writer.write("\\par\n")
+        if jobs:
+            writer.write(create_table_row(JOBS_HEADERS, JOBS_WIDTHS, True))
+            w = 1
+            for job_name, desc in jobs.items():
+                writer.write(create_table_row([str(w), job_name, desc or ""], JOBS_WIDTHS, False))
+                w += 1
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\n")

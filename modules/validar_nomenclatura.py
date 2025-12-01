@@ -35,9 +35,43 @@ class ValidadorDDL:
         with open(self.reglas_json, 'r', encoding='utf-8') as f:
             self.reglas = json.load(f)
     
+    def _buscar_pg_dump(self):
+        """Busca pg_dump en ubicaciones comunes de Windows"""
+        import os
+        import glob
+
+        # Intentar encontrar pg_dump en PATH primero
+        if os.system('pg_dump --version > nul 2>&1') == 0:
+            return 'pg_dump'
+
+        # Buscar en ubicaciones comunes de PostgreSQL en Windows
+        posibles_rutas = [
+            r'C:\Program Files\PostgreSQL\*\bin\pg_dump.exe',
+            r'C:\Program Files (x86)\PostgreSQL\*\bin\pg_dump.exe',
+            r'C:\PostgreSQL\*\bin\pg_dump.exe',
+        ]
+
+        for patron in posibles_rutas:
+            rutas = glob.glob(patron)
+            if rutas:
+                # Ordenar para obtener la versión más reciente
+                rutas.sort(reverse=True)
+                return rutas[0]
+
+        return None
+
     def generar_ddl_desde_bd(self, host: str, puerto: str, usuario: str, base_datos: str, archivo_salida: str, password: str = None):
+        # Buscar pg_dump
+        pg_dump_path = self._buscar_pg_dump()
+
+        if not pg_dump_path:
+            print("Error: pg_dump no está instalado o no está en el PATH")
+            print("Instale PostgreSQL o agregue la carpeta 'bin' de PostgreSQL al PATH del sistema")
+            print("Ejemplo: C:\\Program Files\\PostgreSQL\\16\\bin")
+            return False
+
         comando = [
-            'pg_dump',
+            pg_dump_path,
             '-h', host,
             '-p', str(puerto),
             '-U', usuario,
@@ -47,12 +81,12 @@ class ValidadorDDL:
             '--no-privileges',
             '-f', archivo_salida
         ]
-        
+
         import os
         env = os.environ.copy()
         if password:
             env['PGPASSWORD'] = password
-        
+
         try:
             resultado = subprocess.run(
                 comando,

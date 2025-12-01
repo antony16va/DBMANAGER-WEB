@@ -2,8 +2,8 @@
   "_history_host": [
     "localhost",
     "192.168.44.432",
-    "192.168.44.41",
-    "192.168.44.49"
+    "192.168.44.49",
+    "192.168.44.41"
   ],
   "_history_puerto": [
     "5432",
@@ -11,30 +11,31 @@
   ],
   "_history_bd": [
     "gemma",
-    "sigloc_dev",
-    "claridad_dev"
+    "claridad_dev",
+    "sigloc_dev"
   ],
   "_history_usuario": [
     "postgres",
-    "sigloc",
-    "claridad"
+    "claridad",
+    "sigloc"
   ],
   "_history_password": [
     "sigloc_ab01$"
   ],
   "_history_ruta_salida_ddl_completo": [
     "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",
-    "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_final.sql"
+    "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",
+    "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql"
   ],
   "_global_params": {
-    "host": "192.168.44.49",
+    "host": "192.168.44.41",
     "puerto": "5433",
-    "bd": "claridad_dev",
-    "usuario": "claridad",
+    "bd": "sigloc_dev",
+    "usuario": "sigloc",
     "password": "sigloc_ab01$",
-    "ruta_salida_ddl_completo": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",
-    "esquema": "claridad_admin",
-    "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/claridad.rtf",
+    "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql",
+    "esquema": "sigloc",
+    "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf",
     "ruta_ddl_completo": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/dump.sql",
     "ruta_plantilla_excel": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/resources/Plantilla_Modelo.xlsx",
     "ruta_salida_ddl_base": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_inicial.sql",
@@ -42,14 +43,14 @@
     "ruta_salida_reporte": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/reporte.rtf"
   },
   "_history_esquema": [
-    "sigloc",
-    "claridad_admin"
+    "claridad_admin",
+    "sigloc"
   ],
   "_history_ruta_salida_rtf": [
     "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/diccionario_sigloc.rtf",
     "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf",
-    "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf",
-    "C:/Users/avalencia/Desktop/DBMANAGER/claridad.rtf"
+    "C:/Users/avalencia/Desktop/DBMANAGER/claridad.rtf",
+    "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf"
   ],
   "_history_ruta_ddl_completo": [
     "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",

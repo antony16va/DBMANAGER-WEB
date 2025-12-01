@@ -222,5 +222,113 @@
       "esquema": "claridad_admin",
       "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/claridad.rtf"
     }
+  },
+  {
+    "timestamp": "2025-12-01 14:18:19",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 1.069621,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-01 14:20:54",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 1.028806,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-01 14:22:33",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.926913,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-01 14:56:32",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "success",
+    "duration": 2.152816,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql"
+    }
+  },
+  {
+    "timestamp": "2025-12-01 14:59:12",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "success",
+    "duration": 1.933421,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql"
+    }
+  },
+  {
+    "timestamp": "2025-12-01 15:05:12",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "error",
+    "duration": 0.149446,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "claridad",
+      "password": "sigloc_ab01$",
+      "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql"
+    }
+  },
+  {
+    "timestamp": "2025-12-01 15:05:33",
+    "module_id": 2,
+    "module_name": "VALIDAR NOMENCLATURA",
+    "status": "success",
+    "duration": 1.680297,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql"
+    }
   }
 ]
