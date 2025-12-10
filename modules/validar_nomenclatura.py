@@ -559,7 +559,7 @@ class ValidadorDDL:
         for warning in self.warnings:
             warnings_por_tipo[warning.tipo_objeto].append(warning)
 
-        estado = "✓ EXITOSA" if total_problemas == 0 else "✗ CON ERRORES"
+        estado = "[OK] EXITOSA" if total_problemas == 0 else "[ERROR] CON ERRORES"
         color_estado = "#27ae60" if total_problemas == 0 else "#e74c3c"
 
         html = f"""<!DOCTYPE html>
@@ -975,7 +975,7 @@ class ValidadorDDL:
                     if error.valor_sugerido:
                         html += f"""
                             <div class="detail-row">
-                                <div class="detail-label">✓ Sugerencia:</div>
+                                <div class="detail-label">Sugerencia:</div>
                                 <div class="detail-value"><span class="suggestion">{error.valor_sugerido}</span></div>
                             </div>
 """
@@ -1084,7 +1084,7 @@ class ValidadorDDL:
         with open(archivo_html, 'w', encoding='utf-8') as f:
             f.write(html)
 
-        print(f"✓ Reporte HTML generado: {archivo_html}")
+        print(f"[OK] Reporte HTML generado: {archivo_html}")
 
 
 
@@ -1147,7 +1147,7 @@ def main():
 
     print(f"\nGenerando DDL desde base de datos...")
     if not validador.generar_ddl_desde_bd(host, puerto, usuario, bd, ruta_salida, password):
-        print("\n✗ Error al generar DDL")
+        print("\n[ERROR] Error al generar DDL")
         sys.exit(1)
 
     print("DDL generado...")
@@ -1168,7 +1168,7 @@ def main():
 
         sys.exit(0)
     except Exception as e:
-        print(f"\n✗ Error durante la validacion: {e}")
+        print(f"\n[ERROR] Error durante la validacion: {e}")
         sys.exit(1)
 
 

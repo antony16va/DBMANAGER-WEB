@@ -119,8 +119,7 @@ class DBManager:
         title_container = tk.Frame(header_content, bg=self.colors['primary'])
         title_container.pack(side=tk.LEFT)
 
-        tk.Label(title_container, text="🗄️", font=('Segoe UI', 28),
-                bg=self.colors['primary'], fg='white').pack(side=tk.LEFT, padx=(0, 10))
+        # Ícono removido para compatibilidad
 
         title_text = tk.Frame(title_container, bg=self.colors['primary'])
         title_text.pack(side=tk.LEFT)
@@ -140,7 +139,7 @@ class DBManager:
         right_buttons_frame.pack(side=tk.RIGHT, padx=5)
 
         # Crear botones con estilo personalizado
-        hist_btn = tk.Button(right_buttons_frame, text="📊 Historial",
+        hist_btn = tk.Button(right_buttons_frame, text="Historial",
                             command=self.show_history,
                             font=('Segoe UI', 9, 'bold'),
                             bg=self.colors['accent'],
@@ -152,7 +151,7 @@ class DBManager:
         hist_btn.pack(side=tk.RIGHT, padx=5)
         self._add_hover_effect(hist_btn, self.colors['accent'], '#8e44ad')
 
-        req_btn = tk.Button(right_buttons_frame, text="✓ Validar Requisitos",
+        req_btn = tk.Button(right_buttons_frame, text="Validar Requisitos",
                            command=self.check_requirements,
                            font=('Segoe UI', 9, 'bold'),
                            bg=self.colors['secondary'],
@@ -173,14 +172,14 @@ class DBManager:
         # Hacer el panel de módulos más compacto
         modules_frame = ttk.LabelFrame(left_panel, text="   Modulos", padding=6)
         modules_frame.pack(fill=tk.BOTH, expand=True)
-        
+
         self.modules = [
             {
                 "id": 1,
                 "name": "AGREGAR COMENTARIOS",
                 "script": str(self.modules_dir / "agregar_comentarios.py"),
                 "type": "python",
-                "icon": "📝",
+                "icon": "1",
                 "color": "#3498db",
                 "params": ["host", "puerto", "bd", "usuario", "password", "esquema"]
             },
@@ -189,7 +188,7 @@ class DBManager:
                 "name": "VALIDAR NOMENCLATURA",
                 "script": str(self.modules_dir / "validar_nomenclatura.py"),
                 "type": "python",
-                "icon": "✓",
+                "icon": "2",
                 "color": "#27ae60",
                 "params": ["host", "puerto", "bd", "usuario", "password", "ruta_salida_ddl_completo"]
             },
@@ -198,7 +197,7 @@ class DBManager:
                 "name": "DICCIONARIO DE DATOS",
                 "script": str(self.modules_dir / "generar_diccionario.py"),
                 "type": "python",
-                "icon": "📚",
+                "icon": "3",
                 "color": "#9b59b6",
                 "params": ["host", "puerto", "bd", "usuario", "password", "esquema", "ruta_salida_rtf"]
             },
@@ -207,7 +206,7 @@ class DBManager:
                 "name": "DATA DE PRUEBA",
                 "script": str(self.modules_dir / "data_prueba.py"),
                 "type": "python",
-                "icon": "🧪",
+                "icon": "4",
                 "color": "#f39c12",
                 "params": ["host", "puerto", "bd", "usuario", "password", "esquema", "cantidad_registros"]
             },
@@ -216,7 +215,7 @@ class DBManager:
                 "name": "DASHBOARD",
                 "script": str(self.modules_dir / "dashboard" / "extraer_metadata_overview.py"),
                 "type": "python",
-                "icon": "📊",
+                "icon": "5",
                 "color": "#e74c3c",
                 "params": ["ruta_ddl_completo"]
             }
@@ -310,7 +309,7 @@ class DBManager:
         console_btn_frame.pack(fill=tk.X, pady=(0, 8))
 
         # Botones de la consola con estilo mejorado
-        clear_btn = tk.Button(console_btn_frame, text="🗑 Limpiar",
+        clear_btn = tk.Button(console_btn_frame, text="Limpiar",
                              command=self.clear_console,
                              font=('Segoe UI', 9),
                              bg=self.colors['bg_light'],
@@ -322,7 +321,7 @@ class DBManager:
         clear_btn.pack(side=tk.LEFT, padx=5)
         self._add_hover_effect(clear_btn, self.colors['bg_light'], self.colors['border'])
 
-        copy_btn = tk.Button(console_btn_frame, text="📋 Copiar Log",
+        copy_btn = tk.Button(console_btn_frame, text="Copiar Log",
                             command=self.copy_log,
                             font=('Segoe UI', 9),
                             bg=self.colors['bg_light'],
@@ -417,7 +416,7 @@ class DBManager:
 
         # Botón de acción mejorado
         # Botón más compacto
-        btn = tk.Button(card_content, text="⚙ Configurar y Ejecutar",
+        btn = tk.Button(card_content, text="Configurar y Ejecutar",
                        command=lambda m=module: self.select_module(m),
                    font=('Segoe UI', 9, 'bold'),
                        bg=module['color'],
@@ -454,6 +453,11 @@ class DBManager:
     def select_module(self, module):
         self.selected_module = module
         self.module_name_var.set(f"{module['icon']} {module['name']}")
+
+        # Si es el módulo 4 (DATA DE PRUEBA), abrir interfaz especial
+        if module['id'] == 4:
+            self.abrir_interfaz_data_prueba(module)
+            return
         
         for widget in self.params_frame.winfo_children():
             widget.destroy()
@@ -504,10 +508,10 @@ class DBManager:
                 entry.pack(side=tk.LEFT, fill=tk.X, expand=True, ipady=3)
 
                 is_input = 'plantilla' in param.lower() or ('ddl' in param.lower() and 'salida' not in param.lower())
-                # Icono apropiado según el tipo de acción
-                icon = "📁" if is_input else "💾"
-                btn = tk.Button(frame, text=icon,
-                              font=('Segoe UI', 10),
+                # Texto apropiado según el tipo de acción
+                text = "Abrir" if is_input else "Guardar"
+                btn = tk.Button(frame, text=text,
+                              font=('Segoe UI', 9),
                               command=lambda v=var, p=param: self.browse_path(v, p),
                               bg=self.colors['secondary'],
                               fg='white',
@@ -562,7 +566,7 @@ class DBManager:
         for widget in self.btn_frame.winfo_children():
             widget.destroy()
 
-        exec_btn = tk.Button(self.btn_frame, text="▶ Ejecutar Módulo",
+        exec_btn = tk.Button(self.btn_frame, text="Ejecutar Modulo",
                             command=self.execute_current_module,
                             font=('Segoe UI', 10, 'bold'),
                             bg=self.colors['success'],
@@ -574,7 +578,7 @@ class DBManager:
         exec_btn.grid(row=0, column=0, sticky='ew', padx=5)
         self._add_hover_effect(exec_btn, self.colors['success'], '#229954')
 
-        stop_btn = tk.Button(self.btn_frame, text="⬛ Detener",
+        stop_btn = tk.Button(self.btn_frame, text="Detener",
                             command=self.stop_execution,
                             font=('Segoe UI', 10, 'bold'),
                             bg=self.colors['danger'],
@@ -622,6 +626,163 @@ class DBManager:
         
         if path:
             var.set(path)
+
+    def abrir_interfaz_data_prueba(self, module):
+        """Abre la interfaz especial para el módulo de data de prueba"""
+        # Limpiar el panel de parámetros
+        for widget in self.params_frame.winfo_children():
+            widget.destroy()
+
+        # Limpiar botones
+        for widget in self.btn_frame.winfo_children():
+            widget.destroy()
+
+        # Mensaje informativo
+        info_frame = tk.Frame(self.params_frame, bg=self.colors['bg_card'])
+        info_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Parámetros de conexión
+        params_section = tk.Frame(info_frame, bg=self.colors['bg_card'])
+        params_section.pack(fill=tk.X, padx=20)
+
+        tk.Label(params_section,
+                text="Parámetros de Conexión:",
+                font=('Segoe UI', 11, 'bold'),
+                bg=self.colors['bg_card'],
+                fg=self.colors['primary']).pack(anchor=tk.W, pady=(0, 10))
+
+        # Crear campos para parámetros básicos
+        basic_params = ["host", "puerto", "bd", "usuario", "password", "esquema"]
+
+        for param in basic_params:
+            label_text = {
+                "host": "Host PostgreSQL:",
+                "puerto": "Puerto:",
+                "bd": "Base de Datos:",
+                "usuario": "Usuario:",
+                "password": "Contraseña:",
+                "esquema": "Esquema:"
+            }.get(param, param + ":")
+
+            param_frame = tk.Frame(params_section, bg=self.colors['bg_card'])
+            param_frame.pack(fill=tk.X, pady=5)
+
+            tk.Label(param_frame, text=label_text,
+                    font=('Segoe UI', 9, 'bold'),
+                    bg=self.colors['bg_card'],
+                    fg=self.colors['text_dark'],
+                    width=20, anchor=tk.W).pack(side=tk.LEFT)
+
+            var = tk.StringVar()
+
+            # Precargar con valores del historial si existen
+            history_key = f'_history_{param}'
+            param_history = self.config.get(history_key, [])
+            if param_history:
+                var.set(param_history[-1])  # Último valor usado
+
+            if param == 'password':
+                entry = tk.Entry(param_frame, textvariable=var, show="●",
+                               font=('Segoe UI', 9),
+                               width=40)
+            else:
+                entry = ttk.Combobox(param_frame, textvariable=var,
+                                    font=('Segoe UI', 9),
+                                    values=[''] + param_history,
+                                    width=38)
+
+            entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
+            self.param_widgets[param] = var
+
+        # Botón para abrir interfaz
+        button_container = tk.Frame(info_frame, bg=self.colors['bg_card'])
+        button_container.pack(pady=30)
+
+        open_btn = tk.Button(button_container,
+                            text="ABRIR CONFIGURACION AVANZADA",
+                            command=lambda: self.launch_data_prueba_gui(module),
+                            font=('Segoe UI', 12, 'bold'),
+                            bg=self.colors['secondary'],
+                            fg='white',
+                            relief=tk.FLAT,
+                            cursor='hand2',
+                            padx=30, pady=15)
+        open_btn.pack()
+        self._add_hover_effect(open_btn, self.colors['secondary'], '#2980b9')
+
+    def launch_data_prueba_gui(self, module):
+        """Lanza la interfaz gráfica del módulo de data de prueba"""
+        # Validar parámetros
+        required_params = ["host", "puerto", "bd", "usuario", "password", "esquema"]
+        params_values = {}
+
+        for param in required_params:
+            if param not in self.param_widgets:
+                messagebox.showerror("Error", f"Parámetro '{param}' no configurado")
+                return
+
+            value = self.param_widgets[param].get().strip()
+            if not value:
+                messagebox.showerror("Error", f"El parámetro '{param}' es obligatorio")
+                return
+
+            params_values[param] = value
+
+        # Guardar en historial
+        for param, value in params_values.items():
+            if param != 'password':
+                self.global_params[param] = value
+                history_key = f'_history_{param}'
+                param_history = self.config.get(history_key, [])
+                if value not in param_history:
+                    param_history.append(value)
+                    if len(param_history) > 10:
+                        param_history = param_history[-10:]
+                    self.config[history_key] = param_history
+                else:
+                    param_history.remove(value)
+                    param_history.append(value)
+                    self.config[history_key] = param_history
+
+        self.config['_global_params'] = self.global_params
+        self.save_config()
+
+        # Lanzar la interfaz GUI
+        try:
+            script_path = self.modules_dir / "data_prueba_gui.py"
+
+            if not script_path.exists():
+                messagebox.showerror("Error", f"No se encontró el script: {script_path}")
+                return
+
+            import sys
+            python_exe = sys.executable
+
+            cmd = [
+                python_exe,
+                str(script_path),
+                params_values['host'],
+                params_values['puerto'],
+                params_values['bd'],
+                params_values['usuario'],
+                params_values['password'],
+                params_values['esquema']
+            ]
+
+            self.log_message("\n" + "="*70, "info")
+            self.log_message(f"Abriendo interfaz avanzada de {module['name']}...", "module")
+            self.log_message("="*70 + "\n", "info")
+
+            # Ejecutar en proceso separado (no bloquea la GUI principal)
+            import subprocess
+            subprocess.Popen(cmd)
+
+            self.log_message("[OK] Interfaz abierta en ventana separada", "success")
+            self.log_message("\nConfigura las tablas y genera los datos desde la nueva ventana", "info")
+
+        except Exception as e:
+            self.log_message(f"[ERROR] Error al abrir interfaz: {e}", "error")
+            messagebox.showerror("Error", f"No se pudo abrir la interfaz: {e}")
 
     def execute_current_module(self):
         if not hasattr(self, 'selected_module'):

@@ -856,5 +856,250 @@
       "password": "sigloc_ab01$",
       "esquema": "sigloc"
     }
+  },
+  {
+    "timestamp": "2025-12-03 11:33:06",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 1540.960453,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 11:34:30",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 49.643683,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 11:52:40",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 800.857767,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 11:52:48",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 5.985913,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 12:02:44",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 501.996922,
+    "params": {
+      "host": "192.168.44.41",
+      "puerto": "5433",
+      "bd": "sigloc_dev",
+      "usuario": "sigloc",
+      "password": "sigloc_ab01$",
+      "esquema": "sigloc"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 12:12:06",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.227393,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cemm_eg2026",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/cemm.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 12:14:51",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.375726,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cemm",
+      "password": "cemm_ab01$",
+      "esquema": "cemm_eg2026",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/cemm.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 14:16:13",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 0.31804,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cemm",
+      "password": "cemm_ab01$",
+      "esquema": "cemm_eg2026",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/cemm.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 14:18:19",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 88.400674,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cemm",
+      "password": "cemm_ab01$",
+      "esquema": "cemm_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 14:55:45",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 2245.093159,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cemm",
+      "password": "cemm_ab01$",
+      "esquema": "cemm_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 14:57:55",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 127.076478,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cemm",
+      "password": "cemm_ab01$",
+      "esquema": "cemm_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-03 14:58:50",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 53.44526,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cemm",
+      "password": "cemm_ab01$",
+      "esquema": "cemm_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-04 09:03:20",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 64959.530444,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cemm",
+      "password": "cemm_ab01$",
+      "esquema": "cemm_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-04 09:33:52",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 49.247758,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cemm",
+      "usuario": "cemm",
+      "password": "cemm_ab01$",
+      "esquema": "cemm_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-10 09:35:44",
+    "module_id": 4,
+    "module_name": "DATA DE PRUEBA",
+    "status": "error",
+    "duration": 0.239597,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin",
+      "cantidad_registros": "50"
+    }
+  },
+  {
+    "timestamp": "2025-12-10 09:37:52",
+    "module_id": 4,
+    "module_name": "DATA DE PRUEBA",
+    "status": "error",
+    "duration": 0.184347,
+    "params": {
+      "host": "localhost",
+      "puerto": "5432",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "cantidad_registros": "10"
+    }
   }
 ]

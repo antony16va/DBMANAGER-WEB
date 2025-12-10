@@ -1,20 +1,21 @@
 {
   "config_generacion": {
-    "descripcion": "Configuración para generación de data de prueba",
-    
+    "descripcion": "Configuración para generación inteligente de data de prueba con inferencia semántica",
+
     "cantidad_base": 100,
-    
+
     "cantidad_por_tabla": {
       "_comentario": "Cantidad específica por tabla. Si no se especifica, usa cantidad_base",
-      "_ejemplo_tabla": 500
+      "_ejemplo_usuarios": 500,
+      "_ejemplo_productos": 1000
     },
-    
+
     "multiplicadores_fk": {
       "_comentario": "Multiplica cantidad base según número de FKs (simular 1:N)",
       "habilitado": true,
       "factor": 1.0
     },
-    
+
     "generacion_nulls": {
       "_comentario": "Configuración para generar valores NULL",
       "habilitado": true,
@@ -22,13 +23,13 @@
       "excluir_pks": true,
       "excluir_fks": false
     },
-    
+
     "limpieza_previa": {
       "_comentario": "Limpiar tablas antes de insertar",
-      "preguntar": true,
+      "preguntar": false,
       "automatico": false
     },
-    
+
     "rangos_personalizados": {
       "_comentario": "Rangos personalizados para tipos numéricos",
       "integer": {
@@ -47,7 +48,7 @@
         "max_valor": 999999
       }
     },
-    
+
     "rangos_fechas": {
       "_comentario": "Rangos para generación de fechas",
       "date": {
@@ -59,31 +60,163 @@
         "dias_adelante": 0
       }
     },
-    
+
     "texto": {
       "_comentario": "Configuración para generación de texto",
       "max_length_text": 500,
       "palabras_personalizadas": []
     },
-    
-    "patron_columnas": {
-      "_comentario": "Patrones para generar valores específicos según nombre de columna",
-      "_ejemplo": {
-        "patron_regex": ".*_email.*",
-        "generador": "email",
-        "opciones": {}
+
+    "faker": {
+      "_comentario": "Configuración para biblioteca Faker (datos realistas)",
+      "habilitado": true,
+      "locale": "es_ES",
+      "_locales_disponibles": ["es_ES", "es_MX", "en_US", "pt_BR"]
+    },
+
+    "inferencia_semantica": {
+      "_comentario": "Sistema de inferencia de contexto de negocio",
+      "habilitado": true,
+      "patrones_personalizados": {
+        "_comentario": "Define patrones adicionales para tu dominio específico",
+        "_ejemplo": {
+          "regex": ".*_custom.*",
+          "generador": "generar_custom",
+          "priority": 10
+        }
       }
     },
-    
+
+    "optimizacion": {
+      "_comentario": "Configuraciones de performance",
+      "usar_copy": true,
+      "_comentario_copy": "COPY es mucho más rápido que INSERT para grandes volúmenes",
+      "batch_size": 1000,
+      "_comentario_batch": "Tamaño de lote para INSERT (si COPY falla)"
+    },
+
+    "validacion": {
+      "_comentario": "Validaciones adicionales durante la generación",
+      "validar_constraints": true,
+      "validar_unicidad": true,
+      "max_intentos_unicidad": 1000
+    },
+
     "seeds": {
       "_comentario": "Semilla para reproducibilidad (null = aleatorio)",
-      "random_seed": null
+      "random_seed": null,
+      "_ejemplo_seed": 42
     },
-    
+
     "logging": {
+      "_comentario": "Configuración de logs",
       "nivel": "INFO",
       "mostrar_queries": false,
-      "mostrar_valores_generados": false
+      "mostrar_valores_generados": false,
+      "mostrar_estadisticas": true
+    },
+
+    "generadores_especificos": {
+      "_comentario": "Configuración específica para generadores semánticos",
+
+      "dni": {
+        "formato": "peruano",
+        "digitos": 8
+      },
+
+      "ruc": {
+        "formato": "peruano",
+        "tipo_defecto": "empresa",
+        "_tipos": ["persona_natural", "empresa"]
+      },
+
+      "telefono": {
+        "pais": "peru",
+        "incluir_fijos": true,
+        "incluir_celulares": true
+      },
+
+      "email": {
+        "dominios_personalizados": [
+          "empresa.com",
+          "test.com",
+          "ejemplo.pe"
+        ]
+      },
+
+      "direccion": {
+        "pais": "peru",
+        "incluir_referencia": false
+      },
+
+      "montos": {
+        "moneda": "PEN",
+        "rangos_realistas": true,
+        "incluir_decimales": true
+      },
+
+      "estados": {
+        "valores_personalizados": [
+          "ACTIVO",
+          "INACTIVO",
+          "PENDIENTE",
+          "APROBADO",
+          "RECHAZADO"
+        ]
+      }
+    },
+
+    "reglas_negocio": {
+      "_comentario": "Reglas de negocio específicas del dominio",
+      "_ejemplo_validacion_edad": {
+        "tabla": "personas",
+        "columna": "edad",
+        "min": 18,
+        "max": 100
+      }
+    }
+  },
+
+  "documentacion": {
+    "version": "2.0",
+    "caracteristicas": [
+      "Ingeniería inversa completa del esquema de BD",
+      "Inferencia automática de contexto de negocio",
+      "40+ generadores semánticos especializados",
+      "Soporte para Faker (datos ultra-realistas)",
+      "Resolución automática de dependencias FK",
+      "Manejo de ciclos y auto-referencias",
+      "Garantía de unicidad en constraints UNIQUE",
+      "Carga masiva optimizada con COPY",
+      "Fallback automático a INSERT BATCH",
+      "Estadísticas detalladas de generación",
+      "Reproducibilidad con seeds"
+    ],
+
+    "patrones_detectados": [
+      "Nombres y apellidos de personas",
+      "Documentos de identidad (DNI, RUC, pasaporte)",
+      "Datos de contacto (email, teléfono)",
+      "Ubicación geográfica (dirección, ciudad, país, coordenadas)",
+      "Información empresarial",
+      "Estados y flags de control",
+      "Campos de auditoría (creado_por, fecha_creacion, etc)",
+      "Datos financieros (montos, porcentajes)",
+      "URLs e IPs",
+      "Códigos alfanuméricos",
+      "Descripciones y observaciones"
+    ],
+
+    "uso": {
+      "comando_basico": "python data_prueba.py <host> <puerto> <bd> <usuario> <password> <esquema> [cantidad]",
+      "ejemplo": "python data_prueba.py localhost 5432 midb postgres pass123 public 1000",
+      "notas": [
+        "Instalar Faker para mejores resultados: pip install faker",
+        "El módulo funcionará sin Faker, pero con datos menos realistas",
+        "COPY es 10-100x más rápido que INSERT para grandes volúmenes",
+        "Los patrones de inferencia son case-insensitive",
+        "Soporta auto-referencias y dependencias circulares"
+      ]
     }
   }
 }

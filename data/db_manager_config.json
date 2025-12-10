@@ -1,14 +1,14 @@
 {
   "_history_host": [
-    "localhost",
     "192.168.44.432",
     "192.168.44.48",
+    "192.168.44.41",
     "192.168.44.49",
-    "192.168.44.41"
+    "localhost"
   ],
   "_history_puerto": [
-    "5432",
-    "5433"
+    "5433",
+    "5432"
   ],
   "_history_bd": [
     "gemma",
@@ -16,17 +16,17 @@
     "ropc",
     "sce",
     "sigloc_qa",
+    "sigloc_dev",
     "cemm",
-    "cae",
-    "sigloc_dev"
+    "cae"
   ],
   "_history_usuario": [
-    "postgres",
     "claridad",
     "avalencia",
+    "sigloc",
     "cemm",
     "cae",
-    "sigloc"
+    "postgres"
   ],
   "_history_password": [
     "sigloc_ab01$"
@@ -37,28 +37,30 @@
     "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql"
   ],
   "_global_params": {
-    "host": "192.168.44.41",
-    "puerto": "5433",
-    "bd": "sigloc_dev",
-    "usuario": "sigloc",
+    "host": "localhost",
+    "puerto": "5432",
+    "bd": "cae",
+    "usuario": "postgres",
     "password": "sigloc_ab01$",
     "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql",
-    "esquema": "sigloc",
+    "esquema": "cae_eg2026",
     "ruta_salida_rtf": "C:/Users/avalencia/Desktop/DBMANAGER/cemm.rtf",
     "ruta_ddl_completo": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/dump.sql",
     "ruta_plantilla_excel": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/resources/Plantilla_Modelo.xlsx",
     "ruta_salida_ddl_base": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_inicial.sql",
     "ruta_salida_ddl": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/dump.sql",
-    "ruta_salida_reporte": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/reporte.rtf"
+    "ruta_salida_reporte": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/reporte.rtf",
+    "cantidad_registros": "10"
   },
   "_history_esquema": [
     "claridad_admin",
     "ropc_eg2026",
     "sce_nacion_eg2026",
     "cemm_emc2025",
-    "cae_eg2026",
+    "sigloc",
+    "cemm_eg2026",
     "cae_admin",
-    "sigloc"
+    "cae_eg2026"
   ],
   "_history_ruta_salida_rtf": [
     "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/diccionario_sigloc.rtf",
@@ -88,5 +90,9 @@
   ],
   "_history_ruta_salida_reporte": [
     "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/reporte.rtf"
+  ],
+  "_history_cantidad_registros": [
+    "50",
+    "10"
   ]
 }

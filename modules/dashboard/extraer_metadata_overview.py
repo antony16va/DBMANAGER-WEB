@@ -31,10 +31,10 @@ class MetadataExtractor:
                 password=self.config['password']
             )
             self.cursor = self.conn.cursor()
-            print(f"✓ Conectado a la base de datos: {self.config['database']}")
+            print(f"[OK] Conectado a la base de datos: {self.config['database']}")
             return True
         except Exception as e:
-            print(f"✗ Error al conectar: {e}", file=sys.stderr)
+            print(f"[ERROR] Error al conectar: {e}", file=sys.stderr)
             return False
     
     def extraer_resumen_objetos(self):
@@ -120,10 +120,10 @@ class MetadataExtractor:
             resultados = self.cursor.fetchall()
             
             df = pd.DataFrame(resultados, columns=['esquema', 'tipo_objeto', 'cantidad'])
-            print(f"✓ Resumen de objetos extraído: {len(df)} registros")
+            print(f"[OK] Resumen de objetos extraido: {len(df)} registros")
             return df
         except Exception as e:
-            print(f"✗ Error al extraer resumen de objetos: {e}", file=sys.stderr)
+            print(f"[ERROR] Error al extraer resumen de objetos: {e}", file=sys.stderr)
             return pd.DataFrame()
     
     def extraer_totales_globales(self):
@@ -168,10 +168,10 @@ class MetadataExtractor:
                 'total_procedimientos', 'total_triggers', 'total_sequences',
                 'total_esquemas'
             ])
-            print(f"✓ Totales globales extraídos")
+            print(f"[OK] Totales globales extraidos")
             return df
         except Exception as e:
-            print(f"✗ Error al extraer totales globales: {e}", file=sys.stderr)
+            print(f"[ERROR] Error al extraer totales globales: {e}", file=sys.stderr)
             return pd.DataFrame()
     
     def extraer_distribucion_tipos_datos(self):
@@ -199,10 +199,10 @@ class MetadataExtractor:
             resultados = self.cursor.fetchall()
             
             df = pd.DataFrame(resultados, columns=['categoria_tipo', 'tipo_dato_especifico', 'cantidad_columnas'])
-            print(f"✓ Distribución de tipos de datos extraída: {len(df)} registros")
+            print(f"[OK] Distribucion de tipos de datos extraida: {len(df)} registros")
             return df
         except Exception as e:
-            print(f"✗ Error al extraer distribución de tipos: {e}", file=sys.stderr)
+            print(f"[ERROR] Error al extraer distribucion de tipos: {e}", file=sys.stderr)
             return pd.DataFrame()
     
     def exportar_a_excel(self, output_file='metadata_overview.xlsx'):
@@ -231,11 +231,11 @@ class MetadataExtractor:
                     'host': self.config['host']
                 }])
                 df_metadata.to_excel(writer, sheet_name='Metadata', index=False)
-            
-            print(f"\n✓ Archivo exportado exitosamente: {output_file}")
+
+            print(f"\n[OK] Archivo exportado exitosamente: {output_file}")
             return True
         except Exception as e:
-            print(f"✗ Error al exportar a Excel: {e}", file=sys.stderr)
+            print(f"[ERROR] Error al exportar a Excel: {e}", file=sys.stderr)
             return False
     
     def cerrar(self):
@@ -244,7 +244,7 @@ class MetadataExtractor:
             self.cursor.close()
         if self.conn:
             self.conn.close()
-        print("✓ Conexión cerrada")
+        print("[OK] Conexion cerrada")
 
 
 def main():

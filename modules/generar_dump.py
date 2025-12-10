@@ -40,14 +40,14 @@ def generar_dump_sql(host: str, puerto: str, usuario: str, base_datos: str, arch
             check=True
         )
 
-        print(f"\n✓ Dump SQL generado exitosamente: {archivo_salida}")
+        print(f"\n[OK] Dump SQL generado exitosamente: {archivo_salida}")
         return True
 
     except subprocess.CalledProcessError as e:
-        print(f"\n✗ Error al ejecutar pg_dump: {e.stderr}")
+        print(f"\n[ERROR] Error al ejecutar pg_dump: {e.stderr}")
         return False
     except FileNotFoundError:
-        print("\n✗ Error: pg_dump no está instalado o no está en el PATH")
+        print("\n[ERROR] Error: pg_dump no esta instalado o no esta en el PATH")
         return False
 
 
