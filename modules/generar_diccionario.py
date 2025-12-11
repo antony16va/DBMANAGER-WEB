@@ -2,67 +2,46 @@ import sys
 from pathlib import Path
 import psycopg2
 
-# Constantes de configuración RTF
 ESQUEMAS_HEADERS = ["ESQUEMA", "DESCRIPCION"]
 ESQUEMAS_WIDTHS = [3000, 4500]
-
 TBSPACE_HEADERS = ["TABLESPACE", "DESCRIPCION"]
 TBSPACE_WIDTHS = [3000, 4500]
-
 EXTENSION_HEADERS = ["EXTENSIONES", "DESCRIPCION"]
 EXTENSION_WIDTHS = [3000, 4500]
-
 ENTIDADES_HEADERS = ["N", "Nombre de la Tabla", "Descripcion"]
 ENTIDADES_WIDTHS = [450, 3000, 4500]
-
 ATRIBUTOS_HEADERS = ["N", "Campo", "Tipo de Dato", "Nulos", "PK", "FK", "Descripcion", "Valores permitidos"]
 ATRIBUTOS_WIDTHS = [450, 2100, 1300, 750, 470, 470, 2100, 2300]
-
 PROC_HEADERS = ["N", "Procedimiento", "Descripcion"]
 PROC_WIDTHS = [450, 2400, 6500]
-
 FUNC_HEADERS = ["N", "Funcion", "Descripcion"]
 FUNC_WIDTHS = [450, 2400, 6500]
-
 VISTAS_HEADERS = ["N", "Vista", "Descripcion"]
 VISTAS_WIDTHS = [450, 3000, 5500]
-
 TRIGGERS_HEADERS = ["N", "Triggers", "Descripcion"]
 TRIGGERS_WIDTHS = [450, 3000, 5500]
-
 F_TRIGGERS_HEADERS = ["N", "Funciones Triggers", "Descripcion"]
 F_TRIGGERS_WIDTHS = [450, 3000, 5500]
-
 TYPES_HEADERS = ["N", "Types", "Descripcion"]
 TYPES_WIDTHS = [450, 3000, 5500]
-
 DBLINKS_HEADERS = ["N", "Dblink / Foreign Server", "Descripcion"]
 DBLINKS_WIDTHS = [450, 3000, 5500]
-
 T_FORANEA_HEADERS = ["N", "Tabla Foránea", "Descripcion"]
 T_FORANEA_WIDTHS = [450, 3000, 5500]
-
 SINONIMOS_HEADERS = ["N", "Sinónimo", "Descripcion"]
 SINONIMOS_WIDTHS = [450, 3000, 5500]
-
 INDICES_HEADERS = ["N", "Índice", "Descripcion"]
 INDICES_WIDTHS = [450, 3000, 5500]
-
 CONSTRAINTS_HEADERS = ["N", "Restricción", "Descripcion"]
 CONSTRAINTS_WIDTHS = [500, 2500, 4500]
-
 JOBS_HEADERS = ["N", "Job", "Descripcion"]
 JOBS_WIDTHS = [450, 3000, 5500]
 
-
 def escape_rtf(text):
-    """Escapa caracteres especiales para formato RTF"""
     if text is None:
         return ""
-    
     text = str(text)
     sb = []
-    
     for char in text:
         code = ord(char)
         if char == '\\':
@@ -79,18 +58,15 @@ def escape_rtf(text):
             sb.append(char)
         else:
             sb.append(f"\\u{code}?")
-    
     return ''.join(sb)
 
 def create_table_row(cells, widths, is_header=False):
-    """Crea una fila de tabla en formato RTF"""
     row = []
     row.append("\\trowd\\trgaph108\\trleft0")
     row.append("\\trbrdrt\\brdrs\\brdrw10")
     row.append("\\trbrdrl\\brdrs\\brdrw10")
     row.append("\\trbrdrb\\brdrs\\brdrw10")
     row.append("\\trbrdrr\\brdrs\\brdrw10")
-    
     pos = 0
     for width in widths:
         pos += width
@@ -101,9 +77,7 @@ def create_table_row(cells, widths, is_header=False):
         if is_header:
             row.append("\\clcbpat3")
         row.append(f"\\cellx{pos}")
-    
     row.append("\n")
-    
     for cell in cells:
         if is_header:
             row.append("\\qc\\b\\cf2 ")
@@ -113,12 +87,10 @@ def create_table_row(cells, widths, is_header=False):
         if is_header:
             row.append("\\b0\\cf1")
         row.append("\\cell ")
-    
     row.append("\\row\n")
     return ''.join(row)
 
 def obtener_esquemas_con_comentarios(cursor):
-    """Obtiene esquemas con sus comentarios"""
     sql = """
     SELECT
         n.nspname AS esquema,
@@ -138,9 +110,8 @@ def obtener_esquemas_con_comentarios(cursor):
         return {}
 
 def obtener_tablespaces_con_comentarios(cursor):
-    """Obtiene tablespaces con sus comentarios"""
     sql = """
-    SELECT 
+    SELECT
         spcname AS tablespace,
         obj_description(oid, 'pg_tablespace') AS comentario
     FROM pg_tablespace
@@ -155,9 +126,8 @@ def obtener_tablespaces_con_comentarios(cursor):
         return {}
 
 def obtener_extensiones_con_comentarios(cursor, schema):
-    """Obtiene extensiones con sus comentarios"""
     sql = """
-    SELECT 
+    SELECT
         e.extname AS extension,
         obj_description(e.oid, 'pg_extension') AS comentario
     FROM pg_extension e
@@ -174,9 +144,8 @@ def obtener_extensiones_con_comentarios(cursor, schema):
         return {}
 
 def obtener_tablas_con_comentarios(cursor, schema):
-    """Obtiene tablas con sus comentarios"""
     sql = """
-    SELECT 
+    SELECT
         c.relname AS tabla,
         obj_description(c.oid) AS comentario
     FROM pg_class c
@@ -194,7 +163,6 @@ def obtener_tablas_con_comentarios(cursor, schema):
         return {}
 
 def obtener_nombres_tablas(cursor, schema):
-    """Obtiene lista de nombres de tablas"""
     sql = """
     SELECT table_name
     FROM information_schema.tables
@@ -211,7 +179,6 @@ def obtener_nombres_tablas(cursor, schema):
         return []
 
 def obtener_campos_tabla(cursor, schema, table_name):
-    """Obtiene información detallada de campos de una tabla"""
     sql = """
     SELECT
         lower(c.column_name) AS nombre_columna,
@@ -300,34 +267,26 @@ def obtener_campos_tabla(cursor, schema, table_name):
     try:
         cursor.execute(sql, (schema, table_name))
         rows = cursor.fetchall()
-        
         if not rows:
             return []
-        
-        # Obtener nombres de columnas del cursor
         columns = [desc[0] for desc in cursor.description]
-        
-        # Convertir cada fila en diccionario
         results = []
         for row in rows:
             if len(row) != len(columns):
                 print(f"Warning en {table_name}: row tiene {len(row)} valores pero esperaba {len(columns)} columnas")
                 continue
             results.append(dict(zip(columns, row)))
-        
         return results
-        
     except Exception as e:
         print(f"Error al obtener campos de {table_name}: {e}")
-        cursor.connection.rollback()  # Recuperar la transacción
+        cursor.connection.rollback()
         import traceback
         traceback.print_exc()
         return []
 
 def obtener_procedimientos_con_comentarios(cursor, schema):
-    """Obtiene procedimientos con sus comentarios"""
     sql = """
-    SELECT 
+    SELECT
         p.proname AS procedimiento,
         obj_description(p.oid, 'pg_proc') AS comentario
     FROM pg_proc p
@@ -345,7 +304,6 @@ def obtener_procedimientos_con_comentarios(cursor, schema):
         return {}
 
 def obtener_funciones_con_comentarios(cursor, schema):
-    """Obtiene funciones con sus comentarios (excluyendo funciones trigger)"""
     sql = """
     SELECT
         p.proname AS funcion,
@@ -366,7 +324,6 @@ def obtener_funciones_con_comentarios(cursor, schema):
         return {}
 
 def obtener_vistas_con_comentarios(cursor, schema):
-    """Obtiene vistas con sus comentarios"""
     sql = """
     SELECT
         c.relname AS vista,
@@ -386,7 +343,6 @@ def obtener_vistas_con_comentarios(cursor, schema):
         return {}
 
 def obtener_triggers_con_comentarios(cursor, schema):
-    """Obtiene triggers con sus comentarios"""
     sql = """
     SELECT
         t.tgname AS trigger,
@@ -407,7 +363,6 @@ def obtener_triggers_con_comentarios(cursor, schema):
         return {}
 
 def obtener_funciones_triggers_con_comentarios(cursor, schema):
-    """Obtiene funciones trigger con sus comentarios"""
     sql = """
     SELECT
         p.proname AS funcion_trigger,
@@ -427,7 +382,6 @@ def obtener_funciones_triggers_con_comentarios(cursor, schema):
         return {}
 
 def obtener_types_con_comentarios(cursor, schema):
-    """Obtiene tipos personalizados creados por el usuario (compuestos, enums, dominios y rangos)"""
     sql = """
     SELECT
         t.typname AS type,
@@ -435,11 +389,11 @@ def obtener_types_con_comentarios(cursor, schema):
     FROM pg_type t
     JOIN pg_namespace n ON n.oid = t.typnamespace
     WHERE n.nspname = %s
-      AND t.typtype IN ('c', 'e', 'd', 'r')  -- c=composite, e=enum, d=domain, r=range
+      AND t.typtype IN ('c', 'e', 'd', 'r')
       AND NOT EXISTS (
           SELECT 1 FROM pg_class c
           WHERE c.reltype = t.oid AND c.relkind IN ('r', 'v', 'm')
-      )  -- Excluir tipos generados automáticamente por tablas/vistas
+      )
     ORDER BY type;
     """
     try:
@@ -451,7 +405,6 @@ def obtener_types_con_comentarios(cursor, schema):
         return {}
 
 def obtener_dblinks_con_comentarios(cursor, schema):
-    """Obtiene foreign servers/dblinks con sus comentarios"""
     sql = """
     SELECT
         fs.srvname AS foreign_server,
@@ -468,7 +421,6 @@ def obtener_dblinks_con_comentarios(cursor, schema):
         return {}
 
 def obtener_tablas_foraneas_con_comentarios(cursor, schema):
-    """Obtiene foreign tables con sus comentarios"""
     sql = """
     SELECT
         c.relname AS tabla_foranea,
@@ -488,13 +440,9 @@ def obtener_tablas_foraneas_con_comentarios(cursor, schema):
         return {}
 
 def obtener_sinonimos_con_comentarios(cursor, schema):
-    """Obtiene sinónimos (en PostgreSQL no existen nativamente, retorna vacío)"""
-    # PostgreSQL no tiene sinónimos nativos como Oracle
-    # Se podría implementar con vistas si el usuario las usa como sinónimos
     return {}
 
 def obtener_indices_con_comentarios(cursor, schema):
-    """Obtiene índices (excluyendo los generados por constraints) con sus comentarios"""
     sql = """
     SELECT
         i.indexname AS indice,
@@ -506,7 +454,7 @@ def obtener_indices_con_comentarios(cursor, schema):
     JOIN pg_namespace n ON n.nspname = i.schemaname
     LEFT JOIN pg_constraint c ON c.conname = i.indexname AND c.connamespace = n.oid
     WHERE i.schemaname = %s
-      AND c.conname IS NULL  -- Excluir índices creados por constraints (PK, UNIQUE, etc)
+      AND c.conname IS NULL
     ORDER BY indice;
     """
     try:
@@ -518,7 +466,6 @@ def obtener_indices_con_comentarios(cursor, schema):
         return {}
 
 def obtener_constraints_con_comentarios(cursor, schema):
-    """Obtiene restricciones (constraints) con sus comentarios"""
     sql = """
     SELECT
         c.conname AS constraint_name,
@@ -537,7 +484,6 @@ def obtener_constraints_con_comentarios(cursor, schema):
         return {}
 
 def obtener_jobs_con_comentarios(cursor):
-    """Obtiene jobs programados con sus comentarios (pg_cron si está disponible)"""
     sql = """
     SELECT
         jobname AS job,
@@ -550,21 +496,14 @@ def obtener_jobs_con_comentarios(cursor):
         cursor.execute(sql)
         return {row[0]: row[1] or '' for row in cursor.fetchall()}
     except:
-        # pg_cron puede no estar instalado, retornar diccionario vacío
         return {}
 
 def generar_diccionario_rtf(host, port, database, user, password, schema, output_file):
-    """Genera el diccionario de datos en formato RTF"""
-    
-    # Crear directorio de salida si no existe
     output_path = Path(output_file)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    
     print("Iniciando generación de diccionario...")
     print(f"Esquema: {schema}")
     print(f"Archivo de salida: {output_file}")
-    
-    # Conectar a la base de datos
     try:
         conn = psycopg2.connect(
             host=host,
@@ -573,21 +512,18 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
             user=user,
             password=password
         )
-        conn.autocommit = True  # Activar autocommit para evitar problemas de transacciones abortadas
+        conn.autocommit = True
         cursor = conn.cursor()
         print("Conexión exitosa a PostgreSQL")
     except Exception as e:
         print(f"Error al conectar a la base de datos: {e}")
         sys.exit(3)
-    
-    # Obtener datos
     esquemas = obtener_esquemas_con_comentarios(cursor)
     tablespaces = obtener_tablespaces_con_comentarios(cursor)
     extensiones = obtener_extensiones_con_comentarios(cursor, schema)
     tablas = obtener_tablas_con_comentarios(cursor, schema)
     table_names = obtener_nombres_tablas(cursor, schema)
     print(f"Tablas detectadas: {len(table_names)}")
-    
     procedimientos = obtener_procedimientos_con_comentarios(cursor, schema)
     funciones = obtener_funciones_con_comentarios(cursor, schema)
     vistas = obtener_vistas_con_comentarios(cursor, schema)
@@ -600,24 +536,15 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
     indices = obtener_indices_con_comentarios(cursor, schema)
     constraints = obtener_constraints_con_comentarios(cursor, schema)
     jobs = obtener_jobs_con_comentarios(cursor)
-
-    # Generar archivo RTF
     with open(output_file, 'w', encoding='utf-8') as writer:
-        # Cabecera RTF
         writer.write("{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Arial;}}\n")
         writer.write("{\\colortbl;\\red0\\green0\\blue0;\\red255\\green255\\blue255;\\red25\\green25\\blue112;}\n")
         writer.write("\\paperw11906\\paperh16838\\margl1063\\margr973\\margt1063\\margb1063\n")
         writer.write("\\f0\\fs20\n")
-        
-        # Título
         writer.write("\\qc\\b\\fs36 DICCIONARIO DE DATOS\\b0\\fs22\\par\n")
         writer.write("\\par\\par\n")
-
-        # Tabla de contenido
         writer.write("\\ql\\b\\fs28 TABLA DE CONTENIDO\\b0\\fs20\\par\n")
         writer.write("\\par\n")
-
-        # Lista de secciones con numeración
         contenido = [
             "1. Descripcion de Esquemas",
             "2. Descripcion de Tablespaces",
@@ -637,13 +564,9 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
             "16. Descripcion de Restricciones (Constraints)",
             "17. Descripcion de Jobs"
         ]
-
         for item in contenido:
             writer.write(f"\\fs22 {escape_rtf(item)}\\par\n")
-
         writer.write("\\par\\page\n")
-
-        # 1) Esquemas
         writer.write("\\ql\\b\\fs28 Descripcion de Esquemas\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if esquemas:
@@ -653,8 +576,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No se encontraron esquemas.\\i0\\par\n")
         writer.write("\\par\n")
-
-        # 2) Tablespaces
         writer.write("\\ql\\b\\fs28 Descripcion de Tablespaces\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if tablespaces:
@@ -664,8 +585,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No se encontraron tablespaces personalizados.\\i0\\par\n")
         writer.write("\\par\n")
-
-        # 3) Extensiones
         writer.write("\\ql\\b\\fs28 Descripcion de Extensiones\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if extensiones:
@@ -675,10 +594,7 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\n")
-
         writer.write("\\par\\page\n")
-        
-        # 4) Tablas (resumen)
         writer.write("\\ql\\b\\fs28 Descripcion de Tablas\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if tablas:
@@ -689,17 +605,12 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
                 i += 1
         else:
             writer.write("\\i No se encontraron comentarios de tablas en el esquema.\\i0\\par\n")
-
         writer.write("\\par\\page\n")
-
-        # 5) Campos (detalle por tabla)
         writer.write("\\b\\fs28 Descripcion de Atributos\\b0\\fs18\\par\n")
         writer.write("\\par\n")
-
         for t_name in table_names:
             writer.write(f"\\b\\fs24 Tabla: {escape_rtf(t_name)}\\b0\\fs18\\par\n")
             writer.write("\\par\n")
-
             campos = obtener_campos_tabla(cursor, schema, t_name)
             if campos:
                 writer.write(create_table_row(ATRIBUTOS_HEADERS, ATRIBUTOS_WIDTHS, True))
@@ -720,8 +631,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
             else:
                 writer.write("\\i No se encontraron columnas\\i0\\par\n")
             writer.write("\\par\n")
-
-        # 6) Procedimientos
         writer.write("\\page\n")
         writer.write("\\b\\fs28 Descripcion de Procedimientos\\b0\\fs18\\par\n")
         writer.write("\\par\n")
@@ -734,8 +643,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\n")
-
-        # 7) Funciones
         writer.write("\\page\n")
         writer.write("\\b\\fs28 Descripcion de Funciones\\b0\\fs18\\par\n")
         writer.write("\\par\n")
@@ -748,8 +655,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\n")
-
-        # 8) Vistas
         writer.write("\\ql\\b\\fs28 Descripcion de Vistas\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if vistas:
@@ -761,8 +666,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-        
-        # 9) Triggers
         writer.write("\\ql\\b\\fs28 Descripcion de Triggers\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if triggers:
@@ -774,8 +677,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-
-        # 10) Funciones Triggers
         writer.write("\\ql\\b\\fs28 Descripcion de Funciones Triggers\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if funciones_triggers:
@@ -787,8 +688,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-
-        # 11) Types
         writer.write("\\ql\\b\\fs28 Descripcion de Types\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if types:
@@ -800,8 +699,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-
-        # 12) Dblinks / Foreign Servers
         writer.write("\\ql\\b\\fs28 Descripcion de Dblinks / Foreign Servers\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if dblinks:
@@ -813,8 +710,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-
-        # 13) Tablas Foráneas
         writer.write("\\ql\\b\\fs28 Descripcion de Tablas Foraneas\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if tablas_foraneas:
@@ -826,8 +721,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-
-        # 14) Sinónimos
         writer.write("\\ql\\b\\fs28 Descripcion de Sinonimos\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if sinonimos:
@@ -839,8 +732,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-
-        # 15) Índices
         writer.write("\\ql\\b\\fs28 Descripcion de Indices\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if indices:
@@ -852,8 +743,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-
-        # 16) Restricciones (Constraints)
         writer.write("\\ql\\b\\fs28 Descripcion de Constraints\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if constraints:
@@ -865,8 +754,6 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\\page\n")
-
-        # 17) Jobs
         writer.write("\\ql\\b\\fs28 Descripcion de Jobs\\b0\\fs18\\par\n")
         writer.write("\\par\n")
         if jobs:
@@ -878,13 +765,9 @@ def generar_diccionario_rtf(host, port, database, user, password, schema, output
         else:
             writer.write("\\i No aplica.\\i0\\par\n")
         writer.write("\\par\n")
-
-        # Cierre del documento
         writer.write("}\n")
-    
     cursor.close()
     conn.close()
-    
     print(f"Archivo RTF generado en: {output_file}")
 
 def main():
@@ -892,7 +775,6 @@ def main():
         print("Error: Se requieren 7 parametros")
         print("Uso: python generar_diccionario.py <host> <puerto> <bd> <usuario> <password> <esquema> <ruta_salida_rtf>")
         sys.exit(1)
-    
     host = sys.argv[1]
     port = sys.argv[2]
     database = sys.argv[3]
@@ -900,8 +782,6 @@ def main():
     password = sys.argv[5]
     schema = sys.argv[6]
     output_file = sys.argv[7]
-    
     generar_diccionario_rtf(host, port, database, user, password, schema, output_file)
-
 if __name__ == "__main__":
     main()

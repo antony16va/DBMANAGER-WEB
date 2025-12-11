@@ -1101,5 +1101,65 @@
       "esquema": "cae_eg2026",
       "cantidad_registros": "10"
     }
+  },
+  {
+    "timestamp": "2025-12-11 12:54:01",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 126.675927,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-11 12:54:49",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 47.108265,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-11 12:55:15",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 2.23338,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-11 12:55:41",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 14.063533,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
   }
 ]
