@@ -891,7 +891,7 @@ class ValidadorDDL:
         if not self.errores and not self.warnings:
             html += """
             <div class="success-message">
-                <h2>✅ ¡Validación Exitosa!</h2>
+                <h2>¡Validación Exitosa!</h2>
                 <p>No se encontraron errores ni advertencias en el análisis de nomenclatura.</p>
                 <p>Todos los objetos cumplen con las reglas establecidas.</p>
             </div>

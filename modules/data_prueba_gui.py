@@ -330,7 +330,7 @@ class DataPruebaGUI:
                     font=('Segoe UI', 7, 'bold'),
                     bg=col_container['bg'], fg=self.colors['warning']).pack(side=tk.LEFT, padx=5)
         if col_key in self.columnas_personalizadas:
-            tk.Label(col_header, text="✓ Personalizado",
+            tk.Label(col_header, text="Personalizado",
                     font=('Segoe UI', 7, 'bold'),
                     bg=col_container['bg'], fg=self.colors['success']).pack(side=tk.LEFT, padx=10)
         config_frame = tk.Frame(col_container, bg='#e9ecef')
@@ -430,13 +430,13 @@ class DataPruebaGUI:
                 self._refrescar_indicador_columna(tabla, col_nombre)
                 self.log(f"[OK] Configuración eliminada para {col_nombre}", "info")
             self._toggle_config_columna(tabla, col_info, parent.master)
-        tk.Button(btn_frame, text="✓ Guardar",
+        tk.Button(btn_frame, text="Guardar",
                  command=guardar_config,
                  bg=self.colors['success'], fg='white',
                  font=('Segoe UI', 8, 'bold'),
                  relief=tk.FLAT, cursor='hand2',
                  padx=10, pady=4).pack(side=tk.LEFT, padx=(0, 5))
-        tk.Button(btn_frame, text="✗ Eliminar",
+        tk.Button(btn_frame, text="Eliminar",
                  command=eliminar_config,
                  bg=self.colors['danger'], fg='white',
                  font=('Segoe UI', 8, 'bold'),
