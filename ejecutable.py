@@ -366,9 +366,14 @@ class DBManager:
         if module['id'] == 4:
             self.abrir_interfaz_data_prueba(module)
             return
+
+        # Limpiar frames
         for widget in self.params_frame.winfo_children():
             widget.destroy()
+        for widget in self.btn_frame.winfo_children():
+            widget.destroy()
         self.param_widgets.clear()
+
         param_labels = {
             "ruta_plantilla_excel": "Ruta Plantilla Excel:",
             "ruta_salida_ddl_base": "Ruta Salida DDL:",
@@ -376,34 +381,66 @@ class DBManager:
             "puerto": "Puerto:",
             "bd": "Base de Datos:",
             "usuario": "Usuario:",
-            "password": "Contrasena:",
+            "password": "Contraseña:",
             "ruta_salida_ddl_completo": "Ruta Salida DDL:",
             "ruta_ddl_completo": "Ruta DDL Completo:",
             "esquema": "Esquema:",
             "ruta_salida_rtf": "Ruta Salida RTF:",
             "cantidad_registros": "Cantidad Registros:"
         }
-        row = 0
+
+        # Crear frame de información con diseño similar al módulo 4
+        info_frame = tk.Frame(self.params_frame, bg=self.colors['bg_card'])
+        info_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Sección de parámetros
+        params_section = tk.Frame(info_frame, bg=self.colors['bg_card'])
+        params_section.pack(fill=tk.X, padx=20, pady=10)
+
+        # Título de parámetros
+        tk.Label(params_section,
+                text="Parámetros de Conexión:" if any(p in ['host', 'puerto', 'bd'] for p in module['params']) else "Parámetros:",
+                font=('Segoe UI', 11, 'bold'),
+                bg=self.colors['bg_card'],
+                fg=self.colors['primary']).pack(anchor=tk.W, pady=(0, 10))
+
+        # Crear campos de parámetros con diseño moderno
         for param in module['params']:
             label_text = param_labels.get(param, param + ":")
-            tk.Label(self.params_frame, text=label_text,
+
+            param_frame = tk.Frame(params_section, bg=self.colors['bg_card'])
+            param_frame.pack(fill=tk.X, pady=5)
+
+            # Label con ancho fijo
+            tk.Label(param_frame, text=label_text,
                     font=('Segoe UI', 9, 'bold'),
                     bg=self.colors['bg_card'],
-                    fg=self.colors['text_dark']).grid(row=row, column=0, sticky=tk.W,
-                                                     pady=8, padx=(0, 15))
+                    fg=self.colors['text_dark'],
+                    width=20, anchor=tk.W).pack(side=tk.LEFT)
+
+            # Cargar historial
+            history_key = f'_history_{param}'
+            param_history = self.config.get(history_key, [])
+
+            var = tk.StringVar()
+            # Pre-cargar el último valor usado
+            if param_history and param != 'password':
+                var.set(param_history[-1])
+
             if 'ruta' in param.lower():
-                frame = tk.Frame(self.params_frame, bg=self.colors['bg_card'])
-                frame.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=8)
-                var = tk.StringVar()
-                param_history = self.config.get(f'_history_{param}', [])
-                param_history_with_blank = [''] + param_history if param_history else ['']
-                entry = ttk.Combobox(frame, textvariable=var,
+                # Frame para entrada + botón
+                entry_frame = tk.Frame(param_frame, bg=self.colors['bg_card'])
+                entry_frame.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+                entry = ttk.Combobox(entry_frame, textvariable=var,
                                     font=('Segoe UI', 9),
-                                    values=param_history_with_blank)
-                entry.pack(side=tk.LEFT, fill=tk.X, expand=True, ipady=3)
+                                    values=[''] + param_history,
+                                    width=38)
+                entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
                 is_input = 'plantilla' in param.lower() or ('ddl' in param.lower() and 'salida' not in param.lower())
-                text = "Abrir" if is_input else "Guardar"
-                btn = tk.Button(frame, text=text,
+                text = "Abrir" if is_input else "Ruta"
+                btn = tk.Button(entry_frame, text=text,
                               font=('Segoe UI', 9),
                               command=lambda v=var, p=param: self.browse_path(v, p),
                               bg=self.colors['secondary'],
@@ -414,55 +451,37 @@ class DBManager:
                               padx=6, pady=3)
                 btn.pack(side=tk.LEFT, padx=(5, 0))
                 self._add_hover_effect(btn, self.colors['secondary'], '#2980b9')
-                self.param_widgets[param] = var
+
             elif param == 'password':
-                var = tk.StringVar()
-                entry = tk.Entry(self.params_frame, textvariable=var, show="●",
+                entry = tk.Entry(param_frame, textvariable=var, show="●",
                                font=('Segoe UI', 9),
-                               bg='white',
-                               fg=self.colors['text_dark'],
-                               relief=tk.SOLID,
-                               borderwidth=1,
-                               highlightthickness=0)
-                entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=8, ipady=3)
-                self.param_widgets[param] = var
+                               width=40)
+                entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
             else:
-                var = tk.StringVar()
-                param_history = self.config.get(f'_history_{param}', [])
-                param_history_with_blank = [''] + param_history if param_history else ['']
-                entry = ttk.Combobox(self.params_frame, textvariable=var,
+                entry = ttk.Combobox(param_frame, textvariable=var,
                                     font=('Segoe UI', 9),
-                                    values=param_history_with_blank)
-                entry.grid(row=row, column=1, sticky=(tk.W, tk.E), pady=8, ipady=3)
-                self.param_widgets[param] = var
-            row += 1
-        self.params_frame.columnconfigure(1, weight=1)
-        for widget in self.btn_frame.winfo_children():
-            widget.destroy()
-        exec_btn = tk.Button(self.btn_frame, text="Ejecutar Modulo",
+                                    values=[''] + param_history,
+                                    width=38)
+                entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+            self.param_widgets[param] = var
+
+        # Botón de ejecutar
+        button_container = tk.Frame(info_frame, bg=self.colors['bg_card'])
+        button_container.pack(pady=15)
+
+        exec_btn = tk.Button(button_container,
+                            text="EJECUTAR MODULO",
                             command=self.execute_current_module,
                             font=('Segoe UI', 10, 'bold'),
                             bg=self.colors['success'],
                             fg='white',
-                            relief='flat',
+                            relief=tk.FLAT,
                             cursor='hand2',
-                            borderwidth=0,
-                            padx=10, pady=6)
-        exec_btn.grid(row=0, column=0, sticky='ew', padx=5)
+                            padx=15, pady=8)
+        exec_btn.pack()
         self._add_hover_effect(exec_btn, self.colors['success'], '#229954')
-        stop_btn = tk.Button(self.btn_frame, text="Detener",
-                            command=self.stop_execution,
-                            font=('Segoe UI', 10, 'bold'),
-                            bg=self.colors['danger'],
-                            fg='white',
-                            relief='flat',
-                            cursor='hand2',
-                            borderwidth=0,
-                            padx=10, pady=6)
-        stop_btn.grid(row=0, column=1, sticky='ew', padx=5)
-        self._add_hover_effect(stop_btn, self.colors['danger'], '#c0392b')
-        for i in range(2):
-            self.btn_frame.columnconfigure(i, weight=1)
+
         self.log_message(f"\n{'='*70}", "info")
         self.log_message(f"Modulo seleccionado: {module['name']}", "module")
         self.log_message(f"Tipo: {module['type'].upper()}", "info")

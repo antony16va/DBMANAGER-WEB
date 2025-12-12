@@ -91,6 +91,12 @@ class ComentariosGUI:
         self.btn_recargar = ttk.Button(btn_frame, text="🔄 Recargar",
                                         command=self.recargar_actual)
         self.btn_recargar.pack(side=tk.LEFT, padx=5)
+        self.btn_generar_sql_todos = ttk.Button(btn_frame, text="📝 SQL (Todos)",
+                                                 command=self.generar_sql_todos)
+        self.btn_generar_sql_todos.pack(side=tk.LEFT, padx=5)
+        self.btn_generar_sql_cambios = ttk.Button(btn_frame, text="📝 SQL (Cambios)",
+                                                   command=self.generar_sql_cambios)
+        self.btn_generar_sql_cambios.pack(side=tk.LEFT, padx=5)
         ttk.Button(btn_frame, text="Cerrar", command=self.cerrar).pack(side=tk.RIGHT, padx=5)
         self.main_frame = ttk.Frame(self.root)
         self.main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
@@ -217,10 +223,15 @@ class ComentariosGUI:
         ttk.Separator(grid_frame, orient='horizontal').grid(row=1, column=0, columnspan=2,
                                                             sticky='ew', pady=5)
         for idx, (nombre_tabla, comentario_actual) in enumerate(self.tablas_con_comentarios, start=2):
-            ttk.Label(grid_frame, text=nombre_tabla, width=40, anchor='w',
-                     font=('Arial', 9)).grid(row=idx, column=0, padx=5, pady=5, sticky='w')
+            # Alternar colores de fondo - celeste y verde claro
+            bg_color = '#e8f4f8' if (idx % 2 == 0) else '#e8f5e9'
+
+            label = tk.Label(grid_frame, text=nombre_tabla, width=40, anchor='w',
+                            font=('Arial', 9), bg=bg_color)
+            label.grid(row=idx, column=0, padx=5, pady=5, sticky='w')
+
             text_widget = tk.Text(grid_frame, width=80, height=3, wrap=tk.WORD,
-                                 font=('Arial', 9), relief='solid', borderwidth=1)
+                                 font=('Arial', 9), relief='solid', borderwidth=1, bg=bg_color)
             text_widget.grid(row=idx, column=1, padx=5, pady=5, sticky='ew')
             if comentario_actual:
                 text_widget.insert('1.0', comentario_actual)
@@ -371,10 +382,15 @@ class ComentariosGUI:
             ttk.Separator(grid_frame, orient='horizontal').grid(row=1, column=0, columnspan=2,
                                                                 sticky='ew', pady=5)
             for idx, (nombre_objeto, comentario_actual) in enumerate(objetos_info, start=2):
-                ttk.Label(grid_frame, text=nombre_objeto, width=40, anchor='w',
-                         font=('Arial', 9)).grid(row=idx, column=0, padx=5, pady=5, sticky='w')
+                # Alternar colores de fondo - celeste y verde claro
+                bg_color = '#e8f4f8' if (idx % 2 == 0) else '#e8f5e9'
+
+                label = tk.Label(grid_frame, text=nombre_objeto, width=40, anchor='w',
+                                font=('Arial', 9), bg=bg_color)
+                label.grid(row=idx, column=0, padx=5, pady=5, sticky='w')
+
                 text_widget = tk.Text(grid_frame, width=80, height=3, wrap=tk.WORD,
-                                     font=('Arial', 9), relief='solid', borderwidth=1)
+                                     font=('Arial', 9), relief='solid', borderwidth=1, bg=bg_color)
                 text_widget.grid(row=idx, column=1, padx=5, pady=5, sticky='ew')
                 if comentario_actual:
                     text_widget.insert('1.0', comentario_actual)
@@ -417,12 +433,19 @@ class ComentariosGUI:
         ttk.Separator(grid_frame, orient='horizontal').grid(row=1, column=0, columnspan=3,
                                                             sticky='ew', pady=5)
         for idx, (campo, tipo, comentario_actual) in enumerate(campos_info, start=2):
-            ttk.Label(grid_frame, text=campo, width=30, anchor='w',
-                     font=('Arial', 9)).grid(row=idx, column=0, padx=5, pady=5, sticky='w')
-            ttk.Label(grid_frame, text=tipo, width=25, anchor='w',
-                     foreground='gray', font=('Arial', 9)).grid(row=idx, column=1, padx=5, pady=5, sticky='w')
+            # Alternar colores de fondo - celeste y verde claro
+            bg_color = '#e8f4f8' if (idx % 2 == 0) else '#e8f5e9'
+
+            label_campo = tk.Label(grid_frame, text=campo, width=30, anchor='w',
+                                  font=('Arial', 9), bg=bg_color)
+            label_campo.grid(row=idx, column=0, padx=5, pady=5, sticky='w')
+
+            label_tipo = tk.Label(grid_frame, text=tipo, width=25, anchor='w',
+                                 foreground='gray', font=('Arial', 9), bg=bg_color)
+            label_tipo.grid(row=idx, column=1, padx=5, pady=5, sticky='w')
+
             text_widget = tk.Text(grid_frame, width=70, height=3, wrap=tk.WORD,
-                                 font=('Arial', 9), relief='solid', borderwidth=1)
+                                 font=('Arial', 9), relief='solid', borderwidth=1, bg=bg_color)
             text_widget.grid(row=idx, column=2, padx=5, pady=5, sticky='ew')
             if comentario_actual:
                 text_widget.insert('1.0', comentario_actual)
@@ -658,6 +681,269 @@ class ComentariosGUI:
         except Exception as e:
             print(f"Error al actualizar comentario de {nombre}: {e}")
             raise
+
+    def generar_sql_todos(self):
+        """Genera un script SQL con todos los comandos COMMENT ON (todos los comentarios)"""
+        try:
+            sql_lines = []
+            sql_lines.append("-- Script de comentarios - TODOS LOS COMENTARIOS")
+            sql_lines.append(f"-- Base de datos: {self.database}")
+            sql_lines.append(f"-- Esquema: {self.schema}")
+            sql_lines.append(f"-- Fecha: {self._obtener_fecha_actual()}")
+            sql_lines.append("")
+
+            if self.modo_actual == "tablas":
+                if self.tabla_actual:
+                    sql_lines.append(f"-- Comentarios para campos de la tabla: {self.tabla_actual}")
+                    sql_lines.append("")
+                    for campo, tipo, comentario_original in self.campos_actuales:
+                        widget = self.widgets_comentarios.get(campo)
+                        if widget:
+                            comentario = widget.get('1.0', tk.END).strip()
+                            if comentario:
+                                comentario_escapado = comentario.replace("'", "''")
+                                sql_lines.append(f"COMMENT ON COLUMN {self.schema}.{self.tabla_actual}.{campo} IS '{comentario_escapado}';")
+                            else:
+                                sql_lines.append(f"COMMENT ON COLUMN {self.schema}.{self.tabla_actual}.{campo} IS NULL;")
+                else:
+                    sql_lines.append("-- Comentarios para todas las tablas")
+                    sql_lines.append("")
+                    for nombre_tabla, comentario_original in self.tablas_con_comentarios:
+                        widget = self.widgets_comentarios.get(f'tabla_{nombre_tabla}')
+                        if widget:
+                            comentario = widget.get('1.0', tk.END).strip()
+                            if comentario:
+                                comentario_escapado = comentario.replace("'", "''")
+                                sql_lines.append(f"COMMENT ON TABLE {self.schema}.{nombre_tabla} IS '{comentario_escapado}';")
+                            else:
+                                sql_lines.append(f"COMMENT ON TABLE {self.schema}.{nombre_tabla} IS NULL;")
+            else:
+                if not self.tipo_objeto_actual or not self.objetos_actuales:
+                    messagebox.showwarning("Sin Objetos", "Seleccione un tipo de objeto primero")
+                    return
+                sql_lines.append(f"-- Comentarios para {self.tipo_objeto_actual}")
+                sql_lines.append("")
+                for nombre_objeto, comentario_original in self.objetos_actuales:
+                    widget = self.widgets_comentarios.get(nombre_objeto)
+                    if widget:
+                        comentario = widget.get('1.0', tk.END).strip()
+                        sql_comando = self._generar_sql_para_objeto(nombre_objeto, comentario, self.tipo_objeto_actual)
+                        if sql_comando:
+                            sql_lines.append(sql_comando)
+
+            sql_lines.append("")
+            sql_lines.append("-- Fin del script")
+            self._mostrar_ventana_sql("\n".join(sql_lines))
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al generar SQL:\n{e}")
+
+    def generar_sql_cambios(self):
+        """Genera un script SQL solo con los comentarios que han sido modificados"""
+        try:
+            sql_lines = []
+            sql_lines.append("-- Script de comentarios - SOLO CAMBIOS")
+            sql_lines.append(f"-- Base de datos: {self.database}")
+            sql_lines.append(f"-- Esquema: {self.schema}")
+            sql_lines.append(f"-- Fecha: {self._obtener_fecha_actual()}")
+            sql_lines.append("")
+
+            cambios_count = 0
+
+            if self.modo_actual == "tablas":
+                if self.tabla_actual:
+                    sql_lines.append(f"-- Cambios en campos de la tabla: {self.tabla_actual}")
+                    sql_lines.append("")
+                    for campo, tipo, comentario_original in self.campos_actuales:
+                        widget = self.widgets_comentarios.get(campo)
+                        if widget:
+                            comentario = widget.get('1.0', tk.END).strip()
+                            # Solo generar SQL si hay cambios
+                            if comentario != comentario_original:
+                                cambios_count += 1
+                                if comentario:
+                                    comentario_escapado = comentario.replace("'", "''")
+                                    sql_lines.append(f"COMMENT ON COLUMN {self.schema}.{self.tabla_actual}.{campo} IS '{comentario_escapado}';")
+                                else:
+                                    sql_lines.append(f"COMMENT ON COLUMN {self.schema}.{self.tabla_actual}.{campo} IS NULL;")
+                else:
+                    sql_lines.append("-- Cambios en tablas")
+                    sql_lines.append("")
+                    for nombre_tabla, comentario_original in self.tablas_con_comentarios:
+                        widget = self.widgets_comentarios.get(f'tabla_{nombre_tabla}')
+                        if widget:
+                            comentario = widget.get('1.0', tk.END).strip()
+                            # Solo generar SQL si hay cambios
+                            if comentario != comentario_original:
+                                cambios_count += 1
+                                if comentario:
+                                    comentario_escapado = comentario.replace("'", "''")
+                                    sql_lines.append(f"COMMENT ON TABLE {self.schema}.{nombre_tabla} IS '{comentario_escapado}';")
+                                else:
+                                    sql_lines.append(f"COMMENT ON TABLE {self.schema}.{nombre_tabla} IS NULL;")
+            else:
+                if not self.tipo_objeto_actual or not self.objetos_actuales:
+                    messagebox.showwarning("Sin Objetos", "Seleccione un tipo de objeto primero")
+                    return
+                sql_lines.append(f"-- Cambios en {self.tipo_objeto_actual}")
+                sql_lines.append("")
+                for nombre_objeto, comentario_original in self.objetos_actuales:
+                    widget = self.widgets_comentarios.get(nombre_objeto)
+                    if widget:
+                        comentario = widget.get('1.0', tk.END).strip()
+                        # Solo generar SQL si hay cambios
+                        if comentario != comentario_original:
+                            cambios_count += 1
+                            sql_comando = self._generar_sql_para_objeto(nombre_objeto, comentario, self.tipo_objeto_actual)
+                            if sql_comando:
+                                sql_lines.append(sql_comando)
+
+            if cambios_count == 0:
+                messagebox.showinfo("Sin Cambios", "No hay comentarios modificados para generar SQL")
+                return
+
+            sql_lines.append("")
+            sql_lines.append(f"-- Total de cambios: {cambios_count}")
+            sql_lines.append("-- Fin del script")
+            self._mostrar_ventana_sql("\n".join(sql_lines))
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al generar SQL:\n{e}")
+
+    def _generar_sql_para_objeto(self, nombre: str, comentario: str, tipo: str) -> str:
+        """Genera la sentencia SQL COMMENT ON para un objeto específico"""
+        try:
+            comentario_escapado = comentario.replace("'", "''") if comentario else ""
+
+            if tipo == "Procedimientos" or tipo == "Funciones" or tipo == "Funciones Trigger":
+                tipo_sql = "FUNCTION"
+                if comentario:
+                    return f"COMMENT ON {tipo_sql} {self.schema}.{nombre} IS '{comentario_escapado}';"
+                else:
+                    return f"COMMENT ON {tipo_sql} {self.schema}.{nombre} IS NULL;"
+
+            elif tipo == "Vistas":
+                if comentario:
+                    return f"COMMENT ON VIEW {self.schema}.{nombre} IS '{comentario_escapado}';"
+                else:
+                    return f"COMMENT ON VIEW {self.schema}.{nombre} IS NULL;"
+
+            elif tipo == "Triggers":
+                # Para triggers necesitamos la tabla
+                sql_tabla = """
+                SELECT c.relname
+                FROM pg_trigger t
+                JOIN pg_class c ON c.oid = t.tgrelid
+                JOIN pg_namespace n ON n.oid = c.relnamespace
+                WHERE n.nspname = %s AND t.tgname = %s
+                """
+                self.cursor.execute(sql_tabla, (self.schema, nombre))
+                result = self.cursor.fetchone()
+                if result:
+                    tabla_trigger = result[0]
+                    if comentario:
+                        return f"COMMENT ON TRIGGER {nombre} ON {self.schema}.{tabla_trigger} IS '{comentario_escapado}';"
+                    else:
+                        return f"COMMENT ON TRIGGER {nombre} ON {self.schema}.{tabla_trigger} IS NULL;"
+
+            elif tipo == "Indices":
+                if comentario:
+                    return f"COMMENT ON INDEX {self.schema}.{nombre} IS '{comentario_escapado}';"
+                else:
+                    return f"COMMENT ON INDEX {self.schema}.{nombre} IS NULL;"
+
+            elif tipo == "Constraints":
+                # Para constraints necesitamos la tabla
+                sql_tabla = """
+                SELECT c.relname
+                FROM pg_constraint con
+                JOIN pg_class c ON c.oid = con.conrelid
+                JOIN pg_namespace n ON n.oid = con.connamespace
+                WHERE n.nspname = %s AND con.conname = %s
+                """
+                self.cursor.execute(sql_tabla, (self.schema, nombre))
+                result = self.cursor.fetchone()
+                if result:
+                    tabla_constraint = result[0]
+                    if comentario:
+                        return f"COMMENT ON CONSTRAINT {nombre} ON {self.schema}.{tabla_constraint} IS '{comentario_escapado}';"
+                    else:
+                        return f"COMMENT ON CONSTRAINT {nombre} ON {self.schema}.{tabla_constraint} IS NULL;"
+
+            elif tipo == "Types":
+                if comentario:
+                    return f"COMMENT ON TYPE {self.schema}.{nombre} IS '{comentario_escapado}';"
+                else:
+                    return f"COMMENT ON TYPE {self.schema}.{nombre} IS NULL;"
+
+            elif tipo == "Foreign Servers":
+                if comentario:
+                    return f"COMMENT ON SERVER {nombre} IS '{comentario_escapado}';"
+                else:
+                    return f"COMMENT ON SERVER {nombre} IS NULL;"
+
+            elif tipo == "Tablas foraneas":
+                if comentario:
+                    return f"COMMENT ON FOREIGN TABLE {self.schema}.{nombre} IS '{comentario_escapado}';"
+                else:
+                    return f"COMMENT ON FOREIGN TABLE {self.schema}.{nombre} IS NULL;"
+
+            return ""
+        except Exception as e:
+            print(f"Error generando SQL para {nombre}: {e}")
+            return f"-- Error generando SQL para {nombre}: {e}"
+
+    def _obtener_fecha_actual(self) -> str:
+        """Obtiene la fecha y hora actual formateada"""
+        from datetime import datetime
+        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    def _mostrar_ventana_sql(self, sql_content: str):
+        """Muestra una ventana con el contenido SQL generado"""
+        sql_window = tk.Toplevel(self.root)
+        sql_window.title("Script SQL de Comentarios")
+        sql_window.geometry("900x600")
+
+        # Frame superior con botones
+        btn_frame = ttk.Frame(sql_window, padding=10)
+        btn_frame.pack(side=tk.TOP, fill=tk.X)
+
+        ttk.Label(btn_frame, text="Script SQL Generado:",
+                 font=('Arial', 11, 'bold')).pack(side=tk.LEFT, padx=5)
+
+        def copiar_sql():
+            sql_window.clipboard_clear()
+            sql_window.clipboard_append(sql_content)
+            messagebox.showinfo("Copiado", "El script SQL ha sido copiado al portapapeles")
+
+        def guardar_sql():
+            from tkinter import filedialog
+            archivo = filedialog.asksaveasfilename(
+                defaultextension=".sql",
+                filetypes=[("SQL files", "*.sql"), ("All files", "*.*")],
+                title="Guardar script SQL"
+            )
+            if archivo:
+                try:
+                    with open(archivo, 'w', encoding='utf-8') as f:
+                        f.write(sql_content)
+                    messagebox.showinfo("Éxito", f"Script guardado en:\n{archivo}")
+                except Exception as e:
+                    messagebox.showerror("Error", f"Error al guardar el archivo:\n{e}")
+
+        ttk.Button(btn_frame, text="📋 Copiar", command=copiar_sql).pack(side=tk.RIGHT, padx=5)
+        ttk.Button(btn_frame, text="💾 Guardar", command=guardar_sql).pack(side=tk.RIGHT, padx=5)
+
+        # Text widget con scrollbar
+        text_frame = ttk.Frame(sql_window)
+        text_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        sql_text = scrolledtext.ScrolledText(text_frame,
+                                             font=("Courier New", 10),
+                                             wrap=tk.WORD)
+        sql_text.pack(fill=tk.BOTH, expand=True)
+        sql_text.insert('1.0', sql_content)
+        sql_text.config(state=tk.NORMAL)  # Permitir edición si el usuario quiere modificar
 
     def recargar_actual(self):
         """Recarga el elemento actual según el modo"""

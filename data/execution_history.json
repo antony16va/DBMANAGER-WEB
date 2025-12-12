@@ -1161,5 +1161,294 @@
       "password": "ropc_ab01$",
       "esquema": "ropc_eg2026"
     }
+  },
+  {
+    "timestamp": "2025-12-12 08:51:36",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 709.593197,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:13:14",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.618594,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "C:\\Users\\avalencia\\Desktop\\DICCIONARIO\\cae_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:13:29",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.563099,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "C:\\Users\\avalencia\\Desktop\\DICCIONARIO\\cae_eg2026.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:26:07",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 304.356921,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:30:00",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 138.30913,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:32:08",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 52.155464,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:37:34",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 323.645363,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:40:17",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 125.089273,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:41:08",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 48.81541,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:43:30",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 98.284112,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:43:46",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 14.24964,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 10:46:44",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 12.977889,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 11:09:29",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 629.063165,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 11:29:13",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 1182.951897,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 11:59:08",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 1789.033446,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_admin"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 14:20:17",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 8451.249254,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 14:35:11",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.729711,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/ropc_eg2026.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 15:33:05",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "error",
+    "duration": 0.320921,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/ropc_eg2026.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-12 15:40:09",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 409.981976,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
   }
 ]
