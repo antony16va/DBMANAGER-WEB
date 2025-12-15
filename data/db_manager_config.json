@@ -17,8 +17,8 @@
     "sigloc_qa",
     "sigloc_dev",
     "cemm",
-    "cae",
-    "ropc"
+    "ropc",
+    "cae"
   ],
   "_history_usuario": [
     "claridad",
@@ -26,8 +26,8 @@
     "sigloc",
     "cemm",
     "postgres",
-    "cae",
-    "ropc"
+    "ropc",
+    "cae"
   ],
   "_history_password": [
     "sigloc_ab01$"
@@ -40,12 +40,12 @@
   "_global_params": {
     "host": "192.168.44.49",
     "puerto": "5433",
-    "bd": "ropc",
-    "usuario": "ropc",
+    "bd": "cae",
+    "usuario": "cae",
     "password": "sigloc_ab01$",
     "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql",
-    "esquema": "ropc_eg2026",
-    "ruta_salida_rtf": "C:/Users/avalencia/Desktop/ropc_eg2026.rtf",
+    "esquema": "cae_eg2026",
+    "ruta_salida_rtf": "C:/Users/avalencia/Desktop/cae_eg2026.rtf",
     "ruta_ddl_completo": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/dump.sql",
     "ruta_plantilla_excel": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/resources/Plantilla_Modelo.xlsx",
     "ruta_salida_ddl_base": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_inicial.sql",
@@ -59,13 +59,12 @@
     "cemm_emc2025",
     "sigloc",
     "cemm_eg2026",
-    "cae_eg2026",
     "cae_admin",
     "ropc_admin",
-    "ropc_eg2026"
+    "ropc_eg2026",
+    "cae_eg2026"
   ],
   "_history_ruta_salida_rtf": [
-    "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/claridad.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/cae.rtf",
@@ -74,7 +73,8 @@
     "C:/Users/avalencia/Desktop/DBMANAGER/cemm.rtf",
     "C:\\Users\\avalencia\\Desktop\\DICCIONARIO\\cae_eg2026",
     "C:\\Users\\avalencia\\Desktop\\DICCIONARIO\\cae_eg2026.rtf",
-    "C:/Users/avalencia/Desktop/ropc_eg2026.rtf"
+    "C:/Users/avalencia/Desktop/ropc_eg2026.rtf",
+    "C:/Users/avalencia/Desktop/cae_eg2026.rtf"
   ],
   "_history_ruta_ddl_completo": [
     "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",

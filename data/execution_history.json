@@ -1,69 +1,5 @@
 [
   {
-    "timestamp": "2025-11-30 20:25:36",
-    "module_id": 3,
-    "module_name": "DICCIONARIO DE DATOS",
-    "status": "success",
-    "duration": 0.862412,
-    "params": {
-      "host": "localhost",
-      "puerto": "5432",
-      "bd": "sigloc_dev",
-      "usuario": "sigloc",
-      "password": "sigloc_ab01$",
-      "esquema": "sigloc",
-      "ruta_salida_rtf": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf"
-    }
-  },
-  {
-    "timestamp": "2025-11-30 20:32:39",
-    "module_id": 3,
-    "module_name": "DICCIONARIO DE DATOS",
-    "status": "success",
-    "duration": 0.787562,
-    "params": {
-      "host": "localhost",
-      "puerto": "5432",
-      "bd": "sigloc_dev",
-      "usuario": "sigloc",
-      "password": "sigloc_ab01$",
-      "esquema": "sigloc",
-      "ruta_salida_rtf": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf"
-    }
-  },
-  {
-    "timestamp": "2025-11-30 20:36:52",
-    "module_id": 3,
-    "module_name": "DICCIONARIO DE DATOS",
-    "status": "success",
-    "duration": 0.887134,
-    "params": {
-      "host": "localhost",
-      "puerto": "5432",
-      "bd": "sigloc_dev",
-      "usuario": "sigloc",
-      "password": "sigloc_ab01$",
-      "esquema": "sigloc",
-      "ruta_salida_rtf": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf"
-    }
-  },
-  {
-    "timestamp": "2025-11-30 20:40:11",
-    "module_id": 3,
-    "module_name": "DICCIONARIO DE DATOS",
-    "status": "success",
-    "duration": 0.963495,
-    "params": {
-      "host": "localhost",
-      "puerto": "5432",
-      "bd": "sigloc_dev",
-      "usuario": "sigloc",
-      "password": "sigloc_ab01$",
-      "esquema": "sigloc",
-      "ruta_salida_rtf": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/sigloc.rtf"
-    }
-  },
-  {
     "timestamp": "2025-11-30 20:43:55",
     "module_id": 3,
     "module_name": "DICCIONARIO DE DATOS",
@@ -1449,6 +1385,157 @@
       "usuario": "ropc",
       "password": "ropc_ab01$",
       "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 09:19:32",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 1274.04057,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 09:30:31",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 657.279247,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 10:41:10",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 4209.017367,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 10:54:46",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 16.758604,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "ropc",
+      "usuario": "ropc",
+      "password": "ropc_ab01$",
+      "esquema": "ropc_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 12:14:57",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 849.249606,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 12:16:37",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 98.492686,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 12:50:51",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 2052.874259,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 12:51:12",
+    "module_id": 3,
+    "module_name": "DICCIONARIO DE DATOS",
+    "status": "success",
+    "duration": 0.631395,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026",
+      "ruta_salida_rtf": "C:/Users/avalencia/Desktop/cae_eg2026.rtf"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 14:59:14",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 1640.09748,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026"
+    }
+  },
+  {
+    "timestamp": "2025-12-15 15:18:11",
+    "module_id": 1,
+    "module_name": "AGREGAR COMENTARIOS",
+    "status": "success",
+    "duration": 13.689778,
+    "params": {
+      "host": "192.168.44.49",
+      "puerto": "5433",
+      "bd": "cae",
+      "usuario": "cae",
+      "password": "cae_ab01$",
+      "esquema": "cae_eg2026"
     }
   }
 ]
