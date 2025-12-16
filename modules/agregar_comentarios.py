@@ -85,16 +85,16 @@ class ComentariosGUI:
         ttk.Label(self.selector_frame, text="", width=10).pack(side=tk.LEFT)
         btn_frame = ttk.Frame(self.root, padding="10")
         btn_frame.pack(side=tk.TOP, fill=tk.X)
-        self.btn_guardar = ttk.Button(btn_frame, text="💾 Guardar Comentarios",
+        self.btn_guardar = ttk.Button(btn_frame, text="Guardar Comentarios",
                                        command=self.guardar_comentarios)
         self.btn_guardar.pack(side=tk.LEFT, padx=5)
-        self.btn_recargar = ttk.Button(btn_frame, text="🔄 Recargar",
+        self.btn_recargar = ttk.Button(btn_frame, text="Recargar",
                                         command=self.recargar_actual)
         self.btn_recargar.pack(side=tk.LEFT, padx=5)
-        self.btn_generar_sql_todos = ttk.Button(btn_frame, text="📝 SQL (Todos)",
+        self.btn_generar_sql_todos = ttk.Button(btn_frame, text="SQL (Todos)",
                                                  command=self.generar_sql_todos)
         self.btn_generar_sql_todos.pack(side=tk.LEFT, padx=5)
-        self.btn_generar_sql_cambios = ttk.Button(btn_frame, text="📝 SQL (Cambios)",
+        self.btn_generar_sql_cambios = ttk.Button(btn_frame, text="SQL (Cambios)",
                                                    command=self.generar_sql_cambios)
         self.btn_generar_sql_cambios.pack(side=tk.LEFT, padx=5)
         ttk.Button(btn_frame, text="Cerrar", command=self.cerrar).pack(side=tk.RIGHT, padx=5)
