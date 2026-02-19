@@ -1,9 +1,8 @@
 {
   "_history_host": [
-    "192.168.44.432",
+    "192.168.44.43",
     "192.168.44.48",
     "192.168.44.41",
-    "localhost",
     "192.168.44.49"
   ],
   "_history_puerto": [
@@ -25,7 +24,6 @@
     "avalencia",
     "sigloc",
     "cemm",
-    "postgres",
     "ropc",
     "cae"
   ],

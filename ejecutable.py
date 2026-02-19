@@ -21,114 +21,93 @@ class DBManager:
         self.data_dir = self.base_dir / "data"
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.config_file = str(self.data_dir / "db_manager_config.json")
-        self.history_file = str(self.data_dir / "execution_history.json")
         self.config = self.load_config()
         self.global_params = self.config.get('_global_params', {})
         self.current_process = None
+        self.colors = {
+            'ink':       '#3d3d3d',
+            'verde':     '#5a9e6e',  
+            'verde_drk': '#498a5e',
+            'plomo':     '#7a8b96',  
+            'plomo_drk': '#657585',
+            'parchment': '#f5f5f5',
+            'cream':     '#ffffff', 
+            'dust':      '#9a9a9a',
+            'line':      '#d0d0d0',
+            'console_bg':     '#1e1a15',
+            'console_fg':     '#d4cbb8',
+            'console_cursor': '#c4955a',
+            'console_sel_bg': '#4a3828',
+            'tag_info':    '#7ab3c4',
+            'tag_error':   '#c4786a',
+            'tag_success': '#7aab7a',
+            'tag_warning': '#c4a65a',
+            'tag_module':  '#a07ab0',
+        }
+        self.fonts = {
+            'title':   ('Segoe UI', 22, 'bold'),
+            'section': ('Segoe UI', 13, 'bold'),
+            'heading': ('Segoe UI', 10, 'bold'),
+            'bold':    ('Segoe UI', 9, 'bold'),
+            'normal':  ('Segoe UI', 9),
+            'small':   ('Segoe UI', 7),
+            'console': ('Cascadia Code', 9),
+        }
         self.setup_ui()
         self.load_module_configs()
 
     def setup_ui(self):
-        self.colors = {
-            'primary': '#2c3e50',
-            'secondary': '#3498db',
-            'accent': '#9b59b6',
-            'success': '#27ae60',
-            'warning': '#f39c12',
-            'danger': '#e74c3c',
-            'bg_light': '#ecf0f1',
-            'bg_card': '#f7fafc',
-            'text_dark': '#2c3e50',
-            'text_light': '#7f8c8d',
-            'border': '#bdc3c7',
-            'hover': '#3498db',
-        }
-
-        self.root.configure(bg=self.colors['bg_light'])
+        self.root.configure(bg=self.colors['parchment'])
         style = ttk.Style()
         style.theme_use('clam')
         style.configure('Module.TButton',
-                   font=('Segoe UI', 9, 'bold'),
+                   font=self.fonts['bold'],
                    padding=6,
-                   background=self.colors['secondary'],
-                   foreground='white',
-                   borderwidth=0,
-                   focuscolor='none',
-                   relief='flat')
+                   background=self.colors['verde'],)
         style.map('Module.TButton',
-                 background=[('active', self.colors['hover']), ('pressed', self.colors['primary'])],
+                 background=[('active', self.colors['verde_drk']), ('pressed', self.colors['ink'])],
                  foreground=[('active', 'white')])
         style.configure('Execute.TButton',
-                       font=('Segoe UI', 10, 'bold'),
+                       font=self.fonts['heading'],
                        padding=10,
-                       background=self.colors['success'],
-                       foreground='white',
-                       borderwidth=0,
-                       relief='flat')
+                       background=self.colors['verde'],
+                       foreground='white')
         style.map('Execute.TButton',
-                 background=[('active', '#229954'), ('pressed', '#1e8449')])
+                 background=[('active', self.colors['verde_drk']), ('pressed', self.colors['verde_drk'])])
         style.configure('Top.TButton',
-                       font=('Segoe UI', 9),
+                       font=self.fonts['normal'],
                        padding=8,
-                       background=self.colors['bg_card'],
-                       borderwidth=1,
-                       relief='flat')
+                       background=self.colors['cream'],
+                       borderwidth=1)
         style.map('Top.TButton',
-                 background=[('active', self.colors['bg_light'])])
+                 background=[('active', self.colors['parchment'])])
         style.configure('Card.TFrame',
-                       background=self.colors['bg_card'],
-                       relief='flat',
+                       background=self.colors['cream'],
                        borderwidth=0)
         style.configure('TLabelframe',
-                       background=self.colors['bg_card'],
+                       background=self.colors['cream'],
                        borderwidth=2,
                        relief='groove')
         style.configure('TLabelframe.Label',
-                       font=('Segoe UI', 11, 'bold'),
-                       foreground=self.colors['primary'],
-                       background=self.colors['bg_card'])
+                       font=self.fonts['heading'],
+                       foreground=self.colors['ink'],
+                       background=self.colors['cream'])
         main_container = ttk.Frame(self.root, style='Card.TFrame')
         main_container.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
-        title_frame = tk.Frame(main_container, bg=self.colors['primary'])
+        title_frame = tk.Frame(main_container, bg=self.colors['ink'])
         title_frame.pack(fill=tk.X, pady=(0, 15))
-        header_content = tk.Frame(title_frame, bg=self.colors['primary'])
+        header_content = tk.Frame(title_frame, bg=self.colors['ink'])
         header_content.pack(fill=tk.BOTH, expand=True, padx=20, pady=15)
-        title_container = tk.Frame(header_content, bg=self.colors['primary'])
+        title_container = tk.Frame(header_content, bg=self.colors['ink'])
         title_container.pack(side=tk.LEFT)
-        title_text = tk.Frame(title_container, bg=self.colors['primary'])
+        title_text = tk.Frame(title_container, bg=self.colors['ink'])
         title_text.pack(side=tk.LEFT)
+
         tk.Label(title_text, text="DB MANAGER",
-                font=('Segoe UI', 22, 'bold'),
-                bg=self.colors['primary'],
+                font=self.fonts['title'],
+                bg=self.colors['ink'],
                 fg='white').pack(anchor=tk.W)
-        tk.Label(title_text, text="Arquitectura de Base de Datos",
-                font=('Segoe UI', 10),
-                bg=self.colors['primary'],
-                fg=self.colors['bg_light']).pack(anchor=tk.W)
-        right_buttons_frame = tk.Frame(header_content, bg=self.colors['primary'])
-        right_buttons_frame.pack(side=tk.RIGHT, padx=5)
-        hist_btn = tk.Button(right_buttons_frame, text="Historial",
-                            command=self.show_history,
-                            font=('Segoe UI', 9, 'bold'),
-                            bg=self.colors['accent'],
-                            fg='white',
-                            relief='flat',
-                    padx=10, pady=6,
-                            cursor='hand2',
-                            borderwidth=0)
-        hist_btn.pack(side=tk.RIGHT, padx=5)
-        self._add_hover_effect(hist_btn, self.colors['accent'], '#8e44ad')
-        req_btn = tk.Button(right_buttons_frame, text="Validar Requisitos",
-                           command=self.check_requirements,
-                           font=('Segoe UI', 9, 'bold'),
-                           bg=self.colors['secondary'],
-                           fg='white',
-                           relief='flat',
-                   padx=10, pady=6,
-                           cursor='hand2',
-                           borderwidth=0)
-        req_btn.pack(side=tk.RIGHT, padx=5)
-        self._add_hover_effect(req_btn, self.colors['secondary'], '#2980b9')
+        
         content_frame = ttk.PanedWindow(main_container, orient=tk.HORIZONTAL)
         content_frame.pack(fill=tk.BOTH, expand=True)
         left_panel = ttk.Frame(content_frame)
@@ -143,7 +122,7 @@ class DBManager:
                 "script": str(self.modules_dir / "agregar_comentarios.py"),
                 "type": "python",
                 "icon": "1",
-                "color": "#3498db",
+                "color": "#6495b0",
                 "params": ["host", "puerto", "bd", "usuario", "password", "esquema"]
             },
             {
@@ -152,7 +131,7 @@ class DBManager:
                 "script": str(self.modules_dir / "validar_nomenclatura.py"),
                 "type": "python",
                 "icon": "2",
-                "color": "#27ae60",
+                "color": "#7a8b96",
                 "params": ["host", "puerto", "bd", "usuario", "password", "ruta_salida_ddl_completo"]
             },
             {
@@ -161,7 +140,7 @@ class DBManager:
                 "script": str(self.modules_dir / "generar_diccionario.py"),
                 "type": "python",
                 "icon": "3",
-                "color": "#9b59b6",
+                "color": "#6495b0",
                 "params": ["host", "puerto", "bd", "usuario", "password", "esquema", "ruta_salida_rtf"]
             },
             {
@@ -170,17 +149,8 @@ class DBManager:
                 "script": str(self.modules_dir / "data_prueba.py"),
                 "type": "python",
                 "icon": "4",
-                "color": "#f39c12",
+                "color": "#7a8b96",
                 "params": ["host", "puerto", "bd", "usuario", "password", "esquema", "cantidad_registros"]
-            },
-            {
-                "id": 5,
-                "name": "DASHBOARD",
-                "script": str(self.modules_dir / "dashboard" / "extraer_metadata_overview.py"),
-                "type": "python",
-                "icon": "5",
-                "color": "#e74c3c",
-                "params": ["ruta_ddl_completo"]
             }
         ]
         self.module_buttons = []
@@ -192,13 +162,12 @@ class DBManager:
         content_frame.add(right_panel, weight=4)
         config_frame = ttk.LabelFrame(right_panel, text="  Configuracion del Modulo", padding=15)
         config_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
-        module_header = tk.Frame(config_frame, bg=self.colors['bg_card'])
+        module_header = tk.Frame(config_frame, bg=self.colors['cream'])
         module_header.pack(fill=tk.X, pady=(0, 15))
         self.module_name_var = tk.StringVar(value="Selecciona un módulo")
-        tk.Label(module_header, textvariable=self.module_name_var,
-                font=('Segoe UI', 13, 'bold'),
-                bg=self.colors['bg_card'],
-                fg=self.colors['primary']).pack(anchor=tk.W)
+        tk.Label(module_header, font=self.fonts['section'],
+                bg=self.colors['cream'],
+                fg=self.colors['ink']).pack(anchor=tk.W)
         params_container = ttk.Frame(config_frame)
         params_container.pack(fill=tk.BOTH, expand=True)
         canvas = tk.Canvas(params_container, highlightthickness=0)
@@ -244,100 +213,86 @@ class DBManager:
         canvas.bind("<Enter>", _bind_mousewheel)
         canvas.bind("<Leave>", _unbind_mousewheel)
         self.param_widgets = {}
-        self.btn_frame = tk.Frame(config_frame, bg=self.colors['bg_card'])
+        self.btn_frame = tk.Frame(config_frame, bg=self.colors['cream'])
         self.btn_frame.pack(fill=tk.X, pady=(15, 0))
-        console_frame = ttk.LabelFrame(right_panel, text="  Consola de Ejecucion", padding=10)
+        console_frame = ttk.LabelFrame(right_panel, text=" Consola", padding=10)
         console_frame.configure(height=220)
         console_frame.pack(fill=tk.BOTH, expand=False, pady=(10, 0))
         console_frame.pack_propagate(False)
-        console_btn_frame = tk.Frame(console_frame, bg=self.colors['bg_card'])
+        console_btn_frame = tk.Frame(console_frame, bg=self.colors['cream'])
         console_btn_frame.pack(fill=tk.X, pady=(0, 8))
-        clear_btn = tk.Button(console_btn_frame, text="Limpiar",
-                             command=self.clear_console,
-                             font=('Segoe UI', 9),
-                             bg=self.colors['bg_light'],
-                             fg=self.colors['text_dark'],
-                             relief='flat',
-                             cursor='hand2',
-                             borderwidth=0,
-                             padx=12, pady=6)
+        clear_btn = self._make_flat_btn(console_btn_frame, "Limpiar",
+                                        self.clear_console, bg=self.colors['plomo'],
+                                        font_key='normal', padx=12)
         clear_btn.pack(side=tk.LEFT, padx=5)
-        self._add_hover_effect(clear_btn, self.colors['bg_light'], self.colors['border'])
-        copy_btn = tk.Button(console_btn_frame, text="Copiar Log",
-                            command=self.copy_log,
-                            font=('Segoe UI', 9),
-                            bg=self.colors['bg_light'],
-                            fg=self.colors['text_dark'],
-                            relief='flat',
-                            cursor='hand2',
-                            borderwidth=0,
-                            padx=12, pady=6)
+        self._add_hover_effect(clear_btn, self.colors['plomo'], self.colors['plomo_drk'])
+        copy_btn = self._make_flat_btn(console_btn_frame, "Copiar Log",
+                                       self.copy_log, bg=self.colors['plomo'],
+                                       font_key='normal', padx=12)
         copy_btn.pack(side=tk.LEFT, padx=5)
-        self._add_hover_effect(copy_btn, self.colors['bg_light'], self.colors['border'])
-        console_container = tk.Frame(console_frame, bg='#1e1e1e', relief=tk.SOLID,
-                                    borderwidth=1, highlightbackground='#3e3e42',
+        self._add_hover_effect(copy_btn, self.colors['plomo'], self.colors['plomo_drk'])
+        console_container = tk.Frame(console_frame,
+                                    bg=self.colors['console_bg'],
+                                    relief=tk.SOLID,
+                                    borderwidth=1,
+                                    highlightbackground=self.colors['console_bg'],
                                     highlightthickness=1)
         console_container.pack(fill=tk.BOTH, expand=True)
         self.console_text = scrolledtext.ScrolledText(console_container,
-                                                      font=("Cascadia Code", 9),
-                                                      bg="#1e1e1e", fg="#d4d4d4",
-                                                      insertbackground="#4ec9b0",
+                                                      font=self.fonts['console'],
+                                                      bg=self.colors['console_bg'],
+                                                      fg=self.colors['console_fg'],
+                                                      insertbackground=self.colors['console_cursor'],
                                                       wrap=tk.WORD,
                                                       relief=tk.FLAT,
                                                       padx=10, pady=10,
-                                                      selectbackground='#264f78',
-                                                      selectforeground='#ffffff')
+                                                      selectbackground=self.colors['console_sel_bg'],
+                                                      selectforeground='white')
         self.console_text.pack(fill=tk.BOTH, expand=True)
-        self.console_text.tag_config("info", foreground="#4fc1ff")
-        self.console_text.tag_config("error", foreground="#f48771")
-        self.console_text.tag_config("success", foreground="#73c991")
-        self.console_text.tag_config("warning", foreground="#cca700")
-        self.console_text.tag_config("module", foreground="#c586c0")
+        self.console_text.tag_config("info",    foreground=self.colors['tag_info'])
+        self.console_text.tag_config("error",   foreground=self.colors['tag_error'])
+        self.console_text.tag_config("success", foreground=self.colors['tag_success'])
+        self.console_text.tag_config("warning", foreground=self.colors['tag_warning'])
+        self.console_text.tag_config("module",  foreground=self.colors['tag_module'])
 
     def create_module_card(self, parent, module):
-        card_container = tk.Frame(parent, bg=self.colors['bg_card'],
+        card_container = tk.Frame(parent, bg=self.colors['cream'],
                                  relief=tk.SOLID, borderwidth=1,
-                                 highlightbackground=self.colors['border'],
+                                 highlightbackground=self.colors['line'],
                                  highlightthickness=1)
         card_container.pack(fill=tk.X, pady=4, padx=6)
         color_bar = tk.Frame(card_container, bg=module['color'], height=2)
         color_bar.pack(fill=tk.X)
-        card_content = tk.Frame(card_container, bg=self.colors['bg_card'])
+        card_content = tk.Frame(card_container, bg=self.colors['cream'])
         card_content.pack(fill=tk.BOTH, expand=True, padx=10, pady=8)
-        header = tk.Frame(card_content, bg=self.colors['bg_card'])
+        header = tk.Frame(card_content, bg=self.colors['cream'])
         header.pack(fill=tk.X, pady=(0, 4))
         icon_frame = tk.Frame(header, bg=module['color'], width=36, height=36)
         icon_frame.pack(side=tk.LEFT, padx=(0, 12))
         icon_frame.pack_propagate(False)
-        tk.Label(icon_frame, text=module['icon'], font=('Segoe UI', 14),
+        tk.Label(icon_frame, text=module['icon'], font=self.fonts['section'],
                 bg=module['color'], fg='white').pack(expand=True)
-        info_frame = tk.Frame(header, bg=self.colors['bg_card'])
+        info_frame = tk.Frame(header, bg=self.colors['cream'])
         info_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         tk.Label(info_frame, text=f"Módulo {module['id']}",
-            font=('Segoe UI', 7),
-                bg=self.colors['bg_card'],
-                fg=self.colors['text_light']).pack(anchor=tk.W)
+            font=self.fonts['small'],
+                bg=self.colors['cream'],
+                fg=self.colors['dust']).pack(anchor=tk.W)
         tk.Label(info_frame, text=module['name'],
-            font=('Segoe UI', 9, 'bold'),
-                bg=self.colors['bg_card'],
-                fg=self.colors['text_dark']).pack(anchor=tk.W)
+            font=self.fonts['bold'],
+                bg=self.colors['cream'],
+                fg=self.colors['ink']).pack(anchor=tk.W)
         type_badge = tk.Label(header, text=module['type'].upper(),
-                     font=('Segoe UI', 7, 'bold'),
-                     bg=self.colors['bg_light'],
-                     fg=self.colors['text_light'],
+                     font=self.fonts['small'],
+                     bg=self.colors['parchment'],
+                     fg=self.colors['dust'],
                      padx=6, pady=2)
         type_badge.pack(side=tk.RIGHT)
-        separator = tk.Frame(card_content, bg=self.colors['border'], height=1)
+        separator = tk.Frame(card_content, bg=self.colors['line'], height=1)
         separator.pack(fill=tk.X, pady=(6, 8))
-        btn = tk.Button(card_content, text="Configurar y Ejecutar",
-                       command=lambda m=module: self.select_module(m),
-                   font=('Segoe UI', 9, 'bold'),
-                       bg=module['color'],
-                       fg='white',
-                       relief='flat',
-                       cursor='hand2',
-                       borderwidth=0,
-                   padx=10, pady=6)
+        btn = self._make_flat_btn(card_content, "Configurar",
+                                  lambda m=module: self.select_module(m),
+                                  bg=module['color'])
         btn.pack(fill=tk.X)
         self._add_hover_effect(btn, module['color'], self._darken_color(module['color']))
         self.module_buttons.append(btn)
@@ -359,6 +314,74 @@ class DBManager:
         rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
         darkened = tuple(int(c * factor) for c in rgb)
         return '#{:02x}{:02x}{:02x}'.format(*darkened)
+
+    def _make_flat_btn(self, parent, text, command, bg, fg='white',
+                       font_key='bold', padx=10, pady=6):
+        """Crea un tk.Button plano con estilo estándar."""
+        return tk.Button(parent, text=text, command=command,
+                         font=self.fonts[font_key], bg=bg, fg=fg, 
+                         cursor='hand2', borderwidth=0,
+                         padx=padx, pady=pady)
+
+    def _save_param_history(self, param, value):
+        """Guarda el valor de un parámetro en el historial (LRU, máx 10)."""
+        if param == 'password':
+            return
+        self.global_params[param] = value
+        history_key = f'_history_{param}'
+        param_history = self.config.get(history_key, [])
+        if value in param_history:
+            param_history.remove(value)
+        param_history.append(value)
+        if len(param_history) > 10:
+            param_history = param_history[-10:]
+        self.config[history_key] = param_history
+
+    def _create_param_row(self, parent, param, param_labels):
+        """Crea una fila label + widget de entrada para un parámetro. Retorna el tk.StringVar."""
+        label_text = param_labels.get(param, param + ":")
+        param_history = self.config.get(f'_history_{param}', [])
+
+        param_frame = tk.Frame(parent, bg=self.colors['cream'])
+        param_frame.pack(fill=tk.X, pady=5)
+
+        tk.Label(param_frame, text=label_text,
+                 font=self.fonts['bold'],
+                 bg=self.colors['cream'],
+                 fg=self.colors['ink'],
+                 width=20, anchor=tk.W).pack(side=tk.LEFT)
+
+        var = tk.StringVar()
+        if param_history and param != 'password':
+            var.set(param_history[-1])
+
+        if 'ruta' in param.lower():
+            entry_frame = tk.Frame(param_frame, bg=self.colors['cream'])
+            entry_frame.pack(side=tk.LEFT, fill=tk.X, expand=True)
+            ttk.Combobox(entry_frame, textvariable=var,
+                         font=self.fonts['normal'],
+                         values=[''] + param_history,
+                         width=38).pack(side=tk.LEFT, fill=tk.X, expand=True)
+            is_input = ('plantilla' in param.lower() or
+                        ('ddl' in param.lower() and 'salida' not in param.lower()))
+            browse_btn = self._make_flat_btn(
+                entry_frame, "Abrir" if is_input else "Ruta",
+                lambda v=var, p=param: self.browse_path(v, p),
+                bg=self.colors['verde'],
+                font_key='normal', padx=6, pady=3)
+            browse_btn.pack(side=tk.LEFT, padx=(5, 0))
+            self._add_hover_effect(browse_btn, self.colors['verde'],
+                                   self.colors['verde_drk'])
+        elif param == 'password':
+            tk.Entry(param_frame, textvariable=var, show="●",
+                     font=self.fonts['normal'],
+                     width=40).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        else:
+            ttk.Combobox(param_frame, textvariable=var,
+                         font=self.fonts['normal'],
+                         values=[''] + param_history,
+                         width=38).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        return var
 
     def select_module(self, module):
         self.selected_module = module
@@ -390,102 +413,35 @@ class DBManager:
         }
 
         # Crear frame de información con diseño similar al módulo 4
-        info_frame = tk.Frame(self.params_frame, bg=self.colors['bg_card'])
+        info_frame = tk.Frame(self.params_frame, bg=self.colors['cream'])
         info_frame.pack(fill=tk.BOTH, expand=True)
 
         # Sección de parámetros
-        params_section = tk.Frame(info_frame, bg=self.colors['bg_card'])
+        params_section = tk.Frame(info_frame, bg=self.colors['cream'])
         params_section.pack(fill=tk.X, padx=20, pady=10)
 
         # Título de parámetros
         tk.Label(params_section,
-                text="Parámetros de Conexión:" if any(p in ['host', 'puerto', 'bd'] for p in module['params']) else "Parámetros:",
-                font=('Segoe UI', 11, 'bold'),
-                bg=self.colors['bg_card'],
-                fg=self.colors['primary']).pack(anchor=tk.W, pady=(0, 10))
+                font=self.fonts['heading'],
+                bg=self.colors['cream'],
+                fg=self.colors['ink']).pack(anchor=tk.W, pady=(0, 10))
 
         # Crear campos de parámetros con diseño moderno
         for param in module['params']:
-            label_text = param_labels.get(param, param + ":")
-
-            param_frame = tk.Frame(params_section, bg=self.colors['bg_card'])
-            param_frame.pack(fill=tk.X, pady=5)
-
-            # Label con ancho fijo
-            tk.Label(param_frame, text=label_text,
-                    font=('Segoe UI', 9, 'bold'),
-                    bg=self.colors['bg_card'],
-                    fg=self.colors['text_dark'],
-                    width=20, anchor=tk.W).pack(side=tk.LEFT)
-
-            # Cargar historial
-            history_key = f'_history_{param}'
-            param_history = self.config.get(history_key, [])
-
-            var = tk.StringVar()
-            # Pre-cargar el último valor usado
-            if param_history and param != 'password':
-                var.set(param_history[-1])
-
-            if 'ruta' in param.lower():
-                # Frame para entrada + botón
-                entry_frame = tk.Frame(param_frame, bg=self.colors['bg_card'])
-                entry_frame.pack(side=tk.LEFT, fill=tk.X, expand=True)
-
-                entry = ttk.Combobox(entry_frame, textvariable=var,
-                                    font=('Segoe UI', 9),
-                                    values=[''] + param_history,
-                                    width=38)
-                entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
-
-                is_input = 'plantilla' in param.lower() or ('ddl' in param.lower() and 'salida' not in param.lower())
-                text = "Abrir" if is_input else "Ruta"
-                btn = tk.Button(entry_frame, text=text,
-                              font=('Segoe UI', 9),
-                              command=lambda v=var, p=param: self.browse_path(v, p),
-                              bg=self.colors['secondary'],
-                              fg='white',
-                              relief='flat',
-                              cursor='hand2',
-                              borderwidth=0,
-                              padx=6, pady=3)
-                btn.pack(side=tk.LEFT, padx=(5, 0))
-                self._add_hover_effect(btn, self.colors['secondary'], '#2980b9')
-
-            elif param == 'password':
-                entry = tk.Entry(param_frame, textvariable=var, show="●",
-                               font=('Segoe UI', 9),
-                               width=40)
-                entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
-            else:
-                entry = ttk.Combobox(param_frame, textvariable=var,
-                                    font=('Segoe UI', 9),
-                                    values=[''] + param_history,
-                                    width=38)
-                entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
-
-            self.param_widgets[param] = var
+            self.param_widgets[param] = self._create_param_row(params_section, param, param_labels)
 
         # Botón de ejecutar
-        button_container = tk.Frame(info_frame, bg=self.colors['bg_card'])
+        button_container = tk.Frame(info_frame, bg=self.colors['cream'])
         button_container.pack(pady=15)
 
-        exec_btn = tk.Button(button_container,
-                            text="EJECUTAR MODULO",
-                            command=self.execute_current_module,
-                            font=('Segoe UI', 10, 'bold'),
-                            bg=self.colors['success'],
-                            fg='white',
-                            relief=tk.FLAT,
-                            cursor='hand2',
-                            padx=15, pady=8)
+        exec_btn = self._make_flat_btn(button_container, "EJECUTAR MODULO",
+                                       self.execute_current_module,
+                                       bg=self.colors['verde'],
+                                       font_key='heading', padx=15, pady=8)
         exec_btn.pack()
-        self._add_hover_effect(exec_btn, self.colors['success'], '#229954')
-
-        self.log_message(f"\n{'='*70}", "info")
+        self._add_hover_effect(exec_btn, self.colors['verde'], self.colors['verde_drk'])
         self.log_message(f"Modulo seleccionado: {module['name']}", "module")
-        self.log_message(f"Tipo: {module['type'].upper()}", "info")
-        self.log_message(f"{'='*70}\n", "info")
+
 
     def browse_path(self, var, param_name):
         if 'salida' in param_name.lower():
@@ -521,61 +477,30 @@ class DBManager:
             widget.destroy()
         for widget in self.btn_frame.winfo_children():
             widget.destroy()
-        info_frame = tk.Frame(self.params_frame, bg=self.colors['bg_card'])
+        info_frame = tk.Frame(self.params_frame, bg=self.colors['cream'])
         info_frame.pack(fill=tk.BOTH, expand=True)
-        params_section = tk.Frame(info_frame, bg=self.colors['bg_card'])
-        params_section.pack(fill=tk.X, padx=20)
+        params_section = tk.Frame(info_frame, bg=self.colors['cream'])
+        params_section.pack(fill=tk.X, padx=10)
         tk.Label(params_section,
-                text="Parámetros de Conexión:",
-                font=('Segoe UI', 11, 'bold'),
-                bg=self.colors['bg_card'],
-                fg=self.colors['primary']).pack(anchor=tk.W, pady=(0, 10))
+                font=self.fonts['heading'],
+                bg=self.colors['cream'],
+                fg=self.colors['ink']).pack(anchor=tk.W)
+        param_labels = {
+            "host": "Host PostgreSQL:", "puerto": "Puerto:",
+            "bd": "Base de Datos:", "usuario": "Usuario:",
+            "password": "Contraseña:", "esquema": "Esquema:",
+        }
         basic_params = ["host", "puerto", "bd", "usuario", "password", "esquema"]
         for param in basic_params:
-            label_text = {
-                "host": "Host PostgreSQL:",
-                "puerto": "Puerto:",
-                "bd": "Base de Datos:",
-                "usuario": "Usuario:",
-                "password": "Contraseña:",
-                "esquema": "Esquema:"
-            }.get(param, param + ":")
-            param_frame = tk.Frame(params_section, bg=self.colors['bg_card'])
-            param_frame.pack(fill=tk.X, pady=5)
-            tk.Label(param_frame, text=label_text,
-                    font=('Segoe UI', 9, 'bold'),
-                    bg=self.colors['bg_card'],
-                    fg=self.colors['text_dark'],
-                    width=20, anchor=tk.W).pack(side=tk.LEFT)
-            var = tk.StringVar()
-            history_key = f'_history_{param}'
-            param_history = self.config.get(history_key, [])
-            if param_history:
-                var.set(param_history[-1])
-            if param == 'password':
-                entry = tk.Entry(param_frame, textvariable=var, show="●",
-                               font=('Segoe UI', 9),
-                               width=40)
-            else:
-                entry = ttk.Combobox(param_frame, textvariable=var,
-                                    font=('Segoe UI', 9),
-                                    values=[''] + param_history,
-                                    width=38)
-            entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
-            self.param_widgets[param] = var
-        button_container = tk.Frame(info_frame, bg=self.colors['bg_card'])
+            self.param_widgets[param] = self._create_param_row(params_section, param, param_labels)
+        button_container = tk.Frame(info_frame, bg=self.colors['cream'])
         button_container.pack(pady=30)
-        open_btn = tk.Button(button_container,
-                            text="ABRIR CONFIGURACION",
-                            command=lambda: self.launch_data_prueba_gui(module),
-                            font=('Segoe UI', 10, 'bold'),
-                            bg=self.colors['secondary'],
-                            fg='white',
-                            relief=tk.FLAT,
-                            cursor='hand2',
-                            padx=5, pady=5)
+        open_btn = self._make_flat_btn(button_container, "ABRIR CONFIGURACION",
+                                       lambda: self.launch_data_prueba_gui(module),
+                                       bg=self.colors['verde'],
+                                       font_key='heading', padx=5, pady=5)
         open_btn.pack()
-        self._add_hover_effect(open_btn, self.colors['secondary'], "#2e8ece")
+        self._add_hover_effect(open_btn, self.colors['verde'], self.colors['verde_drk'])
 
     def launch_data_prueba_gui(self, module):
         """Lanza la interfaz gráfica del módulo de data de prueba"""
@@ -591,19 +516,7 @@ class DBManager:
                 return
             params_values[param] = value
         for param, value in params_values.items():
-            if param != 'password':
-                self.global_params[param] = value
-                history_key = f'_history_{param}'
-                param_history = self.config.get(history_key, [])
-                if value not in param_history:
-                    param_history.append(value)
-                    if len(param_history) > 10:
-                        param_history = param_history[-10:]
-                    self.config[history_key] = param_history
-                else:
-                    param_history.remove(value)
-                    param_history.append(value)
-                    self.config[history_key] = param_history
+            self._save_param_history(param, value)
         self.config['_global_params'] = self.global_params
         self.save_config()
         try:
@@ -626,7 +539,6 @@ class DBManager:
             self.log_message("\n" + "="*70, "info")
             self.log_message(f"Abriendo interfaz avanzada de {module['name']}...", "module")
             self.log_message("="*70 + "\n", "info")
-            import subprocess
             subprocess.Popen(cmd)
             self.log_message("[OK] Interfaz abierta en ventana separada", "success")
             self.log_message("\nConfigura las tablas y genera los datos desde la nueva ventana", "info")
@@ -646,19 +558,7 @@ class DBManager:
                 messagebox.showerror("Error", f"El parametro '{param}' es obligatorio")
                 return
             params_values[param] = value
-            if param != 'password':
-                self.global_params[param] = value
-                history_key = f'_history_{param}'
-                param_history = self.config.get(history_key, [])
-                if value not in param_history:
-                    param_history.append(value)
-                    if len(param_history) > 10:
-                        param_history = param_history[-10:]
-                    self.config[history_key] = param_history
-                else:
-                    param_history.remove(value)
-                    param_history.append(value)
-                    self.config[history_key] = param_history
+            self._save_param_history(param, value)
         self.config['_global_params'] = self.global_params
         self.save_config()
         if not os.path.exists(module['script']):
@@ -673,27 +573,9 @@ class DBManager:
 
     def _execute_module_thread(self, module, params_values):
         try:
-            cmd_args = []
-            for param in module['params']:
-                cmd_args.append(params_values[param])
-            if module['type'] == 'python':
-                import sys
-                python_exe = sys.executable
-                cmd = [python_exe, module['script']] + cmd_args
-            elif module['type'] == 'groovy':
-                groovy_exe = shutil.which('groovy')
-                if groovy_exe:
-                    self.log_message(f"Usando ejecutable Groovy: {groovy_exe}", "info")
-                    if groovy_exe.lower().endswith(('.bat', '.cmd')):
-                        cmd = ['cmd', '/c', groovy_exe, module['script']] + cmd_args
-                    else:
-                        cmd = [groovy_exe, module['script']] + cmd_args
-                else:
-                    cmd = ['groovy', module['script']] + cmd_args
-            else:
-                self.log_message(f" Tipo no soportado: {module['type']}", "error")
-                return
-            self.log_message(f"Comando: {' '.join(cmd)}\n", "warning")
+            import sys
+            cmd_args = [params_values[param] for param in module['params']]
+            cmd = [sys.executable, module['script']] + cmd_args
             start_time = datetime.now()
             self.current_process = subprocess.Popen(
                 cmd,
@@ -710,29 +592,20 @@ class DBManager:
             if stderr:
                 self.log_message("\n Errores/Advertencias:", "warning")
                 self.log_message(stderr, "error")
-            end_time = datetime.now()
-            duration = (end_time - start_time).total_seconds()
+            duration = (datetime.now() - start_time).total_seconds()
             if self.current_process.returncode == 0:
-                self.log_message(f"\nModulo completado", "success")
                 self.log_message(f"Tiempo de ejecucion: {duration:.2f} segundos", "success")
-                status = "success"
             else:
                 self.log_message(f"\n Modulo termino con codigo: {self.current_process.returncode}", "error")
-                status = "error"
-            self.save_to_history(module, params_values, status, duration)
             self.current_process = None
         except FileNotFoundError:
-            interpreter = "Python" if module['type'] == 'python' else "Groovy"
-            self.log_message(f" Error: {interpreter} no esta instalado o no esta en PATH", "error")
-            exe_name = 'python' if module['type'] == 'python' else 'groovy'
-            found = shutil.which(exe_name)
+            self.log_message(" Error: Python no esta instalado o no esta en PATH", "error")
+            found = shutil.which('python')
             if found:
-                self.log_message(f"Localizado {exe_name} en: {found}", "info")
+                self.log_message(f"Localizado python en: {found}", "info")
             else:
-                self.log_message(f"No se encontro '{exe_name}' en PATH. PATH actual:", "warning")
-                path_env = os.environ.get('PATH', '')
-                self.log_message(path_env, "info")
-                self.log_message(f"Prueba en terminal: 'where {exe_name}' (PowerShell) o 'which {exe_name}' (bash).", "info")
+                self.log_message("No se encontro 'python' en PATH. PATH actual:", "warning")
+                self.log_message(os.environ.get('PATH', ''), "info")
         except Exception as e:
             self.log_message(f" Error ejecutando modulo: {e}", "error")
             self.current_process = None
@@ -754,7 +627,6 @@ class DBManager:
             self.root.clipboard_clear()
             self.root.clipboard_append(log_content)
             self.root.update()
-            messagebox.showinfo("Éxito", "Log copiado al portapapeles correctamente")
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo copiar el log: {e}")
 
@@ -762,152 +634,6 @@ class DBManager:
         self.console_text.insert(tk.END, message + "\n", tag)
         self.console_text.see(tk.END)
         self.console_text.update()
-
-    def check_requirements(self):
-        self.log_message(f"\n{'='*70}", "info")
-        self.log_message(" Verificando requisitos del sistema...", "module")
-        self.log_message(f"{'='*70}\n", "info")
-        threading.Thread(target=self._check_requirements_thread, daemon=True).start()
-
-    def _check_requirements_thread(self):
-        checks = {}
-        try:
-            result = subprocess.run(['python', '--version'], capture_output=True, text=True, timeout=5)
-            if result.returncode == 0:
-                self.log_message(f" Python: {result.stdout.strip()}", "success")
-                checks['python'] = True
-            else:
-                self.log_message(f" Python no encontrado", "error")
-                checks['python'] = False
-        except:
-            self.log_message(f" Python no encontrado", "error")
-            checks['python'] = False
-        if checks.get('python'):
-            self.log_message(f"\n Verificando librerias de Python...", "info")
-            try:
-                result = subprocess.run(
-                    ['python', '-c', 'import psycopg2; print(psycopg2.__version__)'],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-                if result.returncode == 0:
-                    self.log_message(f" psycopg2: {result.stdout.strip()}", "success")
-                    checks['psycopg2'] = True
-                else:
-                    self.log_message(f" psycopg2 NO instalado (requerido para Modulo 3)", "error")
-                    self.log_message(f"   Instalar con: pip install psycopg2-binary", "warning")
-                    checks['psycopg2'] = False
-            except:
-                self.log_message(f" psycopg2 NO instalado (requerido para Modulo 3)", "error")
-                self.log_message(f"   Instalar con: pip install psycopg2-binary", "warning")
-                checks['psycopg2'] = False
-        try:
-            result = subprocess.run(['groovy', '--version'], capture_output=True, text=True, timeout=5)
-            if result.returncode == 0:
-                version_line = result.stdout.split('\n')[0]
-                self.log_message(f"\n Groovy: {version_line}", "success")
-                checks['groovy'] = True
-            else:
-                self.log_message(f"\n Groovy no encontrado (opcional)", "warning")
-                checks['groovy'] = False
-        except:
-            self.log_message(f"\n Groovy no encontrado (opcional)", "warning")
-            checks['groovy'] = False
-        try:
-            result = subprocess.run(['pg_dump', '--version'], capture_output=True, text=True, timeout=5)
-            if result.returncode == 0:
-                self.log_message(f" PostgreSQL: {result.stdout.strip()}", "success")
-                checks['postgresql'] = True
-            else:
-                self.log_message(f" pg_dump no encontrado (requerido para Modulo 2)", "warning")
-                checks['postgresql'] = False
-        except:
-            self.log_message(f" pg_dump no encontrado (requerido para Modulo 2)", "warning")
-            checks['postgresql'] = False
-        self.log_message(f"\n{'='*70}\n", "info")
-        requisitos_criticos = checks.get('python') and checks.get('psycopg2')
-        if requisitos_criticos:
-            self.log_message(" Todos los requisitos criticos estan instalados", "success")
-        else:
-            self.log_message(" FALTAN requisitos criticos. Revisa los mensajes arriba.", "error")
-        if not checks.get('groovy'):
-            self.log_message(" Nota: Groovy es opcional", "info")
-        if not checks.get('postgresql'):
-            self.log_message(" Nota: pg_dump es necesario para Modulo 2", "warning")
-
-    def show_history(self):
-        history_window = tk.Toplevel(self.root)
-        history_window.title("Historial de Ejecuciones")
-        history_window.geometry("900x600")
-        frame = ttk.Frame(history_window, padding=10)
-        frame.pack(fill=tk.BOTH, expand=True)
-        columns = ("Fecha/Hora", "Modulo", "Estado", "Duracion")
-        tree = ttk.Treeview(frame, columns=columns, show='headings', height=20)
-        tree.heading("Fecha/Hora", text="Fecha/Hora")
-        tree.heading("Modulo", text="Modulo")
-        tree.heading("Estado", text="Estado")
-        tree.heading("Duracion", text="Duracion (seg)")
-        tree.column("Fecha/Hora", width=150)
-        tree.column("Modulo", width=400)
-        tree.column("Estado", width=100)
-        tree.column("Duracion", width=100)
-        scrollbar = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=tree.yview)
-        tree.configure(yscroll=scrollbar.set)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        history = self.load_history()
-        for entry in reversed(history):
-            tree.insert('', 0, values=(
-                entry['timestamp'],
-                entry['module_name'],
-                entry['status'],
-                f"{entry['duration']:.2f}"
-            ))
-        btn_frame = ttk.Frame(history_window)
-        btn_frame.pack(fill=tk.X, padx=10, pady=10)
-        ttk.Button(btn_frame, text=" Limpiar Historial",
-                  command=lambda: self.clear_history(history_window)).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btn_frame, text="Cerrar",
-                  command=history_window.destroy).pack(side=tk.RIGHT, padx=5)
-
-    def save_to_history(self, module, params, status, duration):
-        history = self.load_history()
-        entry = {
-            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            "module_id": module['id'],
-            "module_name": module['name'],
-            "status": status,
-            "duration": duration,
-            "params": params
-        }
-        history.append(entry)
-        if len(history) > 100:
-            history = history[-100:]
-        try:
-            with open(self.history_file, 'w', encoding='utf-8') as f:
-                json.dump(history, f, indent=2, ensure_ascii=False)
-        except Exception as e:
-            self.log_message(f" No se pudo guardar el historial: {e}", "warning")
-
-    def load_history(self):
-        if os.path.exists(self.history_file):
-            try:
-                with open(self.history_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except:
-                return []
-        return []
-
-    def clear_history(self, window):
-        if messagebox.askyesno("Confirmar", "Estas seguro de limpiar todo el historial?"):
-            try:
-                with open(self.history_file, 'w', encoding='utf-8') as f:
-                    json.dump([], f)
-                messagebox.showinfo("Exito", "Historial limpiado")
-                window.destroy()
-            except Exception as e:
-                messagebox.showerror("Error", f"No se pudo limpiar el historial: {e}")
 
     def load_config(self):
         if os.path.exists(self.config_file):
