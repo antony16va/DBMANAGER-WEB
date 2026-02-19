@@ -33,7 +33,8 @@
   "_history_ruta_salida_ddl_completo": [
     "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",
     "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",
-    "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql"
+    "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql",
+    "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.sql"
   ],
   "_global_params": {
     "host": "192.168.44.49",
@@ -41,9 +42,9 @@
     "bd": "cae",
     "usuario": "cae",
     "password": "sigloc_ab01$",
-    "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/DBMANAGER/prueba.sql",
+    "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.sql",
     "esquema": "cae_eg2026",
-    "ruta_salida_rtf": "C:/Users/avalencia/Desktop/cae_eg2026.rtf",
+    "ruta_salida_rtf": "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.rtf",
     "ruta_ddl_completo": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/dump.sql",
     "ruta_plantilla_excel": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/resources/Plantilla_Modelo.xlsx",
     "ruta_salida_ddl_base": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_inicial.sql",
@@ -63,7 +64,6 @@
     "cae_eg2026"
   ],
   "_history_ruta_salida_rtf": [
-    "C:/Users/avalencia/Desktop/DBMANAGER/claridad.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/cae.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/cae_admin.rtf",
@@ -72,7 +72,8 @@
     "C:\\Users\\avalencia\\Desktop\\DICCIONARIO\\cae_eg2026",
     "C:\\Users\\avalencia\\Desktop\\DICCIONARIO\\cae_eg2026.rtf",
     "C:/Users/avalencia/Desktop/ropc_eg2026.rtf",
-    "C:/Users/avalencia/Desktop/cae_eg2026.rtf"
+    "C:/Users/avalencia/Desktop/cae_eg2026.rtf",
+    "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.rtf"
   ],
   "_history_ruta_ddl_completo": [
     "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",

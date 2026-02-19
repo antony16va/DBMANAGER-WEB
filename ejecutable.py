@@ -472,7 +472,7 @@ class DBManager:
             var.set(path)
 
     def abrir_interfaz_data_prueba(self, module):
-        """Abre la interfaz especial para el módulo de data de prueba"""
+        """interfaz para el módulo de data de prueba"""
         for widget in self.params_frame.winfo_children():
             widget.destroy()
         for widget in self.btn_frame.winfo_children():
@@ -503,7 +503,7 @@ class DBManager:
         self._add_hover_effect(open_btn, self.colors['verde'], self.colors['verde_drk'])
 
     def launch_data_prueba_gui(self, module):
-        """Lanza la interfaz gráfica del módulo de data de prueba"""
+        """interfaz gráfica del módulo de data de prueba"""
         required_params = ["host", "puerto", "bd", "usuario", "password", "esquema"]
         params_values = {}
         for param in required_params:
