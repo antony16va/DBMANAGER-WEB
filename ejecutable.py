@@ -132,7 +132,7 @@ class DBManager:
                 "type": "python",
                 "icon": "2",
                 "color": "#7a8b96",
-                "params": ["host", "puerto", "bd", "usuario", "password", "ruta_salida_ddl_completo"]
+                "params": ["host", "puerto", "bd", "usuario", "password", "ruta_salida_html"]
             },
             {
                 "id": 3,
@@ -405,10 +405,10 @@ class DBManager:
             "bd": "Base de Datos:",
             "usuario": "Usuario:",
             "password": "Contraseña:",
-            "ruta_salida_ddl_completo": "Ruta Salida DDL:",
+            "ruta_salida_html": "Ruta de resultados:",
             "ruta_ddl_completo": "Ruta DDL Completo:",
             "esquema": "Esquema:",
-            "ruta_salida_rtf": "Ruta Salida RTF:",
+            "ruta_salida_rtf": "Ruta para el Diccionario:",
             "cantidad_registros": "Cantidad Registros:"
         }
 
@@ -445,13 +445,17 @@ class DBManager:
 
     def browse_path(self, var, param_name):
         if 'salida' in param_name.lower():
+            p = param_name.lower()
+            if 'html' in p:
+                ext, types = '.html', [("HTML files", "*.html"), ("All files", "*.*")]
+            elif 'ddl' in p:
+                ext, types = '.sql',  [("SQL files",  "*.sql"),  ("All files", "*.*")]
+            else:
+                ext, types = '.rtf',  [("RTF files",  "*.rtf"),  ("All files", "*.*")]
             path = filedialog.asksaveasfilename(
                 title="Guardar archivo como",
-                defaultextension=".sql" if 'ddl' in param_name.lower() else ".rtf",
-                filetypes=[
-                    ("SQL files", "*.sql") if 'ddl' in param_name.lower() else ("RTF files", "*.rtf"),
-                    ("All files", "*.*")
-                ]
+                defaultextension=ext,
+                filetypes=types,
             )
         elif 'plantilla' in param_name.lower():
             path = filedialog.askopenfilename(

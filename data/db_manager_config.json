@@ -50,7 +50,8 @@
     "ruta_salida_ddl_base": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_inicial.sql",
     "ruta_salida_ddl": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/dump.sql",
     "ruta_salida_reporte": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/reporte.rtf",
-    "cantidad_registros": "10"
+    "cantidad_registros": "10",
+    "ruta_salida_html": "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.html"
   },
   "_history_esquema": [
     "claridad_admin",
@@ -97,5 +98,8 @@
   "_history_cantidad_registros": [
     "50",
     "10"
+  ],
+  "_history_ruta_salida_html": [
+    "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.html"
   ]
 }
