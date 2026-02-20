@@ -412,25 +412,20 @@ class DBManager:
             "cantidad_registros": "Cantidad Registros:"
         }
 
-        # Crear frame de información con diseño similar al módulo 4
         info_frame = tk.Frame(self.params_frame, bg=self.colors['cream'])
         info_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Sección de parámetros
         params_section = tk.Frame(info_frame, bg=self.colors['cream'])
         params_section.pack(fill=tk.X, padx=20, pady=10)
 
-        # Título de parámetros
         tk.Label(params_section,
                 font=self.fonts['heading'],
                 bg=self.colors['cream'],
                 fg=self.colors['ink']).pack(anchor=tk.W, pady=(0, 10))
 
-        # Crear campos de parámetros con diseño moderno
         for param in module['params']:
             self.param_widgets[param] = self._create_param_row(params_section, param, param_labels)
 
-        # Botón de ejecutar
         button_container = tk.Frame(info_frame, bg=self.colors['cream'])
         button_container.pack(pady=15)
 
@@ -441,7 +436,6 @@ class DBManager:
         exec_btn.pack()
         self._add_hover_effect(exec_btn, self.colors['verde'], self.colors['verde_drk'])
         self.log_message(f"Modulo seleccionado: {module['name']}", "module")
-
 
     def browse_path(self, var, param_name):
         if 'salida' in param_name.lower():
