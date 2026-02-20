@@ -93,7 +93,7 @@ class DBManager:
                        foreground=self.colors['ink'],
                        background=self.colors['cream'])
         main_container = ttk.Frame(self.root, style='Card.TFrame')
-        main_container.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
+        main_container.pack(fill=tk.BOTH, expand=True)
         title_frame = tk.Frame(main_container, bg=self.colors['ink'])
         title_frame.pack(fill=tk.X, pady=(0, 15))
         header_content = tk.Frame(title_frame, bg=self.colors['ink'])
