@@ -3,11 +3,12 @@
     "192.168.44.43",
     "192.168.44.48",
     "192.168.44.41",
-    "192.168.44.49"
+    "192.168.44.49",
+    "localhost"
   ],
   "_history_puerto": [
-    "5432",
-    "5433"
+    "5433",
+    "5432"
   ],
   "_history_bd": [
     "gemma",
@@ -17,7 +18,8 @@
     "sigloc_dev",
     "cemm",
     "ropc",
-    "cae"
+    "cae",
+    "postgres"
   ],
   "_history_usuario": [
     "claridad",
@@ -25,7 +27,9 @@
     "sigloc",
     "cemm",
     "ropc",
-    "cae"
+    "cae",
+    "admin",
+    "postgres"
   ],
   "_history_password": [
     "sigloc_ab01$"
@@ -37,13 +41,13 @@
     "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.sql"
   ],
   "_global_params": {
-    "host": "192.168.44.49",
-    "puerto": "5433",
-    "bd": "cae",
-    "usuario": "cae",
+    "host": "localhost",
+    "puerto": "5432",
+    "bd": "postgres",
+    "usuario": "postgres",
     "password": "sigloc_ab01$",
     "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.sql",
-    "esquema": "cae_eg2026",
+    "esquema": "sigloc",
     "ruta_salida_rtf": "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.rtf",
     "ruta_ddl_completo": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/dump.sql",
     "ruta_plantilla_excel": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/resources/Plantilla_Modelo.xlsx",
@@ -57,12 +61,12 @@
     "claridad_admin",
     "sce_nacion_eg2026",
     "cemm_emc2025",
-    "sigloc",
     "cemm_eg2026",
     "cae_admin",
     "ropc_admin",
     "ropc_eg2026",
-    "cae_eg2026"
+    "cae_eg2026",
+    "sigloc"
   ],
   "_history_ruta_salida_rtf": [
     "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf",

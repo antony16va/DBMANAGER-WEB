@@ -14,35 +14,96 @@ import csv
 
 class SmartDataGenerator:
 
+    # ── Datos estáticos ──────────────────────────────────────────────────────
+    _NOMBRES      = ['Juan', 'María', 'Carlos', 'Ana', 'Luis', 'Carmen', 'Pedro', 'Rosa',
+                     'Jorge', 'Isabel', 'Miguel', 'Elena', 'Antonio', 'Laura', 'José']
+    _APELLIDOS    = ['García', 'Rodríguez', 'Martínez', 'López', 'González', 'Hernández',
+                     'Pérez', 'Sánchez', 'Ramírez', 'Torres', 'Flores', 'Rivera', 'Gómez']
+    _CIUDADES     = ['Lima', 'Arequipa', 'Cusco', 'Trujillo', 'Chiclayo', 'Piura',
+                     'Iquitos', 'Huancayo', 'Tacna', 'Puno', 'Ayacucho']
+    _PAISES       = ['Perú', 'Argentina', 'Chile', 'Colombia', 'Brasil', 'Ecuador',
+                     'México', 'España', 'Estados Unidos']
+    _USUARIOS     = ['admin', 'sistema', 'operador', 'supervisor', 'usuario1',
+                     'analista', 'gestor', 'coordinador']
+    _ESTADOS      = ['ACTIVO', 'INACTIVO', 'PENDIENTE', 'APROBADO', 'RECHAZADO',
+                     'EN_PROCESO', 'COMPLETADO', 'CANCELADO']
+    _DIR_TIPOS    = ['Av.', 'Jr.', 'Calle', 'Psje.']
+    _DIR_CALLES   = ['Los Olivos', 'Las Flores', 'San Martín', 'Bolognesi', 'Grau']
+    _EMP_PREF     = ['Corporación', 'Empresa', 'Grupo', 'Inversiones', 'Compañía']
+    _EMP_NOMB     = ['Andina', 'del Sur', 'Pacífico', 'Nacional', 'Global', 'Peruana']
+    _EMP_SUF      = ['S.A.', 'S.A.C.', 'E.I.R.L.', 'S.R.L.']
+    _DOMINIOS     = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'empresa.com']
+    _URL_DOMINIOS = ['ejemplo.com', 'test.com', 'demo.pe', 'sitio.com']
+    _DESCRIPCIONES = [
+        'Registro generado automáticamente para pruebas del sistema',
+        'Entrada de datos de ejemplo para validación',
+        'Información de prueba creada por el generador',
+        'Dato sintético para testing de la aplicación',
+        'Registro de ejemplo con propósitos de desarrollo',
+    ]
+    _OBSERVACIONES = [
+        'Sin observaciones', 'Pendiente de revisión', 'Verificado correctamente',
+        'Requiere seguimiento', 'En proceso de validación', 'Aprobado sin inconvenientes',
+    ]
+    _PALABRAS = [
+        'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+        'sed', 'eiusmod', 'tempor', 'incididunt', 'labore', 'dolore', 'magna', 'aliqua',
+    ]
+
+    # Patrones de contexto pre-ordenados por prioridad (mayor primero)
+    _CTX = [
+        (r'(nombre_completo|full_name|nombre_apellido)',                        'generar_nombre_completo'),
+        (r'(^nombre$|^name$|_nombre$|_name$|nombre_|name_)',                   'generar_nombre_persona'),
+        (r'(^apellido|^surname|^last_name|apellido_|surname_|paterno|materno)', 'generar_apellido'),
+        (r'(^dni$|^documento$|num_doc|numero_documento|_dni$|_documento$)',     'generar_dni'),
+        (r'(^ruc$|numero_ruc|_ruc$)',                                           'generar_ruc'),
+        (r'(pasaporte|passport)',                                                'generar_pasaporte'),
+        (r'(email|correo|mail)',                                                 'generar_email'),
+        (r'(telefono|celular|phone|movil|fono)',                                 'generar_telefono'),
+        (r'(direccion|address|domicilio)',                                       'generar_direccion'),
+        (r'(ciudad|city)',                                                       'generar_ciudad'),
+        (r'(^pais$|^country$|_pais$|_country$)',                                'generar_pais'),
+        (r'(codigo_postal|cp|zip|postal)',                                       'generar_codigo_postal'),
+        (r'(latitud|latitude|lat$)',                                             'generar_latitud'),
+        (r'(longitud|longitude|lng$|lon$)',                                      'generar_longitud'),
+        (r'(empresa|company|organizacion|razon_social)',                         'generar_empresa'),
+        (r'(^url$|_url$|link|enlace)',                                           'generar_url'),
+        (r'(^ip$|_ip$|ip_address|direccion_ip)',                                 'generar_ip'),
+        (r'(abreviatura|abrev|sigla|acronimo|acronym|codigo_corto|short_code)',  'generar_abreviatura'),
+        (r'(^activo$|^active$|^enabled$|_activo$|n_activo|es_activo|b_activo)', 'generar_boolean_activo'),
+        (r'(^vigente$|^vigencia$|_vigente$|n_vigente|es_vigente|b_vigente)',    'generar_boolean_activo'),
+        (r'(fecha_creacion|created_at|date_create|f_creacion)',                 'generar_fecha_creacion'),
+        (r'(fecha_modificacion|modified_at|updated_at|date_update)',            'generar_fecha_modificacion'),
+        (r'(monto|amount|precio|price|costo|cost|valor|importe)',               'generar_monto'),
+        (r'(porcentaje|percent|tasa|rate)',                                      'generar_porcentaje'),
+        (r'(^estado$|^status$|_estado$|_status$)',                              'generar_estado'),
+        (r'(usuario_creacion|created_by|user_create|creado_por)',               'generar_usuario'),
+        (r'(usuario_modificacion|modified_by|user_update|modificado_por)',      'generar_usuario'),
+        (r'(^codigo$|^code$|_codigo$|_code$|^cod_)',                            'generar_codigo'),
+        (r'(descripcion|description|detalle|detail)',                           'generar_descripcion'),
+        (r'(observacion|observation|nota|comment|comentario)',                  'generar_observacion'),
+    ]
+
+    # ── Inicialización ───────────────────────────────────────────────────────
     def __init__(self, host, puerto, bd, usuario, password, esquema, config_file=None):
-        self.host = host
-        self.puerto = puerto
-        self.bd = bd
-        self.usuario = usuario
+        self.host     = host
+        self.puerto   = puerto
+        self.bd       = bd
+        self.usuario  = usuario
         self.password = password
-        self.esquema = esquema
-        self.conn = None
-        self.cursor = None
+        self.esquema  = esquema
+        self.conn     = None
+        self.cursor   = None
         self.metadata = {
-            'tablas': [],
-            'columnas': {},
-            'pks': {},
-            'fks': {},
-            'checks': {},
-            'uniques': {},
-            'sequences': {},
-            'indices': {},
-            'orden_carga': [],
-            'grafos_dependencias': {}
+            'tablas': [], 'columnas': {}, 'pks': {}, 'fks': {},
+            'checks': {}, 'uniques': {}, 'sequences': {}, 'indices': {},
+            'orden_carga': [], 'grafos_dependencias': {}
         }
-        self.data_cache = {}
+        self.data_cache      = {}
         self.generated_values = {}
         self.stats = {
-            'total_registros': 0,
-            'por_tabla': {},
-            'tiempo_inicio': None,
-            'tiempo_fin': None,
-            'errores': []
+            'total_registros': 0, 'por_tabla': {},
+            'tiempo_inicio': None, 'tiempo_fin': None, 'errores': []
         }
         base_dir = Path(__file__).resolve().parent
         if config_file is None:
@@ -52,7 +113,6 @@ class SmartDataGenerator:
             random.seed(self.config['seeds']['random_seed'])
         self.faker = None
         self._init_faker()
-        self.context_patterns = self._build_context_patterns()
 
     def _init_faker(self):
         try:
@@ -65,196 +125,34 @@ class SmartDataGenerator:
             print("  Para mejores resultados, instala: pip install faker")
             self.faker = None
 
-    def _build_context_patterns(self):
-        patterns = {
-            'nombre': {
-                'regex': r'(^nombre$|^name$|_nombre$|_name$|nombre_|name_)',
-                'generator': 'generar_nombre_persona',
-                'priority': 10
-            },
-            'apellido': {
-                'regex': r'(^apellido|^surname|^last_name|apellido_|surname_|paterno|materno)',
-                'generator': 'generar_apellido',
-                'priority': 10
-            },
-            'nombre_completo': {
-                'regex': r'(nombre_completo|full_name|nombre_apellido)',
-                'generator': 'generar_nombre_completo',
-                'priority': 15
-            },
-            'dni': {
-                'regex': r'(^dni$|^documento$|num_doc|numero_documento|_dni$|_documento$)',
-                'generator': 'generar_dni',
-                'priority': 10
-            },
-            'ruc': {
-                'regex': r'(^ruc$|numero_ruc|_ruc$)',
-                'generator': 'generar_ruc',
-                'priority': 10
-            },
-            'pasaporte': {
-                'regex': r'(pasaporte|passport)',
-                'generator': 'generar_pasaporte',
-                'priority': 10
-            },
-            'email': {
-                'regex': r'(email|correo|mail)',
-                'generator': 'generar_email',
-                'priority': 10
-            },
-            'telefono': {
-                'regex': r'(telefono|celular|phone|movil|fono)',
-                'generator': 'generar_telefono',
-                'priority': 10
-            },
-            'direccion': {
-                'regex': r'(direccion|address|domicilio)',
-                'generator': 'generar_direccion',
-                'priority': 10
-            },
-            'ciudad': {
-                'regex': r'(ciudad|city)',
-                'generator': 'generar_ciudad',
-                'priority': 10
-            },
-            'pais': {
-                'regex': r'(^pais$|^country$|_pais$|_country$)',
-                'generator': 'generar_pais',
-                'priority': 10
-            },
-            'codigo_postal': {
-                'regex': r'(codigo_postal|cp|zip|postal)',
-                'generator': 'generar_codigo_postal',
-                'priority': 10
-            },
-            'latitud': {
-                'regex': r'(latitud|latitude|lat$)',
-                'generator': 'generar_latitud',
-                'priority': 10
-            },
-            'longitud': {
-                'regex': r'(longitud|longitude|lng$|lon$)',
-                'generator': 'generar_longitud',
-                'priority': 10
-            },
-            'empresa': {
-                'regex': r'(empresa|company|organizacion|razon_social)',
-                'generator': 'generar_empresa',
-                'priority': 10
-            },
-            'estado': {
-                'regex': r'(^estado$|^status$|_estado$|_status$)',
-                'generator': 'generar_estado',
-                'priority': 8
-            },
-            'activo': {
-                'regex': r'(^activo$|^active$|^enabled$|_activo$|n_activo|es_activo|b_activo)',
-                'generator': 'generar_boolean_activo',
-                'priority': 9
-            },
-            'vigente': {
-                'regex': r'(^vigente$|^vigencia$|_vigente$|n_vigente|es_vigente|b_vigente)',
-                'generator': 'generar_boolean_activo',
-                'priority': 9
-            },
-            'usuario_creacion': {
-                'regex': r'(usuario_creacion|created_by|user_create|creado_por)',
-                'generator': 'generar_usuario',
-                'priority': 8
-            },
-            'usuario_modificacion': {
-                'regex': r'(usuario_modificacion|modified_by|user_update|modificado_por)',
-                'generator': 'generar_usuario',
-                'priority': 8
-            },
-            'fecha_creacion': {
-                'regex': r'(fecha_creacion|created_at|date_create|f_creacion)',
-                'generator': 'generar_fecha_creacion',
-                'priority': 9
-            },
-            'fecha_modificacion': {
-                'regex': r'(fecha_modificacion|modified_at|updated_at|date_update)',
-                'generator': 'generar_fecha_modificacion',
-                'priority': 9
-            },
-            'monto': {
-                'regex': r'(monto|amount|precio|price|costo|cost|valor|importe)',
-                'generator': 'generar_monto',
-                'priority': 9
-            },
-            'porcentaje': {
-                'regex': r'(porcentaje|percent|tasa|rate)',
-                'generator': 'generar_porcentaje',
-                'priority': 9
-            },
-            'url': {
-                'regex': r'(^url$|_url$|link|enlace)',
-                'generator': 'generar_url',
-                'priority': 10
-            },
-            'ip': {
-                'regex': r'(^ip$|_ip$|ip_address|direccion_ip)',
-                'generator': 'generar_ip',
-                'priority': 10
-            },
-            'codigo': {
-                'regex': r'(^codigo$|^code$|_codigo$|_code$|^cod_)',
-                'generator': 'generar_codigo',
-                'priority': 7
-            },
-            'descripcion': {
-                'regex': r'(descripcion|description|detalle|detail)',
-                'generator': 'generar_descripcion',
-                'priority': 6
-            },
-            'observacion': {
-                'regex': r'(observacion|observation|nota|comment|comentario)',
-                'generator': 'generar_observacion',
-                'priority': 6
-            },
-            'abreviatura': {
-                'regex': r'(abreviatura|abrev|sigla|acronimo|acronym|codigo_corto|short_code)',
-                'generator': 'generar_abreviatura',
-                'priority': 10
-            }
-        }
-        return patterns
+    def _faker_or(self, attr, fallback):
+        """Usa faker si está disponible, si no elige de la lista fallback."""
+        if self.faker:
+            return getattr(self.faker, attr)()
+        return random.choice(fallback)
 
+    # ── Inferencia de contexto ───────────────────────────────────────────────
     def inferir_contexto_columna(self, nombre_columna):
         nombre_lower = nombre_columna.lower()
-        sorted_patterns = sorted(
-            self.context_patterns.items(),
-            key=lambda x: x[1]['priority'],
-            reverse=True
-        )
-        for pattern_name, pattern_info in sorted_patterns:
-            if re.search(pattern_info['regex'], nombre_lower, re.IGNORECASE):
-                return pattern_info['generator']
+        for regex, generator in self._CTX:
+            if re.search(regex, nombre_lower, re.IGNORECASE):
+                return generator
         return None
 
     def _tipo_columna(self, columna_info):
         return (columna_info.get('udt_name') or columna_info.get('tipo_dato') or '').lower()
 
+    # ── Generadores de datos ─────────────────────────────────────────────────
     def generar_nombre_persona(self, columna_info):
-        if self.faker:
-            return self.faker.first_name()
-        nombres = ['Juan', 'María', 'Carlos', 'Ana', 'Luis', 'Carmen', 'Pedro', 'Rosa',
-                   'Jorge', 'Isabel', 'Miguel', 'Elena', 'Antonio', 'Laura', 'José']
-        return random.choice(nombres)
+        return self._faker_or('first_name', self._NOMBRES)
 
     def generar_apellido(self, columna_info):
-        if self.faker:
-            return self.faker.last_name()
-        apellidos = ['García', 'Rodríguez', 'Martínez', 'López', 'González', 'Hernández',
-                     'Pérez', 'Sánchez', 'Ramírez', 'Torres', 'Flores', 'Rivera', 'Gómez']
-        return random.choice(apellidos)
+        return self._faker_or('last_name', self._APELLIDOS)
 
     def generar_nombre_completo(self, columna_info):
         if self.faker:
             return self.faker.name()
-        nombre = self.generar_nombre_persona(columna_info)
-        apellido = self.generar_apellido(columna_info)
-        return f"{nombre} {apellido}"
+        return f"{self.generar_nombre_persona(columna_info)} {self.generar_apellido(columna_info)}"
 
     def generar_dni(self, columna_info):
         return str(random.randint(10000000, 99999999))
@@ -262,46 +160,34 @@ class SmartDataGenerator:
     def generar_ruc(self, columna_info):
         tipo = random.choice(['10', '15', '20'])
         base = str(random.randint(10000000, 99999999))
-        ruc = tipo + base
-        return ruc + str(random.randint(0, 9))
+        return tipo + base + str(random.randint(0, 9))
 
     def generar_pasaporte(self, columna_info):
         return f"{random.choice(['P', 'A', 'E'])}{random.randint(10000000, 99999999)}"
 
     def generar_email(self, columna_info):
-        tipo = self._tipo_columna(columna_info)
-        if tipo in ('int2', 'smallint', 'int4', 'integer', 'int8', 'bigint'):
+        if self._tipo_columna(columna_info) in ('int2', 'smallint', 'int4', 'integer', 'int8', 'bigint'):
             return random.randint(0, 1)
         if self.faker:
             return self.faker.email()
-        dominios = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com', 'empresa.com']
         nombre = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz', k=8))
-        return f"{nombre}@{random.choice(dominios)}"
+        return f"{nombre}@{random.choice(self._DOMINIOS)}"
 
     def generar_telefono(self, columna_info):
         if random.choice([True, False]):
             return f"9{random.randint(10000000, 99999999)}"
-        else:
-            return f"01{random.randint(1000000, 9999999)}"
+        return f"01{random.randint(1000000, 9999999)}"
 
     def generar_direccion(self, columna_info):
         if self.faker:
             return self.faker.address().replace('\n', ', ')
-        tipos = ['Av.', 'Jr.', 'Calle', 'Psje.']
-        nombres = ['Los Olivos', 'Las Flores', 'San Martín', 'Bolognesi', 'Grau']
-        return f"{random.choice(tipos)} {random.choice(nombres)} {random.randint(100, 999)}"
+        return f"{random.choice(self._DIR_TIPOS)} {random.choice(self._DIR_CALLES)} {random.randint(100, 999)}"
 
     def generar_ciudad(self, columna_info):
-        ciudades = ['Lima', 'Arequipa', 'Cusco', 'Trujillo', 'Chiclayo', 'Piura',
-                    'Iquitos', 'Huancayo', 'Tacna', 'Puno', 'Ayacucho']
-        return random.choice(ciudades)
+        return random.choice(self._CIUDADES)
 
     def generar_pais(self, columna_info):
-        if self.faker:
-            return self.faker.country()
-        paises = ['Perú', 'Argentina', 'Chile', 'Colombia', 'Brasil', 'Ecuador',
-                  'México', 'España', 'Estados Unidos']
-        return random.choice(paises)
+        return self._faker_or('country', self._PAISES)
 
     def generar_codigo_postal(self, columna_info):
         return f"LIMA{random.randint(1, 99):02d}"
@@ -315,18 +201,12 @@ class SmartDataGenerator:
     def generar_empresa(self, columna_info):
         if self.faker:
             return self.faker.company()
-        prefijos = ['Corporación', 'Empresa', 'Grupo', 'Inversiones', 'Compañía']
-        nombres = ['Andina', 'del Sur', 'Pacífico', 'Nacional', 'Global', 'Peruana']
-        sufijos = ['S.A.', 'S.A.C.', 'E.I.R.L.', 'S.R.L.']
-        return f"{random.choice(prefijos)} {random.choice(nombres)} {random.choice(sufijos)}"
+        return f"{random.choice(self._EMP_PREF)} {random.choice(self._EMP_NOMB)} {random.choice(self._EMP_SUF)}"
 
     def generar_estado(self, columna_info):
-        tipo = self._tipo_columna(columna_info)
-        if tipo in ('int2', 'smallint', 'int4', 'integer', 'int8', 'bigint'):
+        if self._tipo_columna(columna_info) in ('int2', 'smallint', 'int4', 'integer', 'int8', 'bigint'):
             return random.randint(0, 5)
-        estados = ['ACTIVO', 'INACTIVO', 'PENDIENTE', 'APROBADO', 'RECHAZADO',
-                   'EN_PROCESO', 'COMPLETADO', 'CANCELADO']
-        return random.choice(estados)
+        return random.choice(self._ESTADOS)
 
     def generar_boolean_activo(self, columna_info):
         prob = random.random() < 0.8
@@ -338,82 +218,48 @@ class SmartDataGenerator:
         return prob
 
     def generar_usuario(self, columna_info):
-        usuarios = ['admin', 'sistema', 'operador', 'supervisor', 'usuario1',
-                    'analista', 'gestor', 'coordinador']
-        return random.choice(usuarios)
+        return random.choice(self._USUARIOS)
 
     def generar_fecha_creacion(self, columna_info):
-        dias_atras = random.randint(1, 365)
-        return datetime.now() - timedelta(days=dias_atras)
+        return datetime.now() - timedelta(days=random.randint(1, 365))
 
     def generar_fecha_modificacion(self, columna_info):
-        dias_atras = random.randint(0, 180)
-        return datetime.now() - timedelta(days=dias_atras)
+        return datetime.now() - timedelta(days=random.randint(0, 180))
 
     def generar_monto(self, columna_info):
-        precision = columna_info.get('precision', 10)
         scale = columna_info.get('scale', 2)
-        rangos = [
-            (10, 100),
-            (100, 1000),
-            (1000, 10000),
-            (10000, 100000)
-        ]
-        rango = random.choice(rangos)
-        valor = round(random.uniform(*rango), scale)
-        return Decimal(str(valor))
+        rango = random.choice([(10, 100), (100, 1000), (1000, 10000), (10000, 100000)])
+        return Decimal(str(round(random.uniform(*rango), scale)))
 
     def generar_porcentaje(self, columna_info):
-        valor = round(random.uniform(0, 100), 2)
-        return Decimal(str(valor))
+        return Decimal(str(round(random.uniform(0, 100), 2)))
 
     def generar_url(self, columna_info):
         if self.faker:
             return self.faker.url()
-        dominios = ['ejemplo.com', 'test.com', 'demo.pe', 'sitio.com']
-        return f"https://www.{random.choice(dominios)}/pagina/{random.randint(1, 100)}"
+        return f"https://www.{random.choice(self._URL_DOMINIOS)}/pagina/{random.randint(1, 100)}"
 
     def generar_ip(self, columna_info):
         if self.faker:
             return self.faker.ipv4()
-        return f"{random.randint(1, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(1, 255)}"
+        return f"{random.randint(1,255)}.{random.randint(0,255)}.{random.randint(0,255)}.{random.randint(1,255)}"
 
     def generar_codigo(self, columna_info):
         max_len = columna_info.get('max_length') or 10
-        length = min(random.randint(6, 12), max_len)
-        letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        length  = min(random.randint(6, 12), max_len)
+        letras  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         numeros = '0123456789'
         if length >= 8:
-            parte1 = ''.join(random.choices(letras, k=3))
-            parte2 = ''.join(random.choices(numeros, k=min(4, length-4)))
-            return f"{parte1}-{parte2}"
-        else:
-            return ''.join(random.choices(letras + numeros, k=length))
+            return f"{''.join(random.choices(letras, k=3))}-{''.join(random.choices(numeros, k=min(4, length-4)))}"
+        return ''.join(random.choices(letras + numeros, k=length))
 
     def generar_descripcion(self, columna_info):
         if self.faker:
             return self.faker.text(max_nb_chars=min(columna_info.get('max_length', 200), 200))
-        descripciones = [
-            'Registro generado automáticamente para pruebas del sistema',
-            'Entrada de datos de ejemplo para validación',
-            'Información de prueba creada por el generador',
-            'Dato sintético para testing de la aplicación',
-            'Registro de ejemplo con propósitos de desarrollo'
-        ]
-        return random.choice(descripciones)
+        return random.choice(self._DESCRIPCIONES)
 
     def generar_observacion(self, columna_info):
-        if self.faker:
-            return self.faker.sentence()
-        observaciones = [
-            'Sin observaciones',
-            'Pendiente de revisión',
-            'Verificado correctamente',
-            'Requiere seguimiento',
-            'En proceso de validación',
-            'Aprobado sin inconvenientes'
-        ]
-        return random.choice(observaciones)
+        return self._faker_or('sentence', self._OBSERVACIONES)
 
     def generar_abreviatura(self, columna_info):
         max_len = columna_info.get('max_length', 10)
@@ -425,53 +271,33 @@ class SmartDataGenerator:
             length = random.randint(2, min(4, max_len))
         else:
             length = random.randint(2, 5)
-        letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        abrev = ''.join(random.choices(letras, k=length))
-        return abrev
+        return ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=length))
 
+    # ── Configuración ────────────────────────────────────────────────────────
     def cargar_config(self, config_file):
         config_default = {
             'cantidad_base': 100,
             'cantidad_por_tabla': {},
-            'multiplicadores_fk': {
-                'habilitado': True,
-                'factor': 1.0
-            },
+            'multiplicadores_fk': {'habilitado': True, 'factor': 1.0},
             'generacion_nulls': {
-                'habilitado': True,
-                'probabilidad': 0.2,
-                'excluir_pks': True,
-                'excluir_fks': False
+                'habilitado': True, 'probabilidad': 0.2,
+                'excluir_pks': True, 'excluir_fks': False
             },
-            'limpieza_previa': {
-                'preguntar': True,
-                'automatico': False
-            },
+            'limpieza_previa': {'preguntar': True, 'automatico': False},
             'rangos_personalizados': {
-                'integer': {'min': 1, 'max': 2147483647},
-                'bigint': {'min': 1, 'max': 9223372036854775807},
+                'integer':  {'min': 1, 'max': 2147483647},
+                'bigint':   {'min': 1, 'max': 9223372036854775807},
                 'smallint': {'min': 1, 'max': 32767},
-                'numeric': {'max_valor': 999999}
+                'numeric':  {'max_valor': 999999}
             },
             'rangos_fechas': {
-                'date': {'dias_atras': 1825, 'dias_adelante': 0},
-                'timestamp': {'dias_atras': 730, 'dias_adelante': 0}
+                'date':      {'dias_atras': 1825, 'dias_adelante': 0},
+                'timestamp': {'dias_atras': 730,  'dias_adelante': 0}
             },
-            'texto': {
-                'max_length_text': 500,
-                'palabras_personalizadas': []
-            },
-            'faker': {
-                'habilitado': True,
-                'locale': 'es_ES'
-            },
-            'optimizacion': {
-                'usar_copy': True,
-                'batch_size': 1000
-            },
-            'seeds': {
-                'random_seed': None
-            }
+            'texto':       {'max_length_text': 500, 'palabras_personalizadas': []},
+            'faker':       {'habilitado': True, 'locale': 'es_ES'},
+            'optimizacion':{'usar_copy': True, 'batch_size': 1000},
+            'seeds':       {'random_seed': None}
         }
         if config_file and os.path.exists(config_file):
             try:
@@ -492,14 +318,12 @@ class SmartDataGenerator:
             else:
                 base[key] = value
 
+    # ── Conexión ─────────────────────────────────────────────────────────────
     def conectar(self):
         try:
             self.conn = psycopg2.connect(
-                host=self.host,
-                port=self.puerto,
-                database=self.bd,
-                user=self.usuario,
-                password=self.password
+                host=self.host, port=self.puerto, database=self.bd,
+                user=self.usuario, password=self.password
             )
             self.cursor = self.conn.cursor()
             print(f"[OK] Conectado a PostgreSQL: {self.bd}")
@@ -514,6 +338,7 @@ class SmartDataGenerator:
         if self.conn:
             self.conn.close()
 
+    # ── Análisis de base de datos ────────────────────────────────────────────
     def analizar_base_datos(self):
         print(f"\n{'='*70}")
         print(f"ANALISIS DE ESTRUCTURA DE BASE DE DATOS")
@@ -527,16 +352,15 @@ class SmartDataGenerator:
         self.metadata['pks'] = self.obtener_primary_keys()
         print(f"[OK] Primary Keys: {len(self.metadata['pks'])}")
         self.metadata['fks'] = self.obtener_foreign_keys()
-        total_fks = sum(len(fks) for fks in self.metadata['fks'].values())
-        print(f"[OK] Foreign Keys: {total_fks}")
+        print(f"[OK] Foreign Keys: {sum(len(v) for v in self.metadata['fks'].values())}")
         self.metadata['checks'] = self.obtener_check_constraints()
-        print(f"[OK] CHECK Constraints: {sum(len(c) for c in self.metadata['checks'].values())}")
+        print(f"[OK] CHECK Constraints: {sum(len(v) for v in self.metadata['checks'].values())}")
         self.metadata['uniques'] = self.obtener_unique_constraints()
-        print(f"[OK] UNIQUE Constraints: {sum(len(u) for u in self.metadata['uniques'].values())}")
+        print(f"[OK] UNIQUE Constraints: {sum(len(v) for v in self.metadata['uniques'].values())}")
         self.metadata['sequences'] = self.obtener_sequences()
         print(f"[OK] Sequences: {len(self.metadata['sequences'])}")
         self.metadata['indices'] = self.obtener_indices()
-        print(f"[OK] Indices: {sum(len(i) for i in self.metadata['indices'].values())}")
+        print(f"[OK] Indices: {sum(len(v) for v in self.metadata['indices'].values())}")
         self.metadata['orden_carga'] = self.resolver_orden_carga()
         print(f"[OK] Orden de carga resuelto: {len(self.metadata['orden_carga'])} tablas")
         self._analizar_contexto_semantico()
@@ -546,200 +370,126 @@ class SmartDataGenerator:
 
     def _analizar_contexto_semantico(self):
         print(f"\nAnalisis de Contexto Semantico:")
-        contextos_encontrados = defaultdict(list)
+        contextos = defaultdict(list)
         for tabla, columnas in self.metadata['columnas'].items():
             for columna in columnas:
-                generador = self.inferir_contexto_columna(columna['nombre'])
-                if generador:
-                    contextos_encontrados[generador].append(f"{tabla}.{columna['nombre']}")
-        if contextos_encontrados:
-            print(f"  [OK] Detectados {len(contextos_encontrados)} tipos de contexto:")
-            for generador, columnas in sorted(contextos_encontrados.items()):
-                print(f"    - {generador}: {len(columnas)} columna(s)")
+                gen = self.inferir_contexto_columna(columna['nombre'])
+                if gen:
+                    contextos[gen].append(f"{tabla}.{columna['nombre']}")
+        if contextos:
+            print(f"  [OK] Detectados {len(contextos)} tipos de contexto:")
+            for gen, cols in sorted(contextos.items()):
+                print(f"    - {gen}: {len(cols)} columna(s)")
         else:
             print(f"  [INFO] No se detectaron contextos especiales (se usaran generadores por tipo)")
 
+    # ── Consultas de metadatos ───────────────────────────────────────────────
     def obtener_tablas(self):
-        query = """
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = %s
-        AND table_type = 'BASE TABLE'
-        ORDER BY table_name
-        """
-        self.cursor.execute(query, (self.esquema,))
+        self.cursor.execute("""
+            SELECT table_name FROM information_schema.tables
+            WHERE table_schema = %s AND table_type = 'BASE TABLE'
+            ORDER BY table_name
+        """, (self.esquema,))
         return [row[0] for row in self.cursor.fetchall()]
 
     def obtener_columnas(self, tabla):
-        query = """
-        SELECT
-            c.column_name,
-            c.data_type,
-            c.udt_name,
-            c.character_maximum_length,
-            c.numeric_precision,
-            c.numeric_scale,
-            c.is_nullable,
-            c.column_default,
-            c.ordinal_position
-        FROM information_schema.columns c
-        WHERE c.table_schema = %s
-        AND c.table_name = %s
-        ORDER BY c.ordinal_position
-        """
-        self.cursor.execute(query, (self.esquema, tabla))
-        columnas = []
+        self.cursor.execute("""
+            SELECT column_name, data_type, udt_name, character_maximum_length,
+                   numeric_precision, numeric_scale, is_nullable, column_default, ordinal_position
+            FROM information_schema.columns
+            WHERE table_schema = %s AND table_name = %s
+            ORDER BY ordinal_position
+        """, (self.esquema, tabla))
+        return [
+            {'nombre': r[0], 'tipo_dato': r[1], 'udt_name': r[2], 'max_length': r[3],
+             'precision': r[4], 'scale': r[5], 'nullable': r[6] == 'YES',
+             'default': r[7], 'posicion': r[8]}
+            for r in self.cursor.fetchall()
+        ]
+
+    def _query_to_groups(self, query, row_to_kv):
+        """Ejecuta query y agrupa resultados en un dict de listas."""
+        self.cursor.execute(query, (self.esquema,))
+        groups = defaultdict(list)
         for row in self.cursor.fetchall():
-            columnas.append({
-                'nombre': row[0],
-                'tipo_dato': row[1],
-                'udt_name': row[2],
-                'max_length': row[3],
-                'precision': row[4],
-                'scale': row[5],
-                'nullable': row[6] == 'YES',
-                'default': row[7],
-                'posicion': row[8]
-            })
-        return columnas
+            k, v = row_to_kv(row)
+            groups[k].append(v)
+        return dict(groups)
 
     def obtener_primary_keys(self):
-        query = """
-        SELECT
-            tc.table_name,
-            kcu.column_name
-        FROM information_schema.table_constraints tc
-        JOIN information_schema.key_column_usage kcu
-            ON tc.constraint_name = kcu.constraint_name
-            AND tc.table_schema = kcu.table_schema
-        WHERE tc.table_schema = %s
-        AND tc.constraint_type = 'PRIMARY KEY'
-        ORDER BY tc.table_name, kcu.ordinal_position
-        """
-        self.cursor.execute(query, (self.esquema,))
-        pks = defaultdict(list)
-        for row in self.cursor.fetchall():
-            pks[row[0]].append(row[1])
-        return dict(pks)
+        return self._query_to_groups("""
+            SELECT tc.table_name, kcu.column_name
+            FROM information_schema.table_constraints tc
+            JOIN information_schema.key_column_usage kcu
+                ON tc.constraint_name = kcu.constraint_name
+                AND tc.table_schema = kcu.table_schema
+            WHERE tc.table_schema = %s AND tc.constraint_type = 'PRIMARY KEY'
+            ORDER BY tc.table_name, kcu.ordinal_position
+        """, lambda row: (row[0], row[1]))
 
     def obtener_foreign_keys(self):
-        query = """
-        SELECT
-            tc.table_name,
-            kcu.column_name,
-            ccu.table_name AS tabla_referenciada,
-            ccu.column_name AS columna_referenciada
-        FROM information_schema.table_constraints tc
-        JOIN information_schema.key_column_usage kcu
-            ON tc.constraint_name = kcu.constraint_name
-            AND tc.table_schema = kcu.table_schema
-        JOIN information_schema.constraint_column_usage ccu
-            ON ccu.constraint_name = tc.constraint_name
-            AND ccu.table_schema = tc.table_schema
-        WHERE tc.table_schema = %s
-        AND tc.constraint_type = 'FOREIGN KEY'
-        ORDER BY tc.table_name
-        """
-        self.cursor.execute(query, (self.esquema,))
-        fks = defaultdict(list)
-        for row in self.cursor.fetchall():
-            fks[row[0]].append({
-                'columna': row[1],
-                'tabla_ref': row[2],
-                'columna_ref': row[3]
-            })
-        return dict(fks)
+        return self._query_to_groups("""
+            SELECT tc.table_name, kcu.column_name, ccu.table_name, ccu.column_name
+            FROM information_schema.table_constraints tc
+            JOIN information_schema.key_column_usage kcu
+                ON tc.constraint_name = kcu.constraint_name
+                AND tc.table_schema = kcu.table_schema
+            JOIN information_schema.constraint_column_usage ccu
+                ON ccu.constraint_name = tc.constraint_name
+                AND ccu.table_schema = tc.table_schema
+            WHERE tc.table_schema = %s AND tc.constraint_type = 'FOREIGN KEY'
+            ORDER BY tc.table_name
+        """, lambda row: (row[0], {'columna': row[1], 'tabla_ref': row[2], 'columna_ref': row[3]}))
 
     def obtener_check_constraints(self):
-        query = """
-        SELECT
-            tc.table_name,
-            cc.check_clause
-        FROM information_schema.table_constraints tc
-        JOIN information_schema.check_constraints cc
-            ON tc.constraint_name = cc.constraint_name
-        WHERE tc.table_schema = %s
-        AND tc.constraint_type = 'CHECK'
-        """
-        self.cursor.execute(query, (self.esquema,))
-        checks = defaultdict(list)
-        for row in self.cursor.fetchall():
-            checks[row[0]].append(row[1])
-        return dict(checks)
+        return self._query_to_groups("""
+            SELECT tc.table_name, cc.check_clause
+            FROM information_schema.table_constraints tc
+            JOIN information_schema.check_constraints cc
+                ON tc.constraint_name = cc.constraint_name
+            WHERE tc.table_schema = %s AND tc.constraint_type = 'CHECK'
+        """, lambda row: (row[0], row[1]))
 
     def obtener_unique_constraints(self):
-        query = """
-        SELECT
-            tc.table_name,
-            kcu.column_name
-        FROM information_schema.table_constraints tc
-        JOIN information_schema.key_column_usage kcu
-            ON tc.constraint_name = kcu.constraint_name
-            AND tc.table_schema = kcu.table_schema
-        WHERE tc.table_schema = %s
-        AND tc.constraint_type = 'UNIQUE'
-        ORDER BY tc.table_name
-        """
-        self.cursor.execute(query, (self.esquema,))
-        uniques = defaultdict(list)
-        for row in self.cursor.fetchall():
-            uniques[row[0]].append(row[1])
-        return dict(uniques)
+        return self._query_to_groups("""
+            SELECT tc.table_name, kcu.column_name
+            FROM information_schema.table_constraints tc
+            JOIN information_schema.key_column_usage kcu
+                ON tc.constraint_name = kcu.constraint_name
+                AND tc.table_schema = kcu.table_schema
+            WHERE tc.table_schema = %s AND tc.constraint_type = 'UNIQUE'
+            ORDER BY tc.table_name
+        """, lambda row: (row[0], row[1]))
 
     def obtener_sequences(self):
-        query = """
-        SELECT
-            sequence_name,
-            data_type,
-            start_value,
-            minimum_value,
-            maximum_value,
-            increment
-        FROM information_schema.sequences
-        WHERE sequence_schema = %s
-        """
-        self.cursor.execute(query, (self.esquema,))
-        sequences = {}
-        for row in self.cursor.fetchall():
-            sequences[row[0]] = {
-                'tipo': row[1],
-                'inicio': row[2],
-                'minimo': row[3],
-                'maximo': row[4],
-                'incremento': row[5]
-            }
-        return sequences
+        self.cursor.execute("""
+            SELECT sequence_name, data_type, start_value, minimum_value, maximum_value, increment
+            FROM information_schema.sequences
+            WHERE sequence_schema = %s
+        """, (self.esquema,))
+        return {
+            r[0]: {'tipo': r[1], 'inicio': r[2], 'minimo': r[3], 'maximo': r[4], 'incremento': r[5]}
+            for r in self.cursor.fetchall()
+        }
 
     def obtener_indices(self):
-        query = """
-        SELECT
-            tablename,
-            indexname,
-            indexdef
-        FROM pg_indexes
-        WHERE schemaname = %s
-        ORDER BY tablename, indexname
-        """
-        self.cursor.execute(query, (self.esquema,))
-        indices = defaultdict(list)
-        for row in self.cursor.fetchall():
-            indices[row[0]].append({
-                'nombre': row[1],
-                'definicion': row[2]
-            })
-        return dict(indices)
+        return self._query_to_groups("""
+            SELECT tablename, indexname, indexdef FROM pg_indexes
+            WHERE schemaname = %s
+            ORDER BY tablename, indexname
+        """, lambda row: (row[0], {'nombre': row[1], 'definicion': row[2]}))
 
+    # ── Orden de carga (topological sort) ────────────────────────────────────
     def resolver_orden_carga(self):
         dependencias = defaultdict(set)
         sin_dependencias = set(self.metadata['tablas'])
         for tabla, fks in self.metadata['fks'].items():
-            if fks:
-                for fk in fks:
-                    tabla_ref = fk['tabla_ref']
-                    if tabla_ref != tabla:
-                        dependencias[tabla].add(tabla_ref)
-                        sin_dependencias.discard(tabla)
-        orden = []
+            for fk in fks:
+                tabla_ref = fk['tabla_ref']
+                if tabla_ref != tabla:
+                    dependencias[tabla].add(tabla_ref)
+                    sin_dependencias.discard(tabla)
+        orden      = []
         procesadas = set()
         en_proceso = set()
 
@@ -750,24 +500,25 @@ class SmartDataGenerator:
                 print(f"  [WARN] Ciclo detectado en: {tabla}")
                 return False
             en_proceso.add(tabla)
-            if tabla in dependencias:
-                for dep in dependencias[tabla]:
-                    visitar_tabla(dep)
+            for dep in dependencias.get(tabla, []):
+                visitar_tabla(dep)
             en_proceso.discard(tabla)
             if tabla not in procesadas:
                 orden.append(tabla)
                 procesadas.add(tabla)
             return True
+
         for tabla in sorted(sin_dependencias):
             visitar_tabla(tabla)
         for tabla in sorted(self.metadata['tablas']):
             visitar_tabla(tabla)
         return orden
 
+    # ── Generación de valores ────────────────────────────────────────────────
     def generar_valor_columna(self, tabla, columna_info, registro_actual=None):
         nombre_col = columna_info['nombre']
-        tipo = columna_info['udt_name'] or columna_info['tipo_dato']
-        col_key = f"{tabla}.{nombre_col}"
+        tipo       = columna_info['udt_name'] or columna_info['tipo_dato']
+        col_key    = f"{tabla}.{nombre_col}"
         columnas_personalizadas = self.config.get('columnas_personalizadas', {})
         if col_key in columnas_personalizadas:
             try:
@@ -800,44 +551,33 @@ class SmartDataGenerator:
         return self.generar_por_tipo(tipo, columna_info)
 
     def _generar_valor_personalizado(self, col_key, config_personalizada, columna_info):
-        tipo = config_personalizada['tipo']
+        tipo   = config_personalizada['tipo']
         config = config_personalizada['config']
         if tipo in ('int2', 'smallint', 'int4', 'integer', 'int8', 'bigint'):
             return random.randint(config['min'], config['max'])
         elif tipo in ('numeric', 'decimal'):
             valor = random.uniform(config['min'], config['max'])
-            decimales = config.get('decimales', 2)
-            return round(Decimal(str(valor)), decimales)
+            return round(Decimal(str(valor)), config.get('decimales', 2))
         elif tipo in ('varchar', 'character varying', 'bpchar', 'char', 'character', 'text'):
             longitud = config['longitud']
-            usar_faker = config.get('usar_faker', False)
-            if usar_faker and self.faker:
-                texto = self.faker.text(max_nb_chars=longitud)
-                return texto[:longitud]
-            else:
-                return self.generar_texto_basico(longitud)
+            if config.get('usar_faker', False) and self.faker:
+                return self.faker.text(max_nb_chars=longitud)[:longitud]
+            return self.generar_texto_basico(longitud)
         elif tipo in ('date', 'timestamp', 'timestamptz', 'timestamp with time zone'):
             try:
-                fecha_inicio_str = config['fecha_inicio']
-                fecha_fin_str = config['fecha_fin']
-                fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d')
-                fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d')
-                delta = fecha_fin - fecha_inicio
-                dias_random = random.randint(0, delta.days)
-                fecha_generada = fecha_inicio + timedelta(days=dias_random)
+                fecha_inicio = datetime.strptime(config['fecha_inicio'], '%Y-%m-%d')
+                fecha_fin    = datetime.strptime(config['fecha_fin'],    '%Y-%m-%d')
+                fecha = fecha_inicio + timedelta(days=random.randint(0, (fecha_fin - fecha_inicio).days))
                 if 'timestamp' in tipo:
-                    fecha_generada = fecha_generada.replace(
-                        hour=random.randint(0, 23),
-                        minute=random.randint(0, 59),
-                        second=random.randint(0, 59)
-                    )
-                return fecha_generada
+                    fecha = fecha.replace(hour=random.randint(0, 23),
+                                          minute=random.randint(0, 59),
+                                          second=random.randint(0, 59))
+                return fecha
             except Exception as e:
                 print(f"  [WARN] Error al parsear fechas en {col_key}: {e}. Usando fallback.")
                 return self.generar_fecha()
         elif tipo == 'bool':
-            prob_true = config.get('prob_true', 0.5)
-            return random.random() < prob_true
+            return random.random() < config.get('prob_true', 0.5)
         else:
             raise ValueError(f"Tipo '{tipo}' no soportado en configuración personalizada")
 
@@ -846,30 +586,27 @@ class SmartDataGenerator:
             return False
         if not self.config['generacion_nulls']['habilitado']:
             return False
-        es_pk = tabla in self.metadata['pks'] and nombre_col in self.metadata['pks'][tabla]
-        if es_pk and self.config['generacion_nulls']['excluir_pks']:
+        if (tabla in self.metadata['pks'] and nombre_col in self.metadata['pks'][tabla]
+                and self.config['generacion_nulls']['excluir_pks']):
             return False
-        es_fk = False
-        if tabla in self.metadata['fks']:
-            es_fk = any(fk['columna'] == nombre_col for fk in self.metadata['fks'][tabla])
-        if es_fk and self.config['generacion_nulls']['excluir_fks']:
+        if (self.config['generacion_nulls']['excluir_fks']
+                and tabla in self.metadata['fks']
+                and any(fk['columna'] == nombre_col for fk in self.metadata['fks'][tabla])):
             return False
         return random.random() < self.config['generacion_nulls']['probabilidad']
 
     def _garantizar_unicidad(self, tabla, columna, valor, generador, columna_info):
         cache_key = f"{tabla}.{columna}"
-        if cache_key not in self.generated_values:
-            self.generated_values[cache_key] = set()
-        intentos = 0
-        max_intentos = 1000
-        while valor in self.generated_values[cache_key] and intentos < max_intentos:
+        usados    = self.generated_values.setdefault(cache_key, set())
+        intentos  = 0
+        while valor in usados and intentos < 1000:
             valor = generador(columna_info)
             intentos += 1
-        if intentos >= max_intentos:
+        if intentos >= 1000:
             import uuid
             if isinstance(valor, str):
                 valor = f"{valor}_{uuid.uuid4().hex[:6]}"
-        self.generated_values[cache_key].add(valor)
+        usados.add(valor)
         return valor
 
     def generar_por_tipo(self, tipo, columna_info):
@@ -891,54 +628,45 @@ class SmartDataGenerator:
             return random.randint(cfg['min'], min(cfg['max'], 32767))
         elif tipo in ('numeric', 'decimal'):
             precision = columna_info['precision'] or 10
-            scale = columna_info['scale'] or 2
-            max_val = 10 ** (precision - scale) - 1
-            valor = round(random.uniform(0, max_val), scale)
-            return Decimal(str(valor))
+            scale     = columna_info['scale'] or 2
+            max_val   = 10 ** (precision - scale) - 1
+            return Decimal(str(round(random.uniform(0, max_val), scale)))
         elif tipo in ('float4', 'float8', 'real', 'double precision'):
             return round(random.uniform(0, 10000), 2)
         elif tipo == 'date':
             cfg = self.config['rangos_fechas']['date']
-            dias_atras = random.randint(0, cfg['dias_atras'])
-            return (datetime.now() - timedelta(days=dias_atras)).date()
+            return (datetime.now() - timedelta(days=random.randint(0, cfg['dias_atras']))).date()
         elif tipo in ('timestamp', 'timestamptz', 'timestamp without time zone', 'timestamp with time zone'):
             cfg = self.config['rangos_fechas']['timestamp']
-            dias_atras = random.randint(0, cfg['dias_atras'])
-            return datetime.now() - timedelta(days=dias_atras, hours=random.randint(0, 23))
+            return datetime.now() - timedelta(days=random.randint(0, cfg['dias_atras']),
+                                               hours=random.randint(0, 23))
         elif tipo in ('time', 'time without time zone'):
-            return f"{random.randint(0, 23):02d}:{random.randint(0, 59):02d}:{random.randint(0, 59):02d}"
+            return f"{random.randint(0,23):02d}:{random.randint(0,59):02d}:{random.randint(0,59):02d}"
         elif tipo in ('bool', 'boolean'):
             return random.choice([True, False])
         elif tipo == 'uuid':
             import uuid
             return str(uuid.uuid4())
         elif tipo in ('json', 'jsonb'):
-            return json.dumps({
-                'id': random.randint(1, 1000),
-                'valor': self.generar_texto_basico(20),
-                'activo': random.choice([True, False])
-            })
+            return json.dumps({'id': random.randint(1, 1000),
+                               'valor': self.generar_texto_basico(20),
+                               'activo': random.choice([True, False])})
         elif tipo.endswith('[]'):
-            base_type = tipo[:-2]
-            cantidad = random.randint(1, 5)
-            return [self.generar_por_tipo(base_type, columna_info) for _ in range(cantidad)]
+            return [self.generar_por_tipo(tipo[:-2], columna_info) for _ in range(random.randint(1, 5))]
         else:
             return self.generar_texto_basico(50)
 
     def generar_texto_basico(self, max_len):
-        palabras = [
-            'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
-            'sed', 'eiusmod', 'tempor', 'incididunt', 'labore', 'dolore', 'magna', 'aliqua'
-        ]
         texto = ''
         while len(texto) < max_len:
-            palabra = random.choice(palabras)
+            palabra = random.choice(self._PALABRAS)
             if len(texto) + len(palabra) + 1 <= max_len:
                 texto += palabra + ' '
             else:
                 break
         return texto.strip()[:max_len]
 
+    # ── FK y unicidad ────────────────────────────────────────────────────────
     def obtener_valor_fk(self, tabla_ref, columna_ref):
         cache_key = f"{tabla_ref}.{columna_ref}"
         if cache_key in self.data_cache and self.data_cache[cache_key]:
@@ -951,20 +679,20 @@ class SmartDataGenerator:
             if valores:
                 self.data_cache[cache_key] = valores
                 return random.choice(valores)
-            else:
-                return None
+            return None
         except Exception as e:
             print(f"  [WARN] Error obteniendo FK {tabla_ref}.{columna_ref}: {e}")
             return None
 
+    # ── Generación e inserción ───────────────────────────────────────────────
     def generar_registros_tabla(self, tabla, cantidad):
-        registros = []
-        columnas = self.metadata['columnas'][tabla]
-        registros_saltados = 0
+        registros           = []
+        columnas            = self.metadata['columnas'][tabla]
+        registros_saltados  = 0
         columnas_procesadas = 0
         columnas_con_default = 0
-        for i in range(cantidad):
-            registro = {}
+        for _ in range(cantidad):
+            registro      = {}
             registro_valido = True
             for columna in columnas:
                 nombre_col = columna['nombre']
@@ -995,28 +723,26 @@ class SmartDataGenerator:
     def insertar_registros(self, tabla, registros):
         if not registros:
             return 0
-        usar_copy = self.config.get('optimizacion', {}).get('usar_copy', True)
-        if usar_copy:
+        if self.config.get('optimizacion', {}).get('usar_copy', True):
             return self._insertar_con_copy(tabla, registros)
-        else:
-            return self._insertar_con_batch(tabla, registros)
+        return self._insertar_con_batch(tabla, registros)
 
     def _insertar_con_copy(self, tabla, registros):
         if not registros:
             return 0
         try:
-            columnas = list(registros[0].keys())
+            columnas       = list(registros[0].keys())
             tabla_completa = f"{self.esquema}.{tabla}"
             output = io.StringIO()
             writer = csv.writer(output, delimiter='\t', quotechar='"',
-                               quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
+                                quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
             for registro in registros:
                 fila = []
                 for col in columnas:
                     valor = registro.get(col)
                     if valor is None:
                         fila.append('\\N')
-                    elif isinstance(valor, (datetime, )):
+                    elif isinstance(valor, datetime):
                         fila.append(valor.isoformat())
                     elif isinstance(valor, bool):
                         fila.append('t' if valor else 'f')
@@ -1044,16 +770,13 @@ class SmartDataGenerator:
         if not registros:
             return 0
         try:
-            columnas = list(registros[0].keys())
+            columnas       = list(registros[0].keys())
             tabla_completa = f"{self.esquema}.{tabla}"
-            columnas_str = ', '.join([f'"{col}"' for col in columnas])
-            placeholders = ', '.join(['%s'] * len(columnas))
-            query = f'INSERT INTO {tabla_completa} ({columnas_str}) VALUES ({placeholders})'
-            datos = []
-            for registro in registros:
-                fila = [registro.get(col) for col in columnas]
-                datos.append(tuple(fila))
-            batch_size = self.config.get('optimizacion', {}).get('batch_size', 1000)
+            columnas_str   = ', '.join([f'"{col}"' for col in columnas])
+            placeholders   = ', '.join(['%s'] * len(columnas))
+            query          = f'INSERT INTO {tabla_completa} ({columnas_str}) VALUES ({placeholders})'
+            datos          = [tuple(registro.get(col) for col in columnas) for registro in registros]
+            batch_size     = self.config.get('optimizacion', {}).get('batch_size', 1000)
             execute_batch(self.cursor, query, datos, page_size=batch_size)
             self.conn.commit()
             self._actualizar_cache_insercion(tabla, registros, columnas)
@@ -1065,19 +788,13 @@ class SmartDataGenerator:
             return 0
 
     def _actualizar_cache_insercion(self, tabla, registros, columnas):
-        if tabla in self.metadata['pks']:
-            for pk_col in self.metadata['pks'][tabla]:
-                if pk_col in columnas:
-                    cache_key = f"{tabla}.{pk_col}"
-                    valores = [
-                        registro[pk_col]
-                        for registro in registros
-                        if pk_col in registro and registro[pk_col] is not None
-                    ]
-                    if cache_key not in self.data_cache:
-                        self.data_cache[cache_key] = []
-                    self.data_cache[cache_key].extend(valores)
+        for pk_col in self.metadata['pks'].get(tabla, []):
+            if pk_col in columnas:
+                cache_key = f"{tabla}.{pk_col}"
+                valores   = [r[pk_col] for r in registros if r.get(pk_col) is not None]
+                self.data_cache.setdefault(cache_key, []).extend(valores)
 
+    # ── Proceso principal ────────────────────────────────────────────────────
     def generar_data_completa(self, cantidad_base=None):
         if cantidad_base is None:
             cantidad_base = self.config.get('cantidad_base', 100)
@@ -1087,17 +804,18 @@ class SmartDataGenerator:
         print(f"{'='*70}\n")
         print(f"Cantidad base: {cantidad_base} registros")
         print(f"Tablas a procesar: {len(self.metadata['orden_carga'])}")
-        print(f"Metodo de insercion: {'COPY' if self.config.get('optimizacion', {}).get('usar_copy') else 'INSERT BATCH'}\n")
+        usar_copy = self.config.get('optimizacion', {}).get('usar_copy')
+        print(f"Metodo de insercion: {'COPY' if usar_copy else 'INSERT BATCH'}\n")
         total_insertados = 0
         for i, tabla in enumerate(self.metadata['orden_carga'], 1):
             print(f"[{i}/{len(self.metadata['orden_carga'])}] {tabla}")
             cantidad = self.config.get('cantidad_por_tabla', {}).get(tabla, cantidad_base)
-            if (self.config['multiplicadores_fk']['habilitado'] and
-                tabla in self.metadata['fks'] and self.metadata['fks'][tabla]):
-                factor = self.config['multiplicadores_fk']['factor']
+            if (self.config['multiplicadores_fk']['habilitado']
+                    and tabla in self.metadata['fks'] and self.metadata['fks'][tabla]):
+                factor   = self.config['multiplicadores_fk']['factor']
                 cantidad = int(cantidad_base * len(self.metadata['fks'][tabla]) * factor)
             print(f"  -> Generando {cantidad} registros...")
-            registros = self.generar_registros_tabla(tabla, cantidad)
+            registros  = self.generar_registros_tabla(tabla, cantidad)
             print(f"  -> Insertando...")
             insertados = self.insertar_registros(tabla, registros)
             if insertados > 0:
@@ -1107,7 +825,7 @@ class SmartDataGenerator:
             else:
                 print(f"  [WARN] 0 registros insertados\n")
                 self.stats['por_tabla'][tabla] = 0
-        self.stats['tiempo_fin'] = datetime.now()
+        self.stats['tiempo_fin']      = datetime.now()
         self.stats['total_registros'] = total_insertados
         self._mostrar_reporte_final()
 
@@ -1122,8 +840,7 @@ class SmartDataGenerator:
             duracion = (self.stats['tiempo_fin'] - self.stats['tiempo_inicio']).total_seconds()
             print(f"  - Tiempo total: {duracion:.2f} segundos")
             if duracion > 0:
-                tasa = self.stats['total_registros'] / duracion
-                print(f"  - Tasa de insercion: {tasa:.0f} registros/segundo")
+                print(f"  - Tasa de insercion: {self.stats['total_registros'] / duracion:.0f} registros/segundo")
         if self.stats['errores']:
             print(f"\n[WARN] Errores encontrados: {len(self.stats['errores'])}")
             for error in self.stats['errores'][:5]:
@@ -1134,18 +851,17 @@ class SmartDataGenerator:
         print(f"\nLimpiando tablas existentes...")
         for tabla in reversed(self.metadata['orden_carga']):
             try:
-                tabla_completa = f"{self.esquema}.{tabla}"
-                self.cursor.execute(f'TRUNCATE TABLE {tabla_completa} CASCADE')
+                self.cursor.execute(f'TRUNCATE TABLE {self.esquema}.{tabla} CASCADE')
                 self.conn.commit()
                 print(f"  [OK] {tabla}")
             except Exception as e:
                 print(f"  [ERROR] Error en {tabla}: {e}")
                 self.conn.rollback()
 
+
 def main():
     if sys.platform == 'win32':
         try:
-            import io
             sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
             sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
         except:
@@ -1154,12 +870,12 @@ def main():
         print("Error: Faltan parámetros")
         print("Uso: python data_prueba.py <host> <puerto> <bd> <usuario> <password> <esquema> [cantidad]")
         sys.exit(1)
-    host = sys.argv[1]
-    puerto = sys.argv[2]
-    bd = sys.argv[3]
-    usuario = sys.argv[4]
+    host     = sys.argv[1]
+    puerto   = sys.argv[2]
+    bd       = sys.argv[3]
+    usuario  = sys.argv[4]
     password = sys.argv[5]
-    esquema = sys.argv[6]
+    esquema  = sys.argv[6]
     cantidad = int(sys.argv[7]) if len(sys.argv) > 7 else None
     print(f"\n{'='*70}")
     print(f"SEMBRADO INTELIGENTE DE DATOS - PostgreSQL")
@@ -1189,5 +905,6 @@ def main():
         sys.exit(1)
     finally:
         generator.desconectar()
+
 if __name__ == "__main__":
     main()

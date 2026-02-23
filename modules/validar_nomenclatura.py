@@ -316,17 +316,17 @@ class ValidadorDDL:
         return len(self.errores) == 0
 
     _CSS = (
-        "body{font-family:sans-serif;padding:20px;max-width:960px;margin:0 auto;color:#222}"
+        "body{font-family:sans-serif;padding:20px;max-width:960px;margin:0 auto;background:#ecf0f1;color:#2c3e50}"
         "table{border-collapse:collapse;width:100%;margin-bottom:16px}"
-        "th,td{border:1px solid #bbb;padding:5px 10px;text-align:left;font-size:.9em}"
-        "th{background:#eee;font-weight:bold}"
-        "h1{font-size:1.3em;margin-bottom:8px}"
-        "h2{font-size:1.05em;margin:20px 0 8px;border-bottom:1px solid #bbb;padding-bottom:3px}"
-        "h3{font-size:.9em;color:#555;margin:12px 0 5px}"
-        ".err{border-left:3px solid #c00;padding:7px 12px;margin-bottom:7px}"
-        ".wrn{border-left:3px solid #a60;padding:7px 12px;margin-bottom:7px}"
-        "code{background:#f0f0f0;padding:1px 4px;font-family:monospace}"
-        ".sug{color:#060;font-family:monospace}"
+        "th,td{border:1px solid #bdc3c7;padding:5px 10px;text-align:left;font-size:.9em}"
+        "th{background:#3498db;color:#fff;font-weight:bold}"
+        "h1{font-size:1.3em;margin-bottom:8px;color:#3498db}"
+        "h2{font-size:1.05em;margin:20px 0 8px;border-bottom:2px solid #3498db;padding-bottom:3px;color:#2c3e50}"
+        "h3{font-size:.9em;color:#7f8c8d;margin:12px 0 5px}"
+        ".err{border-left:3px solid #e74c3c;background:#f7fafc;padding:7px 12px;margin-bottom:7px}"
+        ".wrn{border-left:3px solid #f39c12;background:#f7fafc;padding:7px 12px;margin-bottom:7px}"
+        "code{background:#dde3e8;padding:1px 4px;font-family:monospace}"
+        ".sug{color:#27ae60;font-family:monospace}"
     )
 
     @staticmethod
