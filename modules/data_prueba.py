@@ -13,8 +13,6 @@ import io
 import csv
 
 class SmartDataGenerator:
-
-    # ── Datos estáticos ──────────────────────────────────────────────────────
     _NOMBRES      = ['Juan', 'María', 'Carlos', 'Ana', 'Luis', 'Carmen', 'Pedro', 'Rosa',
                      'Jorge', 'Isabel', 'Miguel', 'Elena', 'Antonio', 'Laura', 'José']
     _APELLIDOS    = ['García', 'Rodríguez', 'Martínez', 'López', 'González', 'Hernández',
@@ -50,7 +48,6 @@ class SmartDataGenerator:
         'sed', 'eiusmod', 'tempor', 'incididunt', 'labore', 'dolore', 'magna', 'aliqua',
     ]
 
-    # Patrones de contexto pre-ordenados por prioridad (mayor primero)
     _CTX = [
         (r'(nombre_completo|full_name|nombre_apellido)',                        'generar_nombre_completo'),
         (r'(^nombre$|^name$|_nombre$|_name$|nombre_|name_)',                   'generar_nombre_persona'),
@@ -84,7 +81,7 @@ class SmartDataGenerator:
         (r'(observacion|observation|nota|comment|comentario)',                  'generar_observacion'),
     ]
 
-    # ── Inicialización ───────────────────────────────────────────────────────
+
     def __init__(self, host, puerto, bd, usuario, password, esquema, config_file=None):
         self.host     = host
         self.puerto   = puerto
@@ -131,7 +128,6 @@ class SmartDataGenerator:
             return getattr(self.faker, attr)()
         return random.choice(fallback)
 
-    # ── Inferencia de contexto ───────────────────────────────────────────────
     def inferir_contexto_columna(self, nombre_columna):
         nombre_lower = nombre_columna.lower()
         for regex, generator in self._CTX:
@@ -142,7 +138,6 @@ class SmartDataGenerator:
     def _tipo_columna(self, columna_info):
         return (columna_info.get('udt_name') or columna_info.get('tipo_dato') or '').lower()
 
-    # ── Generadores de datos ─────────────────────────────────────────────────
     def generar_nombre_persona(self, columna_info):
         return self._faker_or('first_name', self._NOMBRES)
 
@@ -273,7 +268,6 @@ class SmartDataGenerator:
             length = random.randint(2, 5)
         return ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=length))
 
-    # ── Configuración ────────────────────────────────────────────────────────
     def cargar_config(self, config_file):
         config_default = {
             'cantidad_base': 100,
@@ -318,7 +312,6 @@ class SmartDataGenerator:
             else:
                 base[key] = value
 
-    # ── Conexión ─────────────────────────────────────────────────────────────
     def conectar(self):
         try:
             self.conn = psycopg2.connect(
@@ -338,14 +331,8 @@ class SmartDataGenerator:
         if self.conn:
             self.conn.close()
 
-    # ── Análisis de base de datos ────────────────────────────────────────────
     def analizar_base_datos(self):
-        print(f"\n{'='*70}")
-        print(f"ANALISIS DE ESTRUCTURA DE BASE DE DATOS")
-        print(f"{'='*70}\n")
-        print(f"Esquema: {self.esquema}")
         self.metadata['tablas'] = self.obtener_tablas()
-        print(f"[OK] Tablas: {len(self.metadata['tablas'])}")
         for tabla in self.metadata['tablas']:
             self.metadata['columnas'][tabla] = self.obtener_columnas(tabla)
         print(f"[OK] Columnas analizadas")
@@ -383,7 +370,6 @@ class SmartDataGenerator:
         else:
             print(f"  [INFO] No se detectaron contextos especiales (se usaran generadores por tipo)")
 
-    # ── Consultas de metadatos ───────────────────────────────────────────────
     def obtener_tablas(self):
         self.cursor.execute("""
             SELECT table_name FROM information_schema.tables
@@ -479,7 +465,6 @@ class SmartDataGenerator:
             ORDER BY tablename, indexname
         """, lambda row: (row[0], {'nombre': row[1], 'definicion': row[2]}))
 
-    # ── Orden de carga (topological sort) ────────────────────────────────────
     def resolver_orden_carga(self):
         dependencias = defaultdict(set)
         sin_dependencias = set(self.metadata['tablas'])
@@ -514,7 +499,6 @@ class SmartDataGenerator:
             visitar_tabla(tabla)
         return orden
 
-    # ── Generación de valores ────────────────────────────────────────────────
     def generar_valor_columna(self, tabla, columna_info, registro_actual=None):
         nombre_col = columna_info['nombre']
         tipo       = columna_info['udt_name'] or columna_info['tipo_dato']
@@ -666,7 +650,6 @@ class SmartDataGenerator:
                 break
         return texto.strip()[:max_len]
 
-    # ── FK y unicidad ────────────────────────────────────────────────────────
     def obtener_valor_fk(self, tabla_ref, columna_ref):
         cache_key = f"{tabla_ref}.{columna_ref}"
         if cache_key in self.data_cache and self.data_cache[cache_key]:
@@ -684,7 +667,6 @@ class SmartDataGenerator:
             print(f"  [WARN] Error obteniendo FK {tabla_ref}.{columna_ref}: {e}")
             return None
 
-    # ── Generación e inserción ───────────────────────────────────────────────
     def generar_registros_tabla(self, tabla, cantidad):
         registros           = []
         columnas            = self.metadata['columnas'][tabla]
@@ -794,7 +776,6 @@ class SmartDataGenerator:
                 valores   = [r[pk_col] for r in registros if r.get(pk_col) is not None]
                 self.data_cache.setdefault(cache_key, []).extend(valores)
 
-    # ── Proceso principal ────────────────────────────────────────────────────
     def generar_data_completa(self, cantidad_base=None):
         if cantidad_base is None:
             cantidad_base = self.config.get('cantidad_base', 100)
@@ -886,7 +867,7 @@ def main():
     if not generator.conectar():
         sys.exit(1)
     try:
-        generator.analizar_base_datos()
+
         if generator.config['limpieza_previa']['automatico']:
             generator.limpiar_tablas()
         elif generator.config['limpieza_previa']['preguntar']:

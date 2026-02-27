@@ -5,9 +5,6 @@ from datetime import datetime
 from typing import List, Tuple
 import psycopg2
 
-# ---------------------------------------------------------------------------
-# SQL queries for each object type: (query, needs_schema_param)
-# ---------------------------------------------------------------------------
 _OBJECT_SQL: dict = {
     "Procedimientos": ("""
         SELECT p.proname, obj_description(p.oid, 'pg_proc')
@@ -80,7 +77,7 @@ _OBJECT_SQL: dict = {
         ORDER BY jobname""", False),
 }
 
-# Maps object type → SQL COMMENT ON keyword (for schema.name targets)
+
 _COMMENT_TARGET: dict = {
     "Procedimientos":    "FUNCTION",
     "Funciones":         "FUNCTION",
@@ -119,7 +116,6 @@ class ComentariosGUI:
         self.crear_interfaz()
         self.cargar_tablas(init=True)
 
-    # ── DB helpers ────────────────────────────────────────────────────────────
 
     def conectar_bd(self):
         try:
@@ -168,8 +164,7 @@ class ComentariosGUI:
             raise Exception(f"No se encontró la tabla para el constraint '{nombre}'")
         return row[0]
 
-    # ── Data loading ──────────────────────────────────────────────────────────
-
+  
     def cargar_tablas(self, init: bool = False):
         """Loads table names + comments in one query.
         Pass init=True on startup to exit if the schema has no tables."""
@@ -255,8 +250,6 @@ class ComentariosGUI:
         self.limpiar_frame_campos()
         self._render_objetos_grid(tipo, f"({len(objetos_info)} objetos)", objetos_info)
         print(f"{tipo} cargados: {len(objetos_info)} objetos")
-
-    # ── UI construction ───────────────────────────────────────────────────────
 
     def crear_interfaz(self):
         info_frame = ttk.Frame(self.root, padding="10")

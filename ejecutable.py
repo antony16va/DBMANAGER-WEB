@@ -641,7 +641,7 @@ class DBManager:
             except:
                 return {}
         return {}
-
+    
     def save_config(self):
         try:
             with open(self.config_file, 'w', encoding='utf-8') as f:
@@ -672,3 +672,4 @@ def main():
     root.mainloop()
 if __name__ == "__main__":
     main()
+

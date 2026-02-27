@@ -2,13 +2,13 @@
   "_history_host": [
     "192.168.44.43",
     "192.168.44.48",
-    "192.168.44.41",
     "192.168.44.49",
-    "localhost"
+    "localhost",
+    "192.168.44.41"
   ],
   "_history_puerto": [
-    "5433",
-    "5432"
+    "5432",
+    "5433"
   ],
   "_history_bd": [
     "gemma",
@@ -19,17 +19,18 @@
     "cemm",
     "ropc",
     "cae",
-    "postgres"
+    "postgres",
+    "sigloc"
   ],
   "_history_usuario": [
     "claridad",
-    "avalencia",
     "sigloc",
     "cemm",
     "ropc",
     "cae",
     "admin",
-    "postgres"
+    "postgres",
+    "avalencia"
   ],
   "_history_password": [
     "sigloc_ab01$"
@@ -41,14 +42,14 @@
     "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.sql"
   ],
   "_global_params": {
-    "host": "localhost",
-    "puerto": "5432",
-    "bd": "postgres",
-    "usuario": "postgres",
+    "host": "192.168.44.41",
+    "puerto": "5433",
+    "bd": "sigloc",
+    "usuario": "avalencia",
     "password": "sigloc_ab01$",
     "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.sql",
     "esquema": "sigloc",
-    "ruta_salida_rtf": "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.rtf",
+    "ruta_salida_rtf": "C:/Users/avalencia/Desktop/sigloc_diccionario.rtf",
     "ruta_ddl_completo": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/dump.sql",
     "ruta_plantilla_excel": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/resources/Plantilla_Modelo.xlsx",
     "ruta_salida_ddl_base": "C:/Users/Antony/Desktop/Nueva carpeta (2)/PRACTICAS FINAL/DBMANAGER/ddl_inicial.sql",
@@ -69,7 +70,6 @@
     "sigloc"
   ],
   "_history_ruta_salida_rtf": [
-    "C:/Users/avalencia/Desktop/DBMANAGER/sigloc.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/cae.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/cae_admin.rtf",
     "C:/Users/avalencia/Desktop/DBMANAGER/sce.rtf",
@@ -78,7 +78,8 @@
     "C:\\Users\\avalencia\\Desktop\\DICCIONARIO\\cae_eg2026.rtf",
     "C:/Users/avalencia/Desktop/ropc_eg2026.rtf",
     "C:/Users/avalencia/Desktop/cae_eg2026.rtf",
-    "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.rtf"
+    "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.rtf",
+    "C:/Users/avalencia/Desktop/sigloc_diccionario.rtf"
   ],
   "_history_ruta_ddl_completo": [
     "C:/Users/Antony/Desktop/PRACTICAS FINAL/DBMANAGER/ddl_final.sql",
