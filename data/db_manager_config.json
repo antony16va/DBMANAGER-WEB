@@ -3,15 +3,14 @@
     "192.168.44.43",
     "192.168.44.48",
     "192.168.44.49",
-    "localhost",
-    "192.168.44.41"
+    "192.168.44.41",
+    "localhost"
   ],
   "_history_puerto": [
-    "5432",
-    "5433"
+    "5433",
+    "5432"
   ],
   "_history_bd": [
-    "gemma",
     "claridad_dev",
     "sce",
     "sigloc_qa",
@@ -19,8 +18,9 @@
     "cemm",
     "ropc",
     "cae",
-    "postgres",
-    "sigloc"
+    "sigloc",
+    "postgresql",
+    "postgres"
   ],
   "_history_usuario": [
     "claridad",
@@ -29,8 +29,8 @@
     "ropc",
     "cae",
     "admin",
-    "postgres",
-    "avalencia"
+    "avalencia",
+    "postgres"
   ],
   "_history_password": [
     "sigloc_ab01$"
@@ -42,10 +42,10 @@
     "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.sql"
   ],
   "_global_params": {
-    "host": "192.168.44.41",
-    "puerto": "5433",
-    "bd": "sigloc",
-    "usuario": "avalencia",
+    "host": "localhost",
+    "puerto": "5432",
+    "bd": "postgres",
+    "usuario": "postgres",
     "password": "sigloc_ab01$",
     "ruta_salida_ddl_completo": "C:/Users/avalencia/Desktop/ONPE/DICCIONARIOS/cae.sql",
     "esquema": "sigloc",
@@ -67,6 +67,7 @@
     "ropc_admin",
     "ropc_eg2026",
     "cae_eg2026",
+    "public",
     "sigloc"
   ],
   "_history_ruta_salida_rtf": [
