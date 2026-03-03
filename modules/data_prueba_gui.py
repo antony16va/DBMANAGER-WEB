@@ -4,7 +4,8 @@ import sys
 import threading
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
+if not getattr(sys, 'frozen', False):
+    sys.path.insert(0, str(Path(__file__).parent))
 from data_prueba import SmartDataGenerator
 
 # Fuentes como constantes de módulo — evita recrear tuplas por cada widget

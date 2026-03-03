@@ -1,6 +1,6 @@
 {
   "global": {
-    "descripcion": "Reglas generales aplicables a todos los nombres de objetos",
+    "descripcion": "Reglas generales", 
     "case": "UPPER",
     "allowed_characters_regex": "^[A-Z0-9_]+$",
     "max_length_default": 30,
@@ -8,7 +8,7 @@
   },
 
   "tabla": {
-    "descripcion": "Reglas para nombres de tablas",
+    "descripcion": "Reglas para tablas",
     "prefijos_validos": ["MAE", "TAB", "CAB", "DET", "AUD", "TMP"],
     "regex_nombre": "^[A-Z]{3}_[A-Z0-9_]+$",
     "max_length": 30,
@@ -23,19 +23,18 @@
 
   "columna": {
     "descripcion": "Reglas para nombres de columnas",
-    "regex_nombre": "^[A-Z]_[A-Z0-9_]+(_PK)?$",
+    "prefijos_validos": ["C","B","N","D"],
+    "regex_nombre": "^[A-Z]{1}_[A-Z0-9_]+(_PK)?$",
     "max_length": 30,
     "prefijos_tipo_dato": {
       "CHAR": "C",
       "VARCHAR": "C",
       "VARCHAR2": "C",
       "CLOB": "C",
-      "TEXT": "C",
       "BLOB": "B",
+      "TEXT": "C",
       "INTEGER": "N",
       "INT": "N",
-      "INT4": "N",
-      "INT8": "N",
       "SMALLINT": "N",
       "BIGINT": "N",
       "NUMBER": "N",
@@ -56,11 +55,25 @@
       "descripcion": "Reglas para columnas que son clave foránea",
       "prohibir_sufijo_pk_en_fk": true
     },
-    "restricciones": {
-      "no_char_longitud_mayor_1": true
+    "correlativo": {
+      "descripcion": "Correlativo opcional al final del nombre del campo",
+      "longitud": 2,
+      "regex": "^[0-9]{2}$",
+      "separador": "_"
     }
   },
 
+  "constant": {
+    "descripcion": "Reglas para las constantes",
+    "max_length": 30,
+    "correlativo": {
+      "descripcion": "Correlativo opcional al final del nombre de la constante",
+      "longitud": 2,
+      "regex": "^[0-9]{2}$",
+      "separador": "_"
+    }
+  },
+  
   "constraint": {
     "descripcion": "Reglas para constraints (PK, FK, UK, CK)",
     "prefijo": "CST_",
@@ -69,11 +82,84 @@
     "regex_nombre": "^CST_[A-Z0-9_]+_(PK|FK|UK|CK)(_[0-9]{2})?$",
     "max_length": 30,
     "correlativo": {
+      "descripcion": "Correlativo opcional al final del nombre de la constante",
+      "longitud": 2,
+      "regex": "^[0-9]{2}$",
+      "separador": "_"
+    }
+  },
+  
+  "servidor": {
+    "descripcion": "Reglas para DBLINK / Foreign Server",
+    "prefijo": "SRV_",
+    "formato": "SRV_<USER>[_NN]",
+    "regex_nombre": "^SRV_[A-Z0-9_]+(_[0-9]{2})?$",
+    "max_length": 30,
+    "correlativo": {
       "usa_correlativo": true,
       "longitud": 2,
       "regex": "^[0-9]{2}$",
       "separador": "_"
     }
+  },
+  
+  "function": {
+    "descripcion": "Reglas para FUNCTIONS",
+    "prefijo": "FN_",
+    "formato": "FN_<DESCRIPCION>",
+    "regex_nombre": "^FN_[A-Z0-9_]+$",
+    "max_length": 30
+  },
+
+  "index": {
+  "descripcion": "Reglas para INDEX",
+  "prefijo": "INX_",
+  "formato": "INX_<TABLA>[_TIPO][_NN]",
+  "regex_nombre": "^INX_[A-Z0-9_]+(_[A-Z0-9]{2,3})?(_[0-9]{2})?$",
+  "max_length": 30,
+    "correlativo": {
+      "usa_correlativo": true,
+      "longitud": 2,
+      "regex": "^[0-9]{2}$",
+      "separador": "_"
+    }
+  },
+
+  "materialized_view": {
+    "descripcion": "Reglas para las vistas materializadas",
+    "prefijo": "VM_",
+    "formato": "VM_<DESCRIPCION>",
+    "regex_nombre": "^VM_[A-Z0-9_]",
+    "max_length": 30
+  },
+
+  "parametros": {
+    "descripcion": "Reglas para los parametros",
+    "formato": "P[I-O]",
+    "nota": "I = parámetro de entrada (IN), O = parámetro de salida (OUT)",
+    "max_length": 30
+  },
+
+   "sequence": {
+    "descripcion": "Reglas para SEQUENCE",
+    "prefijo": "SQ_",
+    "formato": "SQ_<DESCRIPCION>[_NN]",
+    "regex_nombre": "^SQ_[A-Z0-9_]+(_[0-9]{2})?$",
+    "max_length": 30,
+    "correlativo": {
+      "usa_correlativo": true,
+      "longitud": 2,
+      "regex": "^[0-9]{2}$",
+      "separador": "_"
+    }
+  },
+
+  "procedure": {
+  "descripcion": "Reglas para los STORE PROCEDURES",
+  "prefijo": "SP_",
+  "formato": "SP_<DEDESCRIPCION>[_NN]",
+  "regex_nombre": "^SP_[A-Z0-9_]+(_[0-9]{2})?$",
+  "max_length": 30
   },
 
   "tablespace": {
@@ -91,12 +177,18 @@
     }
   },
 
-  "function": {
-    "descripcion": "Reglas para FUNCTIONS",
-    "prefijo": "FN_",
-    "formato": "FN_<DESCRIPCION>",
-    "regex_nombre": "^FN_[A-Z0-9_]+$",
-    "max_length": 30
+    "temporary_table": {
+    "descripcion": "Reglas para TEMPORARY TABLE",
+    "prefijo": "TMP_",
+    "formato": "TMP_<DESCRIPCION>[_NN]",
+    "regex_nombre": "^TMP_[A-Z0-9_]+(_[0-9]{2})?$",
+    "max_length": 30,
+    "correlativo": {
+      "usa_correlativo": true,
+      "longitud": 2,
+      "regex": "^[0-9]{2}$",
+      "separador": "_"
+    }
   },
 
   "trigger": {
@@ -122,37 +214,9 @@
     "max_length": 30
   },
 
-  "dblink": {
-    "descripcion": "Reglas para DBLINK / Foreign Server",
-    "prefijo": "DBL_",
-    "formato": "DBL_<USER>[_NN]",
-    "regex_nombre": "^DBL_[A-Z0-9_]+(_[0-9]{2})?$",
-    "max_length": 30,
-    "correlativo": {
-      "usa_correlativo": true,
-      "longitud": 2,
-      "regex": "^[0-9]{2}$",
-      "separador": "_"
-    }
-  },
-
   "foreign_table": {
     "descripcion": "Reglas para tablas foráneas (heredan reglas de TABLE)",
     "hereda_de": "tabla"
-  },
-
-  "index": {
-    "descripcion": "Reglas para INDEX",
-    "prefijo": "INX_",
-    "formato": "INX_<TABLA>[_TIPO][_NN]",
-    "regex_nombre": "^INX_[A-Z0-9_]+(_[A-Z0-9]{2,3})?(_[0-9]{2})?$",
-    "max_length": 30,
-    "correlativo": {
-      "usa_correlativo": true,
-      "longitud": 2,
-      "regex": "^[0-9]{2}$",
-      "separador": "_"
-    }
   },
 
   "view": {
@@ -163,38 +227,10 @@
     "max_length": 30
   },
 
-  "sequence": {
-    "descripcion": "Reglas para SEQUENCE",
-    "prefijo": "SQ_",
-    "formato": "SQ_<DESCRIPCION>[_NN]",
-    "regex_nombre": "^SQ_[A-Z0-9_]+(_[0-9]{2})?$",
-    "max_length": 30,
-    "correlativo": {
-      "usa_correlativo": true,
-      "longitud": 2,
-      "regex": "^[0-9]{2}$",
-      "separador": "_"
-    }
-  },
-
-  "temporary_table": {
-    "descripcion": "Reglas para TEMPORARY TABLE",
-    "prefijo": "TMP_",
-    "formato": "TMP_<DESCRIPCION>[_NN]",
-    "regex_nombre": "^TMP_[A-Z0-9_]+(_[0-9]{2})?$",
-    "max_length": 30,
-    "correlativo": {
-      "usa_correlativo": true,
-      "longitud": 2,
-      "regex": "^[0-9]{2}$",
-      "separador": "_"
-    }
-  },
-
-  "extension": {
-    "descripcion": "Reglas sugeridas para EXTENSIONES PostgreSQL",
-    "case": "lower",
-    "allowed_characters_regex": "^[a-z0-9_]+$",
-    "max_length": 63
+  "variable": {
+    "descripcion": "Regla para las variables",
+    "prefijo": "V[I,C,D,N,R]",
+    "nota": "I=integer, C=char/varchar, D=date, N=numeric/number, R=registro",
+    "formato": "V[I,C,D,N,R]_<DESCRIPCION>"
   }
 }

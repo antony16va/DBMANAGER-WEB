@@ -115,7 +115,7 @@ def obtener_tablespaces_con_comentarios(cursor):
         spcname AS tablespace,
         obj_description(oid, 'pg_tablespace') AS comentario
     FROM pg_tablespace
-    ORDER BY spcname;
+    where spcname like 'tbs_%';
     """
     try:
         cursor.execute(sql)

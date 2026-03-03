@@ -102,9 +102,12 @@ class SmartDataGenerator:
             'total_registros': 0, 'por_tabla': {},
             'tiempo_inicio': None, 'tiempo_fin': None, 'errores': []
         }
-        base_dir = Path(__file__).resolve().parent
+        if getattr(sys, 'frozen', False):
+            _root = Path(sys.executable).parent
+        else:
+            _root = Path(__file__).resolve().parent.parent
         if config_file is None:
-            config_file = base_dir.parent / "resources" / "config_data_prueba.json"
+            config_file = _root / "resources" / "config_data_prueba.json"
         self.config = self.cargar_config(config_file)
         if self.config.get('seeds', {}).get('random_seed'):
             random.seed(self.config['seeds']['random_seed'])

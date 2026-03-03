@@ -1,12 +1,38 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext, filedialog, messagebox
+import importlib
+import io
 import json
 import os
 import subprocess
+import sys
 import threading
 from datetime import datetime
 from pathlib import Path
 import shutil
+
+class _PipeToLog(io.TextIOBase):
+    
+    def __init__(self, log_fn, tag='info'):
+        self._log = log_fn
+        self._tag = tag
+        self._buf = ''
+
+    def write(self, s):
+        self._buf += s
+        while '\n' in self._buf:
+            line, self._buf = self._buf.split('\n', 1)
+            self._log(line, self._tag)
+        return len(s)
+
+    def flush(self):
+        if self._buf:
+            self._log(self._buf, self._tag)
+            self._buf = ''
+
+    def writable(self):
+        return True
+
 
 class DBManager:
 
@@ -14,8 +40,14 @@ class DBManager:
         self.root = root
         self.root.title("DB-MANAGER")
         self.root.geometry("1200x600")
+        ico_path = (Path(sys.executable).parent if getattr(sys, 'frozen', False)
+                    else Path(__file__).resolve().parent) / 'ico.ico'
+        if ico_path.exists():
+            self.root.iconbitmap(str(ico_path))
         self.root.minsize(1200, 800)
-        self.base_dir = Path(__file__).resolve().parent
+        self.base_dir = (Path(sys.executable).parent
+                         if getattr(sys, 'frozen', False)
+                         else Path(__file__).resolve().parent)
         self.modules_dir = self.base_dir / "modules"
         self.resources_dir = self.base_dir / "resources"
         self.data_dir = self.base_dir / "data"
@@ -119,6 +151,7 @@ class DBManager:
             {
                 "id": 1,
                 "name": "AGREGAR COMENTARIOS",
+                "stem": "agregar_comentarios",
                 "script": str(self.modules_dir / "agregar_comentarios.py"),
                 "type": "python",
                 "icon": "1",
@@ -128,6 +161,7 @@ class DBManager:
             {
                 "id": 2,
                 "name": "VALIDAR NOMENCLATURA",
+                "stem": "validar_nomenclatura",
                 "script": str(self.modules_dir / "validar_nomenclatura.py"),
                 "type": "python",
                 "icon": "2",
@@ -137,6 +171,7 @@ class DBManager:
             {
                 "id": 3,
                 "name": "DICCIONARIO DE DATOS",
+                "stem": "generar_diccionario",
                 "script": str(self.modules_dir / "generar_diccionario.py"),
                 "type": "python",
                 "icon": "3",
@@ -146,6 +181,7 @@ class DBManager:
             {
                 "id": 4,
                 "name": "DATA DE PRUEBA",
+                "stem": "data_prueba",
                 "script": str(self.modules_dir / "data_prueba.py"),
                 "type": "python",
                 "icon": "4",
@@ -319,9 +355,21 @@ class DBManager:
                        font_key='bold', padx=10, pady=6):
         """Crea un tk.Button plano con estilo estándar."""
         return tk.Button(parent, text=text, command=command,
-                         font=self.fonts[font_key], bg=bg, fg=fg, 
+                         font=self.fonts[font_key], bg=bg, fg=fg,
                          cursor='hand2', borderwidth=0,
                          padx=padx, pady=pady)
+
+    def _build_script_cmd(self, stem, args=None):
+        """Construye el comando para ejecutar un módulo.
+        - Si el ejecutable está empaquetado con PyInstaller busca <stem>.exe
+          junto al ejecutable actual.
+        - Si se ejecuta como script Python usa sys.executable + ruta .py.
+        """
+        args = args or []
+        if getattr(sys, 'frozen', False):
+            exe = Path(sys.executable).parent / f"{stem}.exe"
+            return [str(exe)] + args
+        return [sys.executable, str(self.modules_dir / f"{stem}.py")] + args
 
     def _save_param_history(self, param, value):
         """Guarda el valor de un parámetro en el historial (LRU, máx 10)."""
@@ -517,27 +565,28 @@ class DBManager:
             self._save_param_history(param, value)
         self.config['_global_params'] = self.global_params
         self.save_config()
+        gui_args = [
+            params_values['host'], params_values['puerto'], params_values['bd'],
+            params_values['usuario'], params_values['password'], params_values['esquema'],
+        ]
+        self.log_message("\n" + "="*70, "info")
+        self.log_message(f"Abriendo interfaz avanzada de {module['name']}...", "module")
+        self.log_message("="*70 + "\n", "info")
         try:
-            script_path = self.modules_dir / "data_prueba_gui.py"
-            if not script_path.exists():
-                messagebox.showerror("Error", f"No se encontró el script: {script_path}")
-                return
-            import sys
-            python_exe = sys.executable
-            cmd = [
-                python_exe,
-                str(script_path),
-                params_values['host'],
-                params_values['puerto'],
-                params_values['bd'],
-                params_values['usuario'],
-                params_values['password'],
-                params_values['esquema']
-            ]
-            self.log_message("\n" + "="*70, "info")
-            self.log_message(f"Abriendo interfaz avanzada de {module['name']}...", "module")
-            self.log_message("="*70 + "\n", "info")
-            subprocess.Popen(cmd)
+            if getattr(sys, 'frozen', False):
+                # Frozen: importar el módulo y abrir ventana en un hilo
+                threading.Thread(
+                    target=self._launch_gui_inprocess,
+                    args=('data_prueba_gui', gui_args),
+                    daemon=True
+                ).start()
+            else:
+                # Desarrollo: subprocess independiente
+                script_path = self.modules_dir / "data_prueba_gui.py"
+                if not script_path.exists():
+                    messagebox.showerror("Error", f"No se encontró el script: {script_path}")
+                    return
+                subprocess.Popen(self._build_script_cmd('data_prueba_gui', gui_args))
             self.log_message("[OK] Interfaz abierta en ventana separada", "success")
             self.log_message("\nConfigura las tablas y genera los datos desde la nueva ventana", "info")
         except Exception as e:
@@ -559,7 +608,7 @@ class DBManager:
             self._save_param_history(param, value)
         self.config['_global_params'] = self.global_params
         self.save_config()
-        if not os.path.exists(module['script']):
+        if not getattr(sys, 'frozen', False) and not os.path.exists(module['script']):
             messagebox.showerror("Error", f"Script no encontrado: {module['script']}")
             return
         self.log_message(f"\n{'='*70}", "info")
@@ -570,11 +619,15 @@ class DBManager:
                         args=(module, params_values), daemon=True).start()
 
     def _execute_module_thread(self, module, params_values):
+        start_time = datetime.now()
+        if getattr(sys, 'frozen', False):
+            # Modo frozen: importar y ejecutar main() directamente
+            self._run_module_inprocess(module, params_values, start_time)
+            return
+        # Modo desarrollo: subprocess con captura de stdout
         try:
-            import sys
             cmd_args = [params_values[param] for param in module['params']]
-            cmd = [sys.executable, module['script']] + cmd_args
-            start_time = datetime.now()
+            cmd = self._build_script_cmd(module['stem'], cmd_args)
             self.current_process = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
@@ -607,6 +660,46 @@ class DBManager:
         except Exception as e:
             self.log_message(f" Error ejecutando modulo: {e}", "error")
             self.current_process = None
+
+    def _run_module_inprocess(self, module, params_values, start_time):
+        """Importa y ejecuta main() del módulo directamente (modo frozen).
+        Redirige stdout al log de la consola línea a línea.
+        """
+        stem     = module['stem']
+        cmd_args = [params_values[p] for p in module['params']]
+        old_stdout, old_argv = sys.stdout, sys.argv
+        sys.stdout = _PipeToLog(self.log_message, 'info')
+        sys.argv   = [stem] + cmd_args
+        try:
+            mod = importlib.import_module(stem)
+            mod.main()
+            duration = (datetime.now() - start_time).total_seconds()
+            self.log_message(f"Tiempo de ejecucion: {duration:.2f} segundos", "success")
+        except SystemExit as e:
+            duration = (datetime.now() - start_time).total_seconds()
+            if e.code and e.code != 0:
+                self.log_message(f"Módulo terminó con código: {e.code}", "error")
+            else:
+                self.log_message(f"Tiempo de ejecucion: {duration:.2f} segundos", "success")
+        except Exception as e:
+            self.log_message(f"Error ejecutando {stem}: {e}", "error")
+        finally:
+            sys.stdout = old_stdout
+            sys.argv   = old_argv
+
+    def _launch_gui_inprocess(self, stem, args):
+        """Abre una ventana GUI de módulo importándola directamente (modo frozen)."""
+        old_argv = sys.argv
+        sys.argv = [stem] + args
+        try:
+            mod = importlib.import_module(stem)
+            mod.main()
+        except SystemExit:
+            pass
+        except Exception as e:
+            self.log_message(f"Error en {stem}: {e}", "error")
+        finally:
+            sys.argv = old_argv
 
     def stop_execution(self):
         if self.current_process and self.current_process.poll() is None:

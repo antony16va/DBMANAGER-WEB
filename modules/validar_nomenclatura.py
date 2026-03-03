@@ -9,6 +9,7 @@ from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
+
 class Error:
 
     def __init__(self, linea, tipo_objeto, nombre_objeto, tipo_error, mensaje,
@@ -24,10 +25,13 @@ class Error:
     def __str__(self):
         return f"Línea {self.linea} [{self.tipo_objeto}] {self.nombre_objeto}: {self.mensaje}"
 
+
 class ValidadorDDL:
 
+    # Coincide con CREATE TABLE y CREATE FOREIGN TABLE
     _RE_TABLA = re.compile(
-        r'CREATE TABLE\s+(?:IF NOT EXISTS\s+)?([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)?)\s*\(',
+        r'CREATE\s+(?:FOREIGN\s+)?TABLE\s+(?:IF NOT EXISTS\s+)?'
+        r'([a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)?)\s*\(',
         re.IGNORECASE,
     )
     _RE_COLUMNA = re.compile(
@@ -47,7 +51,10 @@ class ValidadorDDL:
 
     def cargar_reglas(self):
         with open(self.reglas_json, 'r', encoding='utf-8') as f:
-            self.reglas = json.load(f)
+            contenido = f.read()
+        # El JSON puede tener comentarios // (no estándar). Los eliminamos antes de parsear.
+        contenido = re.sub(r'//[^\n]*', '', contenido)
+        self.reglas = json.loads(contenido)
 
     def _buscar_pg_dump(self):
         import glob
@@ -105,6 +112,17 @@ class ValidadorDDL:
             if (m := rx.search(linea))
         ]
 
+    def _get_reglas(self, regla_key):
+        """Retorna las reglas para un tipo, resolviendo hereda_de si existe."""
+        reglas = self.reglas.get(regla_key, {})
+        hereda = reglas.get('hereda_de')
+        if hereda:
+            base = self.reglas.get(hereda, {})
+            return {**base, **{k: v for k, v in reglas.items() if k != 'hereda_de'}}
+        return reglas
+
+    # ── Extractores ──────────────────────────────────────────────────────────
+
     def extraer_tablas(self, contenido):
         return [
             (i, *self._split_nombre(m.group(1)))
@@ -125,6 +143,56 @@ class ValidadorDDL:
                 if m := self._RE_COLUMNA.match(linea):
                     columnas.append((i, esquema, tabla, m.group(1), m.group(2)))
         return columnas
+
+    def _extraer_pk_fk_columnas(self, contenido):
+        """Retorna (pk_cols, fk_cols) como sets de (esquema, tabla, columna_upper).
+
+        Detecta columnas PK/FK tanto en definiciones inline dentro de CREATE TABLE
+        como en sentencias ALTER TABLE ... ADD CONSTRAINT externas (formato pg_dump).
+        """
+        pk_cols, fk_cols = set(), set()
+        re_pk = re.compile(r'PRIMARY KEY\s*\(([^)]+)\)', re.IGNORECASE)
+        re_fk = re.compile(r'FOREIGN KEY\s*\(([^)]+)\)', re.IGNORECASE)
+
+        # --- Inline dentro de CREATE TABLE ---
+        esquema_t, tabla_t, dentro = None, None, False
+        for linea in contenido.split('\n'):
+            if m := self._RE_TABLA.search(linea):
+                esquema_t, tabla_t = self._split_nombre(m.group(1))
+                dentro = True
+            elif dentro and re.match(r'^\s*\);', linea):
+                dentro = False
+            elif dentro and tabla_t:
+                if m := re_pk.search(linea):
+                    for col in [c.strip().strip('"') for c in m.group(1).split(',')]:
+                        pk_cols.add((esquema_t, tabla_t, col.upper()))
+                if m := re_fk.search(linea):
+                    for col in [c.strip().strip('"') for c in m.group(1).split(',')]:
+                        fk_cols.add((esquema_t, tabla_t, col.upper()))
+
+        # --- ALTER TABLE ... ADD CONSTRAINT (puede ser multilínea) ---
+        re_alter = re.compile(
+            r'ALTER TABLE\s+(?:ONLY\s+)?([a-zA-Z0-9_.]+)', re.IGNORECASE)
+        lineas = contenido.split('\n')
+        i = 0
+        while i < len(lineas):
+            if m_at := re_alter.search(lineas[i]):
+                esq, tab = self._split_nombre(m_at.group(1))
+                # Acumular hasta el ';'
+                bloque = lineas[i]
+                j = i
+                while ';' not in bloque and j + 1 < len(lineas):
+                    j += 1
+                    bloque += ' ' + lineas[j]
+                if m := re_pk.search(bloque):
+                    for col in [c.strip().strip('"') for c in m.group(1).split(',')]:
+                        pk_cols.add((esq, tab, col.upper()))
+                if m := re_fk.search(bloque):
+                    for col in [c.strip().strip('"') for c in m.group(1).split(',')]:
+                        fk_cols.add((esq, tab, col.upper()))
+            i += 1
+
+        return pk_cols, fk_cols
 
     def extraer_constraints(self, contenido):
         patrones = [
@@ -147,6 +215,10 @@ class ValidadorDDL:
         return self._extraer_simple(contenido,
             r'CREATE\s+(?:OR REPLACE\s+)?FUNCTION\s+(?:[a-zA-Z0-9_]+\.)?([a-zA-Z0-9_]+)\s*\(')
 
+    def extraer_procedures(self, contenido):
+        return self._extraer_simple(contenido,
+            r'CREATE\s+(?:OR REPLACE\s+)?PROCEDURE\s+(?:[a-zA-Z0-9_]+\.)?([a-zA-Z0-9_]+)\s*\(')
+
     def extraer_triggers(self, contenido):
         return self._extraer_simple(contenido,
             r'CREATE\s+(?:OR REPLACE\s+)?TRIGGER\s+([a-zA-Z0-9_]+)')
@@ -163,6 +235,17 @@ class ValidadorDDL:
         return self._extraer_simple(contenido,
             r'CREATE\s+(?:OR REPLACE\s+)?VIEW\s+(?:[a-zA-Z0-9_]+\.)?([a-zA-Z0-9_]+)')
 
+    def extraer_materialized_views(self, contenido):
+        return self._extraer_simple(contenido,
+            r'CREATE\s+MATERIALIZED VIEW\s+(?:IF NOT EXISTS\s+)?'
+            r'(?:[a-zA-Z0-9_]+\.)?([a-zA-Z0-9_]+)')
+
+    def extraer_types(self, contenido):
+        return self._extraer_simple(contenido,
+            r'CREATE\s+TYPE\s+(?:[a-zA-Z0-9_]+\.)?([a-zA-Z0-9_]+)')
+
+    # ── Helpers de validación ─────────────────────────────────────────────────
+
     def _ya_validado(self, clave):
         if clave in self.objetos_validados:
             return True
@@ -178,21 +261,39 @@ class ValidadorDDL:
             valor_sugerido=f"{prefijo}{nombre.upper()}",
         ))
 
+    def _validar_regex(self, linea, nombre, tipo_str, regla_key):
+        """Valida el nombre contra regex_nombre del JSON. Registra advertencia si no cumple."""
+        reglas = self._get_reglas(regla_key)
+        regex = reglas.get('regex_nombre')
+        if regex and not re.match(regex, nombre.upper()):
+            self.warnings.append(Error(
+                linea=linea, tipo_objeto=tipo_str, nombre_objeto=nombre,
+                tipo_error='FORMATO',
+                mensaje=f"No cumple el formato: {reglas.get('formato', regex)}",
+                valor_actual=nombre,
+            ))
+
     def _validar_prefijo_simple(self, linea, nombre, tipo_str, regla_key, prefijo_default):
-        """Valida prefijo para objetos simples. Retorna False si ya estaba validado."""
+        """Valida prefijo y formato regex. Retorna False si ya estaba validado."""
         if self._ya_validado(f"{regla_key}:{nombre}"):
             return False
-        prefijo = self.reglas.get(regla_key, {}).get('prefijo', prefijo_default)
+        reglas = self._get_reglas(regla_key)
+        prefijo = reglas.get('prefijo', prefijo_default)
         if not nombre.upper().startswith(prefijo):
             self._add_error_prefijo(linea, tipo_str, nombre, nombre, prefijo)
+        else:
+            # Solo validar formato completo si el prefijo es correcto
+            self._validar_regex(linea, nombre, tipo_str, regla_key)
         return True
+
+    # ── Validadores por tipo de objeto ────────────────────────────────────────
 
     def validar_nombre_tabla(self, linea, esquema, tabla):
         if self._ya_validado(f"tabla:{esquema}.{tabla}"):
             return
-        reglas = self.reglas.get('tabla', {})
+        reglas = self._get_reglas('tabla')
         tabla_up = tabla.upper()
-        nombre_obj = f"{esquema}.{tabla}"
+        nombre_obj = tabla
         max_len = reglas.get('max_length', 30)
         if len(tabla) > max_len:
             self.errores.append(Error(
@@ -210,6 +311,8 @@ class ValidadorDDL:
                 mensaje=f"Sin prefijo estándar. Usar: {', '.join(prefijos)}",
                 valor_actual=tabla, valor_sugerido=sugerencia,
             ))
+        else:
+            self._validar_regex(linea, tabla, 'TABLA', 'tabla')
 
     def sugerir_prefijo_columna(self, tipo_dato):
         if not tipo_dato:
@@ -218,26 +321,32 @@ class ValidadorDDL:
         tipo_up = tipo_dato.upper()
         return next((p for t, p in prefijos.items() if tipo_up.startswith(t)), 'N')
 
-    def validar_nombre_columna(self, linea, esquema, tabla, columna, tipo_dato):
+    def validar_nombre_columna(self, linea, esquema, tabla, columna, tipo_dato,
+                                es_pk=False, es_fk=False):
         if self._ya_validado(f"columna:{esquema}.{tabla}.{columna}"):
             return
         reglas = self.reglas.get('columna', {})
         col_up = columna.upper()
-        nombre_obj = f"{tabla}.{columna}"
+        nombre_obj = columna
+        ubicacion = f"{tabla}.{columna}"   # contexto tabla.campo para el reporte
         max_len = reglas.get('max_length', 30)
         sufijo_pk = reglas.get('pk', {}).get('sufijo_pk', '_PK')
+
+        # Longitud
         if len(columna) > max_len:
             if sufijo_pk and col_up.endswith(sufijo_pk.upper()):
                 base = columna[:-len(sufijo_pk)][:max(max_len - len(sufijo_pk), 0)]
-                sugerido = f"{base}{columna[-len(sufijo_pk):]}"
+                sugerido = f"{base}{sufijo_pk}"
             else:
                 sugerido = columna[:max_len]
             self.errores.append(Error(
                 linea=linea, tipo_objeto='COLUMNA', nombre_objeto=nombre_obj,
                 tipo_error='LONGITUD',
                 mensaje=f"Nombre demasiado largo ({len(columna)} chars). Máximo: {max_len}",
-                valor_actual=columna, valor_sugerido=sugerido,
+                valor_actual=ubicacion, valor_sugerido=sugerido,
             ))
+
+        # Prefijo según tipo de dato
         prefijo_esp = self.sugerir_prefijo_columna(tipo_dato)
         if not col_up.startswith(prefijo_esp + '_'):
             partes = col_up.split('_', 1)
@@ -247,28 +356,64 @@ class ValidadorDDL:
                 linea=linea, tipo_objeto='COLUMNA', nombre_objeto=nombre_obj,
                 tipo_error='PREFIJO',
                 mensaje=f"Prefijo '{pref_actual}' incorrecto. Para '{tipo_dato}' usar '{prefijo_esp}_'",
-                valor_actual=columna, valor_sugerido=sugerencia,
+                valor_actual=ubicacion, valor_sugerido=sugerencia,
+            ))
+
+        # PK: columna clave primaria debe terminar en _PK
+        if es_pk and reglas.get('pk', {}).get('requiere_sufijo_pk', True):
+            if not col_up.endswith(sufijo_pk.upper()):
+                self.errores.append(Error(
+                    linea=linea, tipo_objeto='COLUMNA', nombre_objeto=nombre_obj,
+                    tipo_error='PK_SUFIJO',
+                    mensaje=f"Columna clave primaria debe terminar en '{sufijo_pk}'",
+                    valor_actual=ubicacion,
+                    valor_sugerido=f"{columna}{sufijo_pk}",
+                ))
+
+        # FK: columna clave foránea no debe terminar en _PK
+        if es_fk and reglas.get('fk', {}).get('prohibir_sufijo_pk_en_fk', True):
+            if col_up.endswith(sufijo_pk.upper()):
+                self.errores.append(Error(
+                    linea=linea, tipo_objeto='COLUMNA', nombre_objeto=nombre_obj,
+                    tipo_error='FK_SUFIJO',
+                    mensaje=f"Columna clave foránea no debe terminar en '{sufijo_pk}'",
+                    valor_actual=ubicacion,
+                    valor_sugerido=columna[:-len(sufijo_pk)],
+                ))
+
+        # Formato general de la columna (regex_nombre del JSON)
+        regex = reglas.get('regex_nombre')
+        if regex and not re.match(regex, col_up):
+            self.warnings.append(Error(
+                linea=linea, tipo_objeto='COLUMNA', nombre_objeto=nombre_obj,
+                tipo_error='FORMATO',
+                mensaje=f"No cumple el formato: {regex}",
+                valor_actual=ubicacion,
             ))
 
     def validar_constraint(self, linea, nombre):
         if self._ya_validado(f"constraint:{nombre}"):
             return
-        reglas = self.reglas.get('constraint', {})
+        reglas = self._get_reglas('constraint')
         nombre_up = nombre.upper()
         prefijo = reglas.get('prefijo', 'CST_')
         if not nombre_up.startswith(prefijo):
             self._add_error_prefijo(linea, 'CONSTRAINT', nombre, nombre, prefijo)
-        regex = reglas.get('regex_nombre')
-        if regex and not re.match(regex, nombre_up):
-            self.warnings.append(Error(
-                linea=linea, tipo_objeto='CONSTRAINT', nombre_objeto=nombre,
-                tipo_error='FORMATO',
-                mensaje=f"No cumple formato: {reglas.get('formato', '')}",
-                valor_actual=nombre,
-            ))
+        else:
+            regex = reglas.get('regex_nombre')
+            if regex and not re.match(regex, nombre_up):
+                self.warnings.append(Error(
+                    linea=linea, tipo_objeto='CONSTRAINT', nombre_objeto=nombre,
+                    tipo_error='FORMATO',
+                    mensaje=f"No cumple formato: {reglas.get('formato', '')}",
+                    valor_actual=nombre,
+                ))
 
     def validar_funcion(self, linea, nombre):
         self._validar_prefijo_simple(linea, nombre, 'FUNCTION', 'function', 'FN_')
+
+    def validar_procedure(self, linea, nombre):
+        self._validar_prefijo_simple(linea, nombre, 'PROCEDURE', 'procedure', 'SP_')
 
     def validar_indice(self, linea, nombre):
         self._validar_prefijo_simple(linea, nombre, 'INDEX', 'index', 'INX_')
@@ -279,32 +424,47 @@ class ValidadorDDL:
     def validar_view(self, linea, nombre):
         self._validar_prefijo_simple(linea, nombre, 'VIEW', 'view', 'VW_')
 
+    def validar_materialized_view(self, linea, nombre):
+        self._validar_prefijo_simple(linea, nombre, 'MATERIALIZED VIEW', 'materialized_view', 'VM_')
+
+    def validar_type(self, linea, nombre):
+        self._validar_prefijo_simple(linea, nombre, 'TYPE', 'type', 'TYP_')
+
     def validar_trigger(self, linea, nombre):
         if not self._validar_prefijo_simple(linea, nombre, 'TRIGGER', 'trigger', 'TRG_'):
             return
-        reglas = self.reglas.get('trigger', {})
+        reglas = self._get_reglas('trigger')
         tipos = reglas.get('tipos_validos', [])
         if tipos and not any(f"_{t}" in nombre.upper() for t in tipos):
             self.warnings.append(Error(
                 linea=linea, tipo_objeto='TRIGGER', nombre_objeto=nombre,
                 tipo_error='TIPO',
-                mensaje=f"Sin tipo válido. Usar: {', '.join(tipos)}",
+                mensaje=f"Sin tipo válido al final del nombre. Usar: {', '.join(tipos)}",
                 valor_actual=nombre,
             ))
+
+    # ── Orquestador principal ─────────────────────────────────────────────────
 
     def validar(self):
         self.cargar_reglas()
         if not self.ddl_file:
             raise ValueError("No se ha especificado un archivo DDL")
         contenido = Path(self.ddl_file).read_text(encoding='utf-8')
+
+        pk_cols, fk_cols = self._extraer_pk_fk_columnas(contenido)
+
         for linea, esquema, tabla in self.extraer_tablas(contenido):
             self.validar_nombre_tabla(linea, esquema, tabla)
         for linea, esquema, tabla, col, tipo in self.extraer_columnas(contenido):
-            self.validar_nombre_columna(linea, esquema, tabla, col, tipo)
+            es_pk = (esquema, tabla, col.upper()) in pk_cols
+            es_fk = (esquema, tabla, col.upper()) in fk_cols
+            self.validar_nombre_columna(linea, esquema, tabla, col, tipo, es_pk, es_fk)
         for linea, nombre, *_ in self.extraer_constraints(contenido):
             self.validar_constraint(linea, nombre)
         for linea, nombre in self.extraer_funciones(contenido):
             self.validar_funcion(linea, nombre)
+        for linea, nombre in self.extraer_procedures(contenido):
+            self.validar_procedure(linea, nombre)
         for linea, nombre in self.extraer_triggers(contenido):
             self.validar_trigger(linea, nombre)
         for linea, nombre in self.extraer_indices(contenido):
@@ -313,7 +473,14 @@ class ValidadorDDL:
             self.validar_sequence(linea, nombre)
         for linea, nombre in self.extraer_views(contenido):
             self.validar_view(linea, nombre)
+        for linea, nombre in self.extraer_materialized_views(contenido):
+            self.validar_materialized_view(linea, nombre)
+        for linea, nombre in self.extraer_types(contenido):
+            self.validar_type(linea, nombre)
+
         return len(self.errores) == 0
+
+    # ── Generación del reporte HTML ───────────────────────────────────────────
 
     _CSS = (
         "body{font-family:sans-serif;padding:20px;max-width:960px;margin:0 auto;background:#ecf0f1;color:#2c3e50}"
@@ -373,7 +540,10 @@ class ValidadorDDL:
 
         if self.warnings:
             partes.append(f'<h2>Advertencias ({n_warn})</h2>')
-            partes.extend(self._render_item(w, i, 'warning') for i, w in enumerate(self.warnings, 1))
+            for tipo in sorted(warnings_por_tipo):
+                items = warnings_por_tipo[tipo]
+                partes.append(f'<h3>{tipo} ({len(items)})</h3>')
+                partes.extend(self._render_item(w, i, 'warning') for i, w in enumerate(items, 1))
 
         if not self.errores and not self.warnings:
             partes.append('<p><strong>Validación exitosa.</strong> No se encontraron problemas.</p>')
@@ -429,7 +599,11 @@ def main():
     print(f"Host: {host} | Puerto: {puerto} | BD: {bd} | Usuario: {usuario}")
     print(f"Reporte: {ruta_salida_html}")
 
-    reglas_json = Path(__file__).resolve().parent.parent / 'resources' / 'reglas_nomenclatura.json'
+    if getattr(sys, 'frozen', False):
+        reglas_json = Path(sys.executable).parent / 'resources' / 'reglas_nomenclatura.json'
+    else:
+        reglas_json = Path(__file__).resolve().parent.parent / 'resources' / 'reglas_nomenclatura.json'
+
     validador = ValidadorDDL(str(reglas_json))
 
     tmp_ddl = None
